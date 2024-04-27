@@ -1,0 +1,41 @@
+
+<style>
+    .admin-navbar-container{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 1rem;
+        align-items: center;
+        /* border-bottom: 1px solid #b7b7b7; */
+        box-shadow: 1px 1px 5px #d7d7d7;
+        z-index: 99;
+    }
+    .logo{
+        text-decoration: none;
+        font-size: 2rem;
+        font-weight: 700;
+        color: #000000;
+    }
+    .admin-navlinks{
+        display: flex;
+        gap: 2rem;
+    }
+    .admin-navlinks a{
+        text-decoration: none;
+        font-size: 1rem;
+        color: #000000; 
+    }
+</style>
+
+
+<header class="admin-navbar-container">
+    <a href="/admin/dashboard" class="logo">Cleat Craft</a>
+    <nav class="admin-navlinks">
+        <a href="/admin/dashboard"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+        <a href="/admin/products"><i class="fa-solid fa-boxes-stacked"></i> Products</a>
+        <a href="/admin/user"><i class="fa-solid fa-users"></i> Customers</a>
+        <a href="/admin/orders"><i class="fa-solid fa-cart-shopping"></i> Orders</a>
+        <a href="/admin/coupons"><i class="fa-solid fa-ticket"></i> Coupons</a>
+        <a href="/admin/logout"><i class="fa-solid fa-door-open"></i>Logout</a>
+    </nav>
+</header>
