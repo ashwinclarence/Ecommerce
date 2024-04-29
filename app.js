@@ -34,18 +34,31 @@ app.set('layout','./layouts/layout')
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
+
+
+
+
 // First Route
 app.get('/', (req, res) => {
-    if(req.session.user){
-        res.render('user/home')
+    if(req.session.admin){
+        res.redirect('/admin/dashboard')
     }else{
-        res.render('admin/login',{title:"Admin Login"});
+        res.redirect('/user/login');
     }
+    // if(req.session.user){
+    //     res.render('user/home')
+    // }else{
+    //     res.render('admin/login',{title:"Admin Login"});
+    // }
+    
 });
 
+
 // Routes
-app.use('/', userRoutes);
+app.use('/user', userRoutes);
 app.use('/admin', adminRoutes);
+
+
 
 // Port listen 
 app.listen(port, (err) => {

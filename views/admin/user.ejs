@@ -13,12 +13,16 @@
     border: 1px solid #000000;
     border-radius: 10px;
     padding: .2rem .3rem;
+    margin-top: 2rem;
    }
    #user-search{
     border: none;
     outline: none;
     width: 30rem;
     height: 2.5rem;
+   }
+   table th,td{
+    text-align: center;
    }
 </style>
 
@@ -29,15 +33,15 @@
 
     <div class="admin-customers-container container">
         <div class="user-search-box">
-            <h4>Customers</h4>
+            <h3>Customers</h3>
             <form action="" method="post" class="admin-user-search-box">
-                <input type="text" name="search" id="user-search" placeholder="search" required>
+                <input type="text" name="search" id="user-search" placeholder="Find users" required>
                 <button class="btn"><i class="fa-solid fa-magnifying-glass"></i></button>
             </form>
         </div>
         <div class="user-list-box">
             <table class="table table-hover">
-                <thead>
+                <thead >
                     <tr>
                         <th scope="col">sl.no</th>
                         <th scope="col">Name</th>
@@ -56,6 +60,17 @@
                         <td>Trivandrum Kannanthura Beach P.O</td>
                         <td>
                             <a class="btn btn-warning" href="">Unblock</a>
+                            <!-- <a class="btn btn-danger" href="">Block</a> -->
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">1</th>
+                        <td>ASHWIN CLARENCE</td>
+                        <td>meashwinclarence@gmail.com</td>
+                        <td>8590120463</td>
+                        <td>Trivandrum Kannanthura Beach P.O</td>
+                        <td>
+                            <!-- <a class="btn btn-warning" href="">Unblock</a> -->
                             <a class="btn btn-danger" href="">Block</a>
                         </td>
                     </tr>
@@ -66,8 +81,8 @@
                         <td>8590120463</td>
                         <td>Trivandrum Kannanthura Beach P.O</td>
                         <td>
-                            <button class="btn btn-warning">Unblock</button>
-                            <button class="btn btn-danger">Block</button>
+                            <a class="btn btn-warning" href="">Unblock</a>
+                            <!-- <a class="btn btn-danger" href="">Block</a> -->
                         </td>
                     </tr>
                     <tr>
@@ -77,30 +92,8 @@
                         <td>8590120463</td>
                         <td>Trivandrum Kannanthura Beach P.O</td>
                         <td>
-                            <button class="btn btn-warning">Unblock</button>
-                            <button class="btn btn-danger">Block</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>ASHWIN CLARENCE</td>
-                        <td>meashwinclarence@gmail.com</td>
-                        <td>8590120463</td>
-                        <td>Trivandrum Kannanthura Beach P.O</td>
-                        <td>
-                            <button class="btn btn-warning">Unblock</button>
-                            <button class="btn btn-danger">Block</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>ASHWIN CLARENCE</td>
-                        <td>meashwinclarence@gmail.com</td>
-                        <td>8590120463</td>
-                        <td>Trivandrum Kannanthura Beach P.O</td>
-                        <td>
-                            <button class="btn btn-warning">Unblock</button>
-                            <button class="btn btn-danger">Block</button>
+                            <!-- <a class="btn btn-warning" href="">Unblock</a> -->
+                            <a class="btn btn-danger" href="">Block</a>
                         </td>
                     </tr>
                 </tbody>

@@ -1,7 +1,6 @@
 const connection=require('../mongodb/connection')
 
 
-
 // defining the schema for the collection
 const schema =new mongoose.Schema({
     name:{
@@ -18,4 +17,4 @@ const schema =new mongoose.Schema({
     }
 })
 
-const collectionModel = mongoose.model("user",schema);
+module.exports= mongoose.model("user",schema);

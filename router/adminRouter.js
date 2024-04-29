@@ -6,6 +6,7 @@ const adminController=require('../controller/adminController')
 admin.get('/login',adminController.login);
 admin.post('/login',adminController.loginPost);
 admin.get('/dashboard',adminController.dashboard);
+admin.get('/category',adminController.category);
 admin.get('/products',adminController.products);
 admin.get('/user',adminController.users);
 admin.get('/orders',adminController.order);

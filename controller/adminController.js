@@ -29,6 +29,14 @@ const dashboard=(req,res)=>{
 }
 
 
+// render the product page
+const category=(req,res)=>{
+    if(req.session.admin){
+        res.render('admin/category',{title:"Category list"})
+    }else{
+        res.redirect('/admin/login')
+    }
+}
 
 
 // render the product page
@@ -85,4 +93,4 @@ const logout=(req,res)=>{
     })
 }
 
-module.exports={login, dashboard, products, users, order, coupons, loginPost, logout}
+module.exports={login, dashboard,category, products, users, order, coupons, loginPost, logout}

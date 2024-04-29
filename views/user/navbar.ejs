@@ -1,0 +1,67 @@
+<style>
+    .admin-navbar-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 1.5rem 3rem;
+        align-items: center;
+        /* border-bottom: 1px solid #b7b7b7; */
+        box-shadow: 1px 1px 5px #d7d7d7;
+        z-index: 99;
+    }
+
+    .logo {
+        text-decoration: none;
+        font-size: 2rem;
+        font-weight: 700;
+        color: #000000;
+    }
+
+    .admin-navlinks {
+        display: flex;
+        gap: 2rem;
+    }
+
+    .admin-navlinks a {
+        text-decoration: none;
+        font-size: 1rem;
+        color: #000000;
+    }
+
+    .navbar-search-box {
+        border: 1px solid #d7d7d7;
+        border-radius: 10px;
+        width: 20rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-left: .5rem;
+    }
+
+    .navbar-search-box input {
+        border: none;
+        outline: none;
+        width: 90%;
+    }
+
+    .navbar-search-box button i {
+        color: #d7d7d7;
+    }
+    .nav-link-items{
+        scale: 1.3;
+    }
+</style>
+
+
+<header class="admin-navbar-container">
+    <a href="/" class="logo">Cleat Craft</a>
+    <form action="" method="get" class="navbar-search-box">
+        <input type="text" name="userSearch" id="user-search" placeholder="What are you looking for?" required>
+        <button type="submit" class="btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+    </form>
+    <nav class="admin-navlinks">
+        <a href="/wishlist" class="nav-link-items"><i class="fa-solid fa-heart"></i></a>
+        <a href="/cart" class="nav-link-items"><i class="fa-solid fa-cart-shopping"></i></a>
+        <a href="/profile" class="nav-link-items"><i class="fa-solid fa-user"></i></a>
+    </nav>
+</header>
