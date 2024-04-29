@@ -36,8 +36,6 @@ app.set('views', path.join(__dirname, 'views'));
 
 
 
-
-
 // First Route
 app.get('/', (req, res) => {
     if(req.session.admin){

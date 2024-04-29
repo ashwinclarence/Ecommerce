@@ -1,0 +1,158 @@
+<style>
+    .products-container {
+        padding: 2rem 0;
+        margin-bottom: 5rem;
+    }
+
+    .products-category-container {
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+         font-family: "Roboto", sans-serif; 
+        /* background-color: #d0d0d0; */
+        /* padding: 1rem 0; */
+    }
+
+    .products-list-box{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+    .product-box {
+        border: 1px solid #b2b2b2;
+        border-radius: 10px;
+        width: 300px;
+        padding: 1rem;
+        margin-top: 2rem;
+    }
+
+    .product-image-box{
+      
+        width: 290px;
+    }
+    .product-image-box img{
+        margin: auto;
+        width: 250px;
+        object-fit: scale-down;
+    }
+   
+   
+</style>
+
+<div class="products-container">
+    <div class="products-category-container">
+        <h6>Soft Ground</h6>
+        <h6>Firm Ground</h6>
+        <h6>Artificial Grass</h6>
+        <h6>Multi Ground</h6>
+        <h6>Astro Turf</h6>
+        <h6>Indoor Court</h6>
+    </div>
+    <div class="products-list-box container">
+
+        <div class="product-box">
+            <div class="product-image-box">
+                <img src="../../image/2.png" alt="">
+            </div>
+            <div class="product-description-box">
+                <small>Adidas</small>
+                <p class="product-name">Pro Encounter 10.0 Football Stud for Men/Comfortable and Lightweight/Sports Shoe</p>
+                <h5><i class="fa-solid fa-indian-rupee-sign"></i> 999</h5>
+            </div>
+        </div>
+
+        <div class="product-box">
+            <div class="product-image-box">
+                <img src="../../image/2.png" alt="">
+            </div>
+            <div class="product-description-box">
+                <small>Adidas</small>
+                <p class="product-name">Pro Encounter 10.0 Football Stud for Men/Comfortable and Lightweight/Sports Shoe</p>
+                <h5><i class="fa-solid fa-indian-rupee-sign"></i> 999</h5>
+            </div>
+        </div>
+        <div class="product-box">
+            <div class="product-image-box">
+                <img src="../../image/2.png" alt="">
+            </div>
+            <div class="product-description-box">
+                <small>Adidas</small>
+                <p class="product-name">Pro Encounter 10.0 Football Stud for Men/Comfortable and Lightweight/Sports Shoe</p>
+                <h5><i class="fa-solid fa-indian-rupee-sign"></i> 999</h5>
+            </div>
+        </div>
+
+        <div class="product-box">
+            <div class="product-image-box">
+                <img src="../../image/2.png" alt="">
+            </div>
+            <div class="product-description-box">
+                <small>Adidas</small>
+                <p class="product-name">Pro Encounter 10.0 Football Stud for Men/Comfortable and Lightweight/Sports Shoe</p>
+                <h5><i class="fa-solid fa-indian-rupee-sign"></i> 999</h5>
+            </div>
+        </div>
+        <div class="product-box">
+            <div class="product-image-box">
+                <img src="../../image/2.png" alt="">
+            </div>
+            <div class="product-description-box">
+                <small>Adidas</small>
+                <p class="product-name">Pro Encounter 10.0 Football Stud for Men/Comfortable and Lightweight/Sports Shoe</p>
+                <h5><i class="fa-solid fa-indian-rupee-sign"></i> 999</h5>
+            </div>
+        </div>
+
+        <div class="product-box">
+            <div class="product-image-box">
+                <img src="../../image/2.png" alt="">
+            </div>
+            <div class="product-description-box">
+                <small>Adidas</small>
+                <p class="product-name">Pro Encounter 10.0 Football Stud for Men/Comfortable and Lightweight/Sports Shoe</p>
+                <h5><i class="fa-solid fa-indian-rupee-sign"></i> 999</h5>
+            </div>
+        </div>
+        <div class="product-box">
+            <div class="product-image-box">
+                <img src="../../image/2.png" alt="">
+            </div>
+            <div class="product-description-box">
+                <small>Adidas</small>
+                <p class="product-name">Pro Encounter 10.0 Football Stud for Men/Comfortable and Lightweight/Sports Shoe</p>
+                <h5><i class="fa-solid fa-indian-rupee-sign"></i> 999</h5>
+            </div>
+        </div>
+
+        <div class="product-box">
+            <div class="product-image-box">
+                <img src="../../image/2.png" alt="">
+            </div>
+            <div class="product-description-box">
+                <small>Adidas</small>
+                <p class="product-name">Pro Encounter 10.0 Football Stud for Men/Comfortable and Lightweight/Sports Shoe</p>
+                <h5><i class="fa-solid fa-indian-rupee-sign"></i> 999</h5>
+            </div>
+        </div>
+
+
+
+        
+    </div>
+</div>
+
+
+<script>
+   const maxLength = 60; // Define the maximum length of the text
+    const productElements = document.querySelectorAll('.product-name');
+    productElements.forEach(productElement => {
+        let productText = productElement.textContent;
+
+        if (productText.length > maxLength) {
+            productText = productText.substring(0, maxLength) + '...';
+        }
+
+        productElement.textContent = productText;
+    });
+</script>
