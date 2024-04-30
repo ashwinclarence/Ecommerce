@@ -1,5 +1,5 @@
 <style>
-    .admin-login-container{
+    .login-container {
         height: 100vh;
         display: flex;
         align-items: center;
@@ -9,21 +9,31 @@
         background-size: cover;
         background-repeat: no-repeat;
     }
-    .login-form{
+
+    .login-form {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 2rem;
-        width: 35vw;
+        gap: 3rem;
         border: 1px solid #c8c8c8;
         border-radius: 10px;
         padding: 3rem 2rem;
         background-color: rgba(255, 255, 255, 0.4);
-  -webkit-backdrop-filter: blur(5px);
-  backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+        backdrop-filter: blur(5px);
+        width: 30vw;
     }
-    .login-form input{
+
+    .login-form form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2rem;
         width: 90%;
+    }
+
+    .login-form input {
+        width: 100%;
         height: 2.5rem;
         border-radius: 10px;
         outline: none;
@@ -32,31 +42,87 @@
         color: #000000;
         padding: 10px;
     }
-    .login-form button{
+
+    .login-form button {
         width: 10rem;
     }
 
+    .login-password-forget {
+      margin-left: auto;
+    }
+
+    .login-methods-box {
+        width: 90%;
+        text-align: center;
+        position: relative;
+    }
+
+    .continue-with-label {
+        padding: 0 1rem;
+        background-color: rgb(255, 255, 255);
+    }
+
+
+    .continue-with-label::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        /* Position at the vertical center */
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background-color: rgb(94, 94, 94);
+        z-index: -3;
+        /* Ensure the ruler is behind the content */
+
+    }
+
+    .login-with-socialmedia-box {
+        display: flex;
+        justify-content: space-around;
+        gap: 1rem;
+        scale: 2;
+
+    }
+
+    .login-with-socialmedia-box i {
+        cursor: pointer;
+    }
 </style>
 
 
 
 <%- include('navbar') %>
 
-<div class="admin-login-container">
-    <form action="/user/login" method="post" class="login-form">
-        <h2>User Login</h2>
-        <input type="email" name="username" id="admin-login-input" placeholder="username" required>
-        <input type="password" name="password" id="admin-login-input" placeholder="password" required>
+    <div class="login-container">
+        <div class="login-form">
+            <form action="/user/login" method="post">
+                <h2>User Login</h2>
+                <input type="email" name="username" id="login-input" placeholder="username" required>
+                <input type="password" name="password" id="login-input" placeholder="password" required>
+                <a href="/user/forgetPassword" class="login-password-forget">forget password?</a>
 
-        <% if(loginError){%>
-            <label style="color: red;">
-                <%= errorMessage %>
-            </label>
-        <% }%>
+                <% if(loginError){%>
+                    <label style="color: red;">
+                        <%= errorMessage %>
+                    </label>
+                    <% }%>
+                        <button class="btn btn-primary" type="submit">Login</button>
 
-        <button class="btn btn-primary" type="submit">Login</button>
-    </form>
-</div>
+            </form>
+            <div class="login-methods-box">
+                <b class="continue-with-label">Or Continue with</b>
+            </div>
+            <div class="login-with-socialmedia-box">
+                <i class="fa-brands fa-facebook"></i>
+                <i class="fa-brands fa-google"></i>
+            </div>
+            <div class="signup-page-render">
+                <p>If you are a new user? <a href="/user/signup">Signup</a></p>
+            </div>
+        </div>
+
+    </div>
 
 
-<%- include('footer') %>
+    <%- include('footer') %>

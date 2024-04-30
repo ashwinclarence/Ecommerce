@@ -1,0 +1,85 @@
+
+<style>
+    .cart-container{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+    }
+    .cart-item-container{
+       display: flex;
+       flex-direction: column;
+       justify-content: space-around;
+    }
+    .cart-item-box{
+        display: flex;
+        justify-content: space-between;
+        border: 1px solid #bababa;
+        border-radius: 10px;
+        margin-top: 2rem;
+        padding: 1rem;
+        /* height: 150px; */
+        overflow: hidden;
+    }
+    .cart-item-image{
+        width: 150px;
+        /* height: 150px; */
+        overflow: hidden;
+        margin: auto;
+    }
+    .cart-image{
+        width: 150px;
+        /* height: 150px; */
+        object-fit: scale-down;
+    }
+</style>
+
+<%- include('navbar') %>
+
+<div class="cart-container container">
+    <div class="cart-item-container">
+
+        <div class="cart-item-box">
+            <div class="cart-item-image">
+                <img src="../../image/3.png" alt="" class="cart-image">
+            </div>
+            <div class="cart-item-description">
+                <small>Adidas</small>
+                <p class="cart-product-name">Pro Encounter 10.0 Football Stud for Men/Comfortable and Lightweight/Sports
+                    Shoe</p>
+                <h5><i class="fa-solid fa-indian-rupee-sign"></i> 999</h5>
+                <a href="" class="btn btn-danger">Remove</a>
+            </div>
+        </div>
+        <div class="cart-item-box">
+            <div class="cart-item-image">
+                <img src="../../image/3.png" alt="" class="cart-image">
+            </div>
+            <div class="cart-item-description">
+                <small>Adidas</small>
+                <p class="cart-product-name">Pro Encounter 10.0 Football Stud for Men/Comfortable and Lightweight/Sports
+                    Shoe</p>
+                <h5><i class="fa-solid fa-indian-rupee-sign"></i> 999</h5>
+                <a href="" class="btn btn-danger">Remove</a>
+            </div>
+        </div>
+        <div class="cart-item-box">
+            <div class="cart-item-image">
+                <img src="../../image/3.png" alt="" class="cart-image">
+            </div>
+            <div class="cart-item-description">
+                <small>Adidas</small>
+                <p class="cart-product-name">Pro Encounter 10.0 Football Stud for Men/Comfortable and Lightweight/Sports
+                    Shoe</p>
+                <h5><i class="fa-solid fa-indian-rupee-sign"></i> 999</h5>
+                <a href="" class="btn btn-danger">Remove</a>
+            </div>
+        </div>
+
+
+    </div>
+    <div class="cart-price-container">
+
+    </div>
+</div>
+
+<%- include('footer') %>

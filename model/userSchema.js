@@ -4,7 +4,12 @@ const connection=require('../mongodb/connection')
 // defining the schema for the collection
 const schema =new mongoose.Schema({
     name:{
+
         type:String,
+        required:true
+    },
+    phone:{
+        type:Number,
         required:true
     },
     email:{

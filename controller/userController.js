@@ -23,5 +23,27 @@ const home=(req,res)=>{
         res.redirect('/user/login')
     }
 }
+const wishlist=(req,res)=>{
+    if(req.session.user){
+        res.render('user/wishlist',{title:"Wishlist"})
+    }else{
+        res.redirect('/user/login')
+    }
+}
+const cart=(req,res)=>{
+    if(req.session.user){
+        res.render('user/cart',{title:"cart"})
+    }else{
+        res.redirect('/user/login')
+    }
+}
+const signup=(req,res)=>{
+    if(req.session.user){
+        res.redirect('/user/home')
+    }else{
+        res.render('user/register',{title:"signup",registerError:false})
+       
+    }
+}
 
-module.exports={login,loginPost,home}
+module.exports={login,loginPost,home,wishlist,cart,signup}
