@@ -1,6 +1,19 @@
 const userSchema = require('../model/userSchema')
 const bcrypt = require('bcrypt')
 
+
+// signup page render
+const signup = (req, res) => {
+    if (req.session.user) {
+        res.redirect('/user/home')
+    } else {
+        res.render('user/register', { title: "Signup", alertMessage:"" })
+
+    }
+}
+
+
+
 // user register with username, email, password and phone number
 const signupPost = async (req, res) => {
     try {
@@ -13,19 +26,18 @@ const signupPost = async (req, res) => {
             email: req.body.email
         }
 
-
         // check the user with same email exist in mongodb
         const userExist = await userSchema.findOne({ email: registerDetails.email })
 
         // if user with same email id exist then render the register page with error message
         if (userExist) {
-            res.render('user/register', { title: 'User registration failed', registerError: true, errorMessage: "User already exist. please try with another email address" })
+            res.render('user/register', { title: 'Signup', alertMessage: "An account with this email address already exists. Please try using a different email address." })
         } else {
 
             // adding the user data to mongodb with collection name user
             await userSchema.insertMany(registerDetails).then(() => {
                 console.log('New user registration successful')
-                res.redirect('/')
+                res.render('user/login', { title: 'Login', alertMessage: "User registration is Successful" })
             }).catch((err) => {
                 console.log(`Error occurred while user registration ${err}`);
             })
@@ -40,22 +52,43 @@ const signupPost = async (req, res) => {
 
 
 
+// render the login page 
 
 const login = (req, res) => {
     if (req.session.user) {
         res.redirect('/user/home')
     } else {
-        res.render('user/login', { title: 'User Login', loginError: false })
+        res.render('user/login', { title: 'Login', alertMessage: "" })
     }
 }
 
-const loginPost = (req, res) => {
-    if (req.body.username === 'ashwin@123' && req.body.password === '123') {
-        req.session.user = req.body.username
-        res.redirect('/user/home')
-    } else {
-        res.render('user/login', { title: 'User Login', loginError: true, errorMessage: 'Invalid username or password' })
+
+// user login with username and password
+const loginPost = async (req, res) => {
+    try {
+
+        // find the user with entered email address in user collection
+        const checkUser = await userSchema.findOne({ email: req.body.username })
+        if(checkUser!=null){
+
+            // check the entered password in login form and data stored in user collection is same
+            const mongoPassword = await bcrypt.compare(req.body.password,checkUser.password)
+        
+            if (checkUser && mongoPassword) {
+                req.session.user = req.body.username //user section is created
+                res.redirect('/user/home')
+            } else {
+                res.render('user/login', { title: 'Login', alertMessage: "Invalid username or password" })
+            }
+        }else{
+            res.render('user/login',{ title: 'Login', alertMessage: "Invalid username or password" })
+        }
+
+       
+    } catch (err) {
+        console.log(`Error while login ${err}`);
     }
+
 }
 
 
@@ -80,14 +113,7 @@ const cart = (req, res) => {
         res.redirect('/user/login')
     }
 }
-const signup = (req, res) => {
-    if (req.session.user) {
-        res.redirect('/user/home')
-    } else {
-        res.render('user/register', { title: "signup", registerError: false })
 
-    }
-}
 const forgetPassword = (req, res) => {
     if (req.session.user) {
         res.redirect('/user/home')

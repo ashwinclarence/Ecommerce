@@ -9,8 +9,14 @@ const expressLayouts = require('express-ejs-layouts');
 const { v4: uuidv4 } = require('uuid');
 const adminRoutes=require('./router/adminRouter')
 const userRoutes=require('./router/userRouter')
-const mongodbConnection=require('./mongodb/connection')
+const connectDB=require('./config/connection')
 const port = process.env.PORT || 3000;
+
+
+
+// connecting mongodb
+connectDB();
+
 
 // Serving static files
 app.use(express.static(path.join(__dirname, 'public')));

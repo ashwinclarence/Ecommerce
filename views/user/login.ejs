@@ -21,7 +21,7 @@
         background-color: rgba(255, 255, 255, 0.4);
         -webkit-backdrop-filter: blur(5px);
         backdrop-filter: blur(5px);
-        width: 30vw;
+        width: 35vw;
     }
 
     .login-form form {
@@ -94,6 +94,9 @@
 
 <%- include('navbar') %>
 
+<!-- alert bar -->
+<%- include('alert')%>
+
     <div class="login-container">
         <div class="login-form">
             <form action="/user/login" method="post">
@@ -102,11 +105,7 @@
                 <input type="password" name="password" placeholder="password" required>
                 <a href="/user/forgetPassword" class="login-password-forget">forget password?</a>
 
-                <% if(loginError){%>
-                    <label style="color: red;">
-                        <%= errorMessage %>
-                    </label>
-                    <% }%>
+              
                         <button class="btn btn-primary" type="submit">Login</button>
 
             </form>
