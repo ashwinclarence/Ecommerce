@@ -1,10 +1,10 @@
-const connection=require('../mongodb/connection')
+const mongoose=require('mongoose')
+const dotenv=require('dotenv').config()
 
 
 // defining the schema for the collection
 const schema =new mongoose.Schema({
     name:{
-
         type:String,
         required:true
     },

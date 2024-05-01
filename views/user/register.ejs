@@ -1,6 +1,6 @@
 <style>
     .admin-register-container {
-        height: 100vh;
+        min-height: 120vh;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -21,6 +21,7 @@
         background-color: rgba(255, 255, 255, 0.4);
         -webkit-backdrop-filter: blur(5px);
         backdrop-filter: blur(5px);
+        margin-bottom: 5rem;
     }
 
     .register-form form {
@@ -53,26 +54,80 @@
 
     <div class="admin-register-container">
         <div class="register-form">
-            <form action="/user/signup" method="post">
-                <h2>User Registeration</h2>
-                <input type="email" name="username" placeholder="username" required>
+            <form action="/user/signup" method="post" id="registration-form">
+                <h2>User Registration</h2>
+                <input type="text" name="name" placeholder="Full name" required>
+                <input type="email" name="email" placeholder="Email address" required>
                 <input type="tel" name="phone" placeholder="Phone number" required>
-                <input type="password" name="password" placeholder="password" required>
-                <input type="password" name="confirmPassword" placeholder="Confirm password" required>
+                <input type="password" name="password" placeholder="password" id="user-password" required>
+                <input type="password" name="confirmPassword" placeholder="Confirm password" id="user-confirm-password" required>
 
                 <% if(registerError){%>
                     <label style="color: red;">
                         <%= errorMessage %>
                     </label>
-                    <% }%>
+                <% }%>
 
-                <button class="btn btn-primary" type="submit">Register</button>
+                <button class="btn btn-primary" type="submit" id="register-button">Register</button>
                 <p>Already have an account? <a href="/user/login">Login</a></p>
             </form>
-            
+
         </div>
 
     </div>
 
 
     <%- include('footer') %>
+
+    <script>
+        // password validation function
+        function validatePassword(password) {
+            // Check if the password length is at least 8 characters
+            if (password.length < 8) {
+                return false;
+            }
+
+            // Check if the password contains at least one uppercase letter
+            if (!/[A-Z]/.test(password)) {
+                return false;
+            }
+
+            // Check if the password contains at least one lowercase letter
+            if (!/[a-z]/.test(password)) {
+                return false;
+            }
+
+            // Check if the password contains at least one digit
+            if (!/\d/.test(password)) {
+                return false;
+            }
+
+            // Check if the password contains at least one special character
+            if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)) {
+                return false;
+            }
+
+            return true;
+        }
+        const registerForm=document.getElementById('registration-form')
+        const password=document.getElementById("user-password")
+        const confirmPassword=document.getElementById("user-confirm-password")
+        const registerBtn=document.getElementById('register-button')
+
+        // event listener for registration form
+        registerForm.addEventListener('input',()=>{
+
+            // if user enter the validated password that satisfies all the constraints and the password matches with the confirm password then the register button will enable
+           if(validatePassword(password.value) && password.value===confirmPassword.value){
+                registerBtn.disabled=false
+           }else{
+                registerBtn.disabled=true
+           }
+
+
+        })
+
+
+
+
+    </script>

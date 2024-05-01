@@ -9,5 +9,4 @@ mongoose.connect(process.env.MONGODB_CONNECTION_STRING).then(()=>{
     console.log(`Mongodb connection error ${err}`)
 })
 
-
-module.exports =collectionModel;
+module.exports = mongoose.connection;
