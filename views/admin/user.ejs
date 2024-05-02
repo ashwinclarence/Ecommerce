@@ -1,29 +1,34 @@
 <style>
-    .admin-customers-container{
+    .admin-customers-container {
         min-height: 100vh;
     }
-   .user-search-box{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin: 3rem 0; 
-   }
-   .admin-user-search-box{
-    border: 1px solid #000000;
-    border-radius: 10px;
-    padding: .2rem .3rem;
-    margin-top: 2rem;
-   }
-   #user-search{
-    border: none;
-    outline: none;
-    width: 30rem;
-    height: 2.5rem;
-   }
-   table th,td{
-    text-align: center;
-   }
+
+    .user-search-box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin: 3rem 0;
+    }
+
+    .admin-user-search-box {
+        border: 1px solid #000000;
+        border-radius: 10px;
+        padding: .2rem .3rem;
+        margin-top: 2rem;
+    }
+
+    #user-search {
+        border: none;
+        outline: none;
+        width: 30rem;
+        height: 2.5rem;
+    }
+
+    table th,
+    td {
+        text-align: center;
+    }
 </style>
 
 
@@ -34,14 +39,14 @@
     <div class="admin-customers-container container">
         <div class="user-search-box">
             <h3>Customers</h3>
-            <form action="" method="post" class="admin-user-search-box">
-                <input type="text" name="search" id="user-search" placeholder="Find users" required>
+            <form action="/admin/user" method="get" class="admin-user-search-box">
+                <input type="text" name="userSearch" id="user-search" placeholder="Find users" >
                 <button class="btn"><i class="fa-solid fa-magnifying-glass"></i></button>
             </form>
         </div>
         <div class="user-list-box">
             <table class="table table-hover">
-                <thead >
+                <thead>
                     <tr>
                         <th scope="col">sl.no</th>
                         <th scope="col">Name</th>
@@ -52,50 +57,37 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>ASHWIN CLARENCE</td>
-                        <td>meashwinclarence@gmail.com</td>
-                        <td>8590120463</td>
-                        <td>Trivandrum Kannanthura Beach P.O</td>
-                        <td>
-                            <a class="btn btn-warning" href="">Unblock</a>
-                            <!-- <a class="btn btn-danger" href="">Block</a> -->
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>ASHWIN CLARENCE</td>
-                        <td>meashwinclarence@gmail.com</td>
-                        <td>8590120463</td>
-                        <td>Trivandrum Kannanthura Beach P.O</td>
-                        <td>
-                            <!-- <a class="btn btn-warning" href="">Unblock</a> -->
-                            <a class="btn btn-danger" href="">Block</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>ASHWIN CLARENCE</td>
-                        <td>meashwinclarence@gmail.com</td>
-                        <td>8590120463</td>
-                        <td>Trivandrum Kannanthura Beach P.O</td>
-                        <td>
-                            <a class="btn btn-warning" href="">Unblock</a>
-                            <!-- <a class="btn btn-danger" href="">Block</a> -->
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>ASHWIN CLARENCE</td>
-                        <td>meashwinclarence@gmail.com</td>
-                        <td>8590120463</td>
-                        <td>Trivandrum Kannanthura Beach P.O</td>
-                        <td>
-                            <!-- <a class="btn btn-warning" href="">Unblock</a> -->
-                            <a class="btn btn-danger" href="">Block</a>
-                        </td>
-                    </tr>
+                    <% users.forEach((user,index)=>{%>
+                        <tr>
+                            <th scope="row">
+                                <%= index+1 %>
+                            </th>
+                            <td>
+                                <%= user.name %>
+                            </td>
+                            <td>
+                                <%= user.email %>
+                            </td>
+                            <td>
+                                <%= user.phone %>
+                            </td>
+                            <td>
+                                <%= user.address?"user.address":"--- no address --- " %>
+                            </td>
+                            <td>
+                                <% if(user.isBlocked){%>
+
+                                    <a class="btn btn-warning" href="/admin/unblock-user/<%= user.id%>" onclick="return confirmUnblock();">Unblock</a>
+
+                                <% } else { %>
+
+                                    <a class="btn btn-danger" href="/admin/block-user/<%= user.id %>" onclick="return confirmBlock();">Block</a>
+
+                                <% } %>
+
+                            </td>
+                        </tr>
+                        <% })%>
                 </tbody>
             </table>
         </div>
@@ -103,3 +95,20 @@
 
 
     <%- include('footer') %>
+
+
+
+    <script>
+
+
+        // confirm message for user block 
+        function confirmBlock() {
+                return confirm(`Are you sure you want to Block ?`);
+            }
+
+
+        // confirm message for user unblock
+        function confirmUnblock() {
+                return confirm(`Are you sure you want to UnBlock ?`);
+            }
+    </script>

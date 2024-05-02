@@ -2,6 +2,18 @@ const userSchema = require('../model/userSchema')
 const bcrypt = require('bcrypt')
 const sendOtpMail = require('../services/emailSender')
 const generateOTP = require('../services/generateOTP');
+
+
+const user=(req,res)=>{
+    if(req.session.user){
+        res.redirect('/user/home')
+    }else{
+        res.redirect('/user/login')
+    }
+}
+
+
+
 // signup page render
 const signup = (req, res) => {
     if (req.session.user) {
@@ -111,46 +123,60 @@ const otp = (req, res) => {
 
 const otpPost = async (req, res) => {
     try {
-        const registerDetails = {
-            name: req.session.name,
-            phone: req.session.phone,
-            password: req.session.password,
-            email: req.session.email
+
+        // if otp is in the session then only data 
+        if (req.session.otp!==undefined) {
+            // user data from session during the registration time
+            const registerDetails = {
+                name: req.session.name,
+                phone: req.session.phone,
+                password: req.session.password,
+                email: req.session.email,
+                isBlocked:false
+            }
+            // if the user entered otp and otp in session is equal then only the user's data is stored in users collection
+            if (req.session.otp === req.body.otp) {
+                console.log("inside if ", req.cookies.otp)
+                // adding the user data to mongodb with collection name user
+                await userSchema.insertMany(registerDetails).then(() => {
+                    console.log('New user registration successful')
+                    res.render('user/login', { title: 'Login', alertMessage: "User registration is Successful" })
+                }).catch((err) => {
+                    console.log(`Error occurred while user registration ${err}`);
+                })
+            } else {
+                res.render('user/OTP', { title: "OTP verification", alertMessage: "It appears the OTP you entered is invalid. Please ensure you enter the OTP correctly.", emailAddress: req.session.email })
+            }
+
+            // if otp is not in the session an alert message is displayed
+        }else{
+            res.render('user/register',{title:"Signup",alertMessage:"An error occurred during OTP generation, please kindly retry."})
         }
-        // if the user entered otp and otp in session is equal then only the user's data is stored in users collection
-        if (req.session.otp === req.body.otp) {
-            console.log("inside if ",req.cookies.otp)
-            // adding the user data to mongodb with collection name user
-            await userSchema.insertMany(registerDetails).then(() => {
-                console.log('New user registration successful')
-                res.render('user/login', { title: 'Login', alertMessage: "User registration is Successful" })
-            }).catch((err) => {
-                console.log(`Error occurred while user registration ${err}`);
-            })
-        } else {
-            res.render('user/OTP', { title: "OTP verification", alertMessage: "It appears the OTP you entered is invalid. Please ensure you enter the OTP correctly.", emailAddress: req.session.email })
-        }
+
+
 
     } catch (err) {
         console.log(`Error occurred while verifying OTP ${err}`)
     }
 }
 
-const otpResend=(req,res)=>{
-    try{
-         // generate otp from services/generateOTP.js file
-         const otp = generateOTP();
 
-         // send the mail to the registered user with the OTP
-         sendOtpMail(req.session.email, otp)
+// resend otp 
+const otpResend = (req, res) => {
+    try {
+        // generate otp from services/generateOTP.js file
+        const otp = generateOTP();
 
-         // storing the otp and email address in the session
-         req.session.otp = otp;
+        // send the mail to the registered user with the OTP
+        sendOtpMail(req.session.email, otp)
 
-         // redirect to the otp page for validation
-         res.redirect('/user/otp')
+        // storing the otp and email address in the session
+        req.session.otp = otp;
 
-    }catch(err){
+        // redirect to the otp page for validation
+        res.redirect('/user/otp')
+
+    } catch (err) {
         console.log(`Error during OTP resending ${err}`);
     }
 
@@ -188,15 +214,16 @@ const cart = (req, res) => {
 
 
 
-module.exports = { 
-    login, 
-    loginPost, 
-    home, 
-    wishlist, 
-    cart, 
-    signup, 
-    otp, 
-    signupPost, 
+module.exports = {
+    user,
+    login,
+    loginPost,
+    home,
+    wishlist,
+    cart,
+    signup,
+    otp,
+    signupPost,
     otpPost,
-    otpResend 
+    otpResend
 }

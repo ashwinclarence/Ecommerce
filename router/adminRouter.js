@@ -12,5 +12,7 @@ admin.get('/user',adminController.users);
 admin.get('/orders',adminController.order);
 admin.get('/coupons',adminController.coupons);
 admin.get('/logout',adminController.logout);
+admin.get('/block-user/:id',adminController.blockUser)
+admin.get('/unblock-user/:id',adminController.unBlockUser)
 
 module.exports=admin;
