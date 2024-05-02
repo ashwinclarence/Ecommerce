@@ -7,6 +7,7 @@ admin.get('/login',adminController.login);
 admin.post('/login',adminController.loginPost);
 admin.get('/dashboard',adminController.dashboard);
 admin.get('/category',adminController.category);
+admin.post('/category',adminController.newCategoryPost)
 admin.get('/products',adminController.products);
 admin.get('/user',adminController.users);
 admin.get('/orders',adminController.order);

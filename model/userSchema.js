@@ -1,8 +1,6 @@
 const mongoose=require('mongoose')
-const dotenv=require('dotenv').config()
 
-
-// defining the schema for the collection
+// defining the schema for user collection
 const schema =new mongoose.Schema({
     name:{
         type:String,
