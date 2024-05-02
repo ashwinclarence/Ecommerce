@@ -1,0 +1,155 @@
+<style>
+    .otp-container {
+        height: 90vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: url('../../image/otpBG1.png');
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+    }
+
+    .otp-box {
+        width: 500px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+        border: 1px solid #dcdcdc;
+        border-radius: 10px;
+        padding: 2rem 1rem;
+        background-color: rgba(255, 255, 255, 0.4);
+        -webkit-backdrop-filter: blur(5px);
+        backdrop-filter: blur(5px);
+
+    }
+
+    .otp-box form {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .otp-box input {
+        width: 150px;
+        font-size: 30px;
+        text-align: center;
+        border-radius: 5px;
+        border: 2px solid #dcdcdc;
+        font-weight: 700;
+        outline: none;
+        transition: all .1s;
+    }
+
+    #resend-otp {
+        cursor: pointer;
+        text-decoration: none;
+        font-size: 1rem;
+        display: none;
+    }
+   
+</style>
+
+
+<%- include('navbar') %>
+
+    <div class="otp-container">
+        <div class="otp-box">
+            <h2>Enter OTP Code</h2>
+            <small>One Time Password (OTP) has been sent via Email to</small>
+
+            <!-- email address from backend -->
+            <b>
+                <%= emailAddress %>
+                
+            </b>
+            <small>Enter the OTP below to verify it</small>
+            <form action="/user/otp" method="post">
+                <!-- <div class="otp-box">
+                    <input type="text" maxlength="1" required>
+                    <input type="text" maxlength="1" required>
+                    <input type="text" maxlength="1" required>
+                    <input type="text" maxlength="1" required>
+                    <input type="text" maxlength="1" required>
+                    <input type="text" maxlength="1" required>
+                </div> -->
+                <input type="text" name="otp" minlength="6" maxlength="6" required>
+               
+                    <small id="otp-timer-box">OTP is valid for  <span id="otp-timer">02.00</span></small>
+                    
+            
+                
+                <a href="/user/resend-otp" class="btn btn-primary" id="resend-otp">Resend OTP </a>
+                <button class="btn btn-primary" type="submit" id="otp-btn">Verify OTP</button>
+            </form>
+        </div>
+    </div>
+
+
+
+    <%- include('footer') %>
+
+
+    <script>
+        const otpTimerBox = document.getElementById('otp-timer-box');
+        const otpTimer = document.getElementById('otp-timer');
+        const resendOtp = document.getElementById('resend-otp');
+        const submitOtp = document.getElementById('otp-btn');
+    
+        let timeLeft;
+    
+        // Check if there's remaining time in local storage
+        if (localStorage.getItem('otpTimer')) {
+            timeLeft = parseInt(localStorage.getItem('otpTimer'));
+        } else {
+            // If no remaining time in local storage, set initial time to 1 minutes
+            timeLeft = 1 * 60;
+        }
+    
+        // Display the initial time
+        otpTimer.innerHTML = formatTime(timeLeft);
+    
+        // Create a setInterval function to decrement the time every second
+        let countdown = setInterval(function () {
+            // Decrement timeLeft by 1 second
+            timeLeft--;
+    
+            // Save the remaining time in local storage
+            localStorage.setItem('otpTimer', timeLeft);
+    
+            // Display the updated time
+            otpTimer.innerHTML = formatTime(timeLeft);
+    
+            // If timeLeft is 0, stop the countdown and enable the OTP resend button
+            if (timeLeft === 0) {
+                clearInterval(countdown);
+                otpTimerBox.style.color = "red";
+                otpTimerBox.innerHTML = "Your one-time password (OTP) has expired. Please request another OTP.";
+                submitOtp.style.display = "none";
+                resendOtp.style.display = "block";
+            }
+        }, 1000);
+    
+        // Function to format the time (convert seconds to minutes and seconds)
+        function formatTime(seconds) {
+            let minutes = Math.floor(seconds / 60);
+            let remainingSeconds = seconds % 60;
+            return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+        }
+    
+        // Clear the remaining time from local storage when OTP is submitted
+        submitOtp.addEventListener('click', function () {
+            localStorage.removeItem('otpTimer');
+        });
+    
+        // Clear the remaining time from local storage when OTP is resent
+        resendOtp.addEventListener('click', function () {
+            localStorage.removeItem('otpTimer');
+        });
+    
+    </script>
+    

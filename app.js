@@ -7,15 +7,35 @@ const session = require('express-session');
 // make the layout header for both user and admin
 const expressLayouts = require('express-ejs-layouts');
 const { v4: uuidv4 } = require('uuid');
+
+// admin and user routers
 const adminRoutes=require('./router/adminRouter')
 const userRoutes=require('./router/userRouter')
+
+// mongodb required connection
 const connectDB=require('./config/connection')
+
+// cookie-parser
+const cookieParser=require('cookie-parser')
+
+// nocache
+const nocache=require('nocache')
+
+
+
 const port = process.env.PORT || 3000;
 
 
+// cookieParser
+app.use(cookieParser())
 
 // connecting mongodb
 connectDB();
+
+
+// nocache
+app.use(nocache())
+
 
 
 // Serving static files
@@ -29,7 +49,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Session management
 app.use(session({
-    secret: 'your_secret_here',
+    secret: uuidv4(),
     resave: false,
     saveUninitialized: false
 }));

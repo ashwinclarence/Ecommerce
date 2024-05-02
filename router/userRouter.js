@@ -9,6 +9,9 @@ user.get('/wishlist',userController.wishlist)
 user.get('/cart',userController.cart)
 user.get('/signup',userController.signup)
 user.post('/signup',userController.signupPost)
-user.get('/forgetPassword',userController.forgetPassword)
+// user.get('/forgetPassword',userController.forgetPassword)
+user.get('/otp',userController.otp)
+user.post('/otp',userController.otpPost)
+user.get('/resend-otp',userController.otpResend)
 
 module.exports=user;
