@@ -1,0 +1,45 @@
+<style>
+    .edit-category-container{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 90vh;
+    }
+    .edit-category-container form{
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        width: 500px;
+    }
+    .edit-category-container form input {
+        border: 1px solid #c5c5c5;
+        outline: none;
+        padding: 10px;
+        border-radius: 10px;
+    }
+
+    .edit-category-container form textarea{
+        border: 1px solid #c5c5c5;
+        outline: none;
+        padding: 10px;
+        border-radius: 10px;
+        padding-bottom: 2rem;
+        height: 300px;
+        resize: none;
+    }
+</style>
+
+
+<%- include('navbar') %>
+
+<div class="edit-category-container">
+    <form action="/admin/edit-category/<%= category.id %>" method="post">
+        <h2>Edit Category</h2>
+        <input type="text" value="<%= category.categoryName %>" >
+        <textarea><%= category.categoryDescription %></textarea>
+        <a href="/admin/category" class="btn btn-secondary">Go Back</a>
+        <button class="btn btn-success" type="button" onclick="return confirm">Confirm</button>
+    </form>
+</div>
+
+<%- include('footer') %>

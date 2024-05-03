@@ -15,5 +15,6 @@ admin.get('/coupons',adminController.coupons);
 admin.get('/logout',adminController.logout);
 admin.get('/block-user/:id',adminController.blockUser)
 admin.get('/unblock-user/:id',adminController.unBlockUser)
+admin.get('/edit-category/:id',adminController.editCategory)
 
 module.exports=admin;

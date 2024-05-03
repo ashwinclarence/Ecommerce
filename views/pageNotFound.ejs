@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= title%>
+    </title>
+</head>
+<style>
+    .not-found-container{
+        display: flex;
+        flex-direction: column;
+        gap: 3rem;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background: url('/image/404.png');
+        background-position: center;
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
+</style>
+<body>
+    <div class="not-found-container">
+        <h1>404 Page not found</h1>
+        <h6>Sorry, but the page you're looking for isn't here.</h6>
+        <a href="/" class="btn btn-primary">Go to Home</a>
+    </div>
+</body>
+</html>

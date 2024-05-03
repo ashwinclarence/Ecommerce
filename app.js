@@ -87,7 +87,9 @@ app.get('/', (req, res) => {
 // Routes
 app.use('/user', userRoutes);
 app.use('/admin', adminRoutes);
-
+app.get("*",(req,res)=>{
+    res.render('pageNotFound',{title:"404 Page not found"})
+})
 
 
 // Port listen 

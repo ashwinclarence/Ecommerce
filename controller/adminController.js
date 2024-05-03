@@ -117,6 +117,8 @@ const newCategoryPost = async (req, res) => {
             }).catch((err) => {
                 console.log(`Error occurred during adding new category to the collection ${err}`)
             })
+
+            // if product already exist in the collection then redirect to the category page without adding them to the collection
         }else{
             console.log(`Product already Present`)
             res.redirect('/admin/category')
@@ -127,6 +129,28 @@ const newCategoryPost = async (req, res) => {
     }
 }
 
+
+// edit category page
+
+const editCategory=async(req,res)=>{
+    try{
+
+        // category id from the URL
+        const categoryID=req.params.id;
+        console.log(categoryID);
+        const category=await categorySchema.findById(categoryID);
+        if(category!=null){
+            res.render('admin/editCategory',{title:`category.categoryName`,category})
+        }else{
+            res.redirect('/admin/category')
+        }
+
+
+
+    }catch(err){
+        console.log(`Error during category updating ${err}`);
+    }
+}
 
 
 
@@ -200,6 +224,7 @@ module.exports = {
     dashboard,
     category,
     newCategoryPost,
+    editCategory,
     products,
     users,
     order,

@@ -160,18 +160,31 @@
                                 <%= category.categoryAddedOn.toLocaleDateString() %>
                             </td>
                             <td>
-                                <a class="btn btn-warning" href="/admin/edit-category/<% category.id %>">View</a>
-                                <a class="btn btn-danger" href="/admin/delete-category/<% category.id %>"
+        
+                                <a class="btn btn-warning" href="/admin/edit-category/<%= category.id %>">Edit</a>
+                                <a class="btn btn-danger" href="/admin/delete-category/<%= category.id %>"
                                     onclick="return deleteCategory()">Delete</a>
                             </td>
+                            
                         </tr>
+                        
                         <% }) %>
-
 
 
                 </tbody>
             </table>
         </div>
+
+
+
+
+        
+
+
+
+
+
+
     </div>
 
 
