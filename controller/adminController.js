@@ -71,16 +71,17 @@ const unBlockUser = async (req, res) => {
 
 
 
-// render the product page with search using regex
-const category =async (req, res) => {
+// render the category page with search using regex
+const category = async (req, res) => {
 
     if (req.session.admin) {
         try {
-
+            
             const categorySearch = req.query.categorySearch || '';
-            const category = await categorySchema.find({ name: { $regex: categorySearch, $options: 'i' } })
 
-            res.render('admin/category', { title: "Category list" ,category})
+            const category = await categorySchema.find({ categoryName: { $regex: categorySearch, $options: 'i' } })
+
+            res.render('admin/category', { title: "Category list", category })
 
         } catch (err) {
             console.log(`Error during category listing ${err}`);
@@ -94,11 +95,34 @@ const category =async (req, res) => {
 
 
 // adding new category from the modal in category file
-const newCategoryPost=(req,res)=>{
-    try{
-        
+const newCategoryPost = async (req, res) => {
+    try {
 
-    }catch(err){
+        // category entered in the form
+        const category = {
+            categoryName: req.body.newCategory,
+            categoryDescription: req.body.categoryDescription,
+            categoryAddedOn: new Date(),
+            parentCategory: false
+        }
+
+        // check if the entered category is already present in the category collection
+        const checkCategory = await categorySchema.findOne({ categoryName: req.body.newCategory })
+
+        // if category is not present then add the new category to the collection
+        if (checkCategory === null) {
+            await categorySchema.insertMany(category).then(() => {
+                console.log(`New Category added`);
+                res.redirect('/admin/category')
+            }).catch((err) => {
+                console.log(`Error occurred during adding new category to the collection ${err}`)
+            })
+        }else{
+            console.log(`Product already Present`)
+            res.redirect('/admin/category')
+        }
+
+    } catch (err) {
         console.log(`Error during adding new category ${err}`);
     }
 }
