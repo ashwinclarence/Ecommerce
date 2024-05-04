@@ -40,7 +40,7 @@
         <div class="user-search-box">
             <h3>Customers</h3>
             <form action="/admin/user" method="get" class="admin-user-search-box">
-                <input type="text" name="userSearch" id="user-search" placeholder="Find users" >
+                <input type="text" name="userSearch" id="user-search" placeholder="Find users">
                 <button class="btn"><i class="fa-solid fa-magnifying-glass"></i></button>
             </form>
         </div>
@@ -77,13 +77,15 @@
                             <td>
                                 <% if(user.isBlocked){%>
 
-                                    <a class="btn btn-warning" href="/admin/unblock-user/<%= user.id%>" onclick="return confirmUnblock();">Unblock</a>
+                                    <a class=" btn btn-warning unblock-user-btn"
+                                    href="/admin/unblock-user/<%= user.id%>">Unblock</a>
 
-                                <% } else { %>
+                                    <% } else { %>
 
-                                    <a class="btn btn-danger" href="/admin/block-user/<%= user.id %>" onclick="return confirmBlock();">Block</a>
+                                        <a class="btn btn-danger block-user-btn"
+                                            href="/admin/block-user/<%= user.id %>">Block</a>
 
-                                <% } %>
+                                        <% } %>
 
                             </td>
                         </tr>
@@ -98,17 +100,50 @@
 
 
 
-    <script>
+        <script>
+
+            const unBlockUser = document.querySelectorAll('.unblock-user-btn');
+            unBlockUser.forEach((button) => {
+                button.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: 'Unblock the user',
+                        text: "Are you sure you want to unblock the user?",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, unblock it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // If the user confirms the unblocking, navigate to the unblock link
+                            window.location.href = e.target.href;
+                        }
+                    });
+                });
+            });
+
+            const blockUser = document.querySelectorAll('.block-user-btn');
+            blockUser.forEach((button) => {
+                button.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: 'Block the user',
+                        text: "Are you sure you want to block the user?",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, block it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // If the user confirms the blocking, navigate to the block link
+                            window.location.href = e.target.href;
+                        }
+                    });
+                });
+            });
 
 
-        // confirm message for user block 
-        function confirmBlock() {
-                return confirm(`Are you sure you want to Block ?`);
-            }
 
-
-        // confirm message for user unblock
-        function confirmUnblock() {
-                return confirm(`Are you sure you want to UnBlock ?`);
-            }
-    </script>
+        </script>

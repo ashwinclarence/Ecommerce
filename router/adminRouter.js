@@ -2,6 +2,7 @@ const express = require('express')
 const admin = express.Router();
 const adminController = require('../controller/adminController/adminController')
 const adminCategoryController = require('../controller/adminController/categoryController')
+const userManagement=require('../controller/adminController/userManagement')
 
 
 admin.get('/login', adminController.login);
@@ -11,9 +12,9 @@ admin.get('/dashboard', adminController.dashboard);
 
 
 // user management
-admin.get('/user', adminController.users);
-admin.get('/block-user/:id', adminController.blockUser)
-admin.get('/unblock-user/:id', adminController.unBlockUser)
+admin.get('/user', userManagement.users);
+admin.get('/block-user/:id', userManagement.blockUser)
+admin.get('/unblock-user/:id', userManagement.unBlockUser)
 
 // category management
 admin.get('/category', adminCategoryController.category);

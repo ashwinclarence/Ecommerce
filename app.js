@@ -21,8 +21,12 @@ const cookieParser=require('cookie-parser')
 // nocache
 const nocache=require('nocache')
 
+// flash message
+const flash=require('connect-flash')
 
 
+
+// if port number from .env file is not read then 3000 is used as the default port
 const port = process.env.PORT || 3000;
 
 
@@ -32,9 +36,11 @@ app.use(cookieParser())
 // connecting mongodb
 connectDB();
 
-
 // nocache
 app.use(nocache())
+
+// flash message 
+app.use(flash())
 
 
 

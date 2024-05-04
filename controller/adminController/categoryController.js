@@ -14,7 +14,7 @@ const category = async (req, res) => {
 
             const category = await categorySchema.find({ categoryName: { $regex: categorySearch, $options: 'i' } })
 
-            res.render('admin/category', { title: "Category list", category })
+            res.render('admin/category', { title: "Category list", category ,alertMessage:req.flash('errorMessage')})
 
         } catch (err) {
             console.log(`Error during category listing ${err}`);
@@ -52,6 +52,7 @@ const newCategoryPost = async (req, res) => {
         // if category is not present then add the new category to the collection
         if (checkCategory === null) {
             await categorySchema.insertMany(category).then(() => {
+                req.flash('errorMessage','New category has been added');
                 console.log(`New Category added`);
                 res.redirect('/admin/category')
             }).catch((err) => {
@@ -60,7 +61,9 @@ const newCategoryPost = async (req, res) => {
 
             // if product already exist in the collection then redirect to the category page without adding them to the collection
         } else {
-            console.log(`Product already Present`)
+
+            // send and error message that the category is already present
+            req.flash('errorMessage','Product already present');
             res.redirect('/admin/category')
         }
 
@@ -81,6 +84,7 @@ const editCategory = async (req, res) => {
             if (category != null) {
                 res.render('admin/editCategory', { title: category.categoryName, category })
             } else {
+                req.flash('errorMessage','An unexpected error occurred while editing the category. Please attempt the operation again.');
                 res.redirect('/admin/category')
             }
 
@@ -112,8 +116,10 @@ const editCategoryPost = async (req, res) => {
 
         if(checkCategory==null){
             await categorySchema.findByIdAndUpdate(categoryID, { categoryName: editCategory })
+            req.flash('errorMessage','Success: Category update successfully')
             res.redirect('/admin/category')
         }else{
+            req.flash('errorMessage','Warning: Category already exists. Please ensure no duplicates are being added.')
             res.redirect('/admin/category')
         }
 
@@ -170,8 +176,15 @@ const deleteCategory=async(req,res)=>{
         const categoryID=req.params.id
 
         const deleteCategory= await categorySchema.findByIdAndDelete(categoryID)
+        
+        if(deleteCategory!=null){
+            req.flash('errorMessage','Category has been successfully deleted')
+            res.redirect('/admin/category')
+        }else{
+            req.flash('errorMessage','Error: Unable to delete the category.')
+            res.redirect('/admin/category')
+        }
 
-        res.redirect('/admin/category')
     }catch(err){
         console.log(`Error during deleting the category ${err}`);
     }
