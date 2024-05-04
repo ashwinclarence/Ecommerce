@@ -1,16 +1,18 @@
 <style>
-    .edit-category-container{
+    .edit-category-container {
         display: flex;
         align-items: center;
         justify-content: center;
         min-height: 90vh;
     }
-    .edit-category-container form{
+
+    .edit-category-container form {
         display: flex;
         flex-direction: column;
         gap: 1rem;
         width: 500px;
     }
+
     .edit-category-container form input {
         border: 1px solid #c5c5c5;
         outline: none;
@@ -18,28 +20,93 @@
         border-radius: 10px;
     }
 
-    .edit-category-container form textarea{
-        border: 1px solid #c5c5c5;
-        outline: none;
-        padding: 10px;
-        border-radius: 10px;
-        padding-bottom: 2rem;
-        height: 300px;
-        resize: none;
+    .category-criteria {
+        display: flex;
+        justify-content: flex-start;
+        flex-direction: column;
+        width: 90%;
     }
 </style>
 
 
 <%- include('navbar') %>
 
-<div class="edit-category-container">
-    <form action="/admin/edit-category/<%= category.id %>" method="post">
-        <h2>Edit Category</h2>
-        <input type="text" value="<%= category.categoryName %>" >
-        <textarea><%= category.categoryDescription %></textarea>
-        <a href="/admin/category" class="btn btn-secondary">Go Back</a>
-        <button class="btn btn-success" type="button" onclick="return confirm">Confirm</button>
-    </form>
-</div>
 
-<%- include('footer') %>
+
+    <div class="edit-category-container">
+        <form action="/admin/edit-category/<%= category.id %>" method="post" id="edit-category-form">
+            <h2>Edit Category</h2>
+            <input type="text" name="editCategory" id="edit-category" minlength="3" maxlength="30" required
+                value="<%= category.categoryName %>">
+            <div class="mt-4 category-criteria">
+                <h6>Criteria</h6>
+                <small>Minium 3 words</small>
+                <small>Maximum 30 words</small>
+                <small>Should not contain special charters</small>
+                <small>should not only contain white spaces</small>
+            </div>
+            <a href="/admin/category" class="btn btn-secondary">Go Back</a>
+
+            <button class="btn btn-success" id="edit-category-btn" type="submit">Confirm</button>
+        </form>
+    </div>
+
+    <%- include('footer') %>
+
+        <script>
+
+            document.getElementById("edit-category-btn").addEventListener("click", function (event) {
+                event.preventDefault(); // Prevent default button behavior
+
+                Swal.fire({
+                    title: 'Update the category',
+                    text: "Are you sure you want to update this category?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, Update it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Submit the form directly
+                        document.getElementById('edit-category-form').submit();
+                    }
+                });
+            });
+
+
+
+
+            // validating the new category field to check whether the field containing only white space , if it contain special characters
+            const category = document.getElementById('edit-category')
+            const categorySubmitBtn = document.getElementById('edit-category-btn')
+
+            categorySubmitBtn.disabled = true
+
+            // event listener for modal form 
+            category.addEventListener('input', () => {
+
+                // if category has only white space then the submit button will be disabled
+                if (category.value.trim() === '') {
+                    categorySubmitBtn.disabled = true;
+
+                } else {
+
+                    // if category has content then enable the button
+                    categorySubmitBtn.disabled = false
+
+
+                    // this function remove all unnecessary spaces ie which have more than one consecutive white spaces and replace special characters
+                    function trimExtraSpaces(str) {
+                        return str.replace(/\s+/g, ' ').replace(/[^\w\s]/gi, '');
+                    }
+
+                    // prevent typing the special characters
+                    let actualCategory = trimExtraSpaces(category.value)
+                    category.value = actualCategory
+
+                }
+            })
+
+
+        </script>

@@ -1,5 +1,4 @@
-const categorySchema = require('../model/categorySchema')
-const userSchema = require('../model/userSchema')
+const userSchema = require('../../model/userSchema')
 const mongoose = require('mongoose')
 
 
@@ -71,88 +70,6 @@ const unBlockUser = async (req, res) => {
 
 
 
-// render the category page with search using regex
-const category = async (req, res) => {
-
-    if (req.session.admin) {
-        try {
-            
-            const categorySearch = req.query.categorySearch || '';
-
-            const category = await categorySchema.find({ categoryName: { $regex: categorySearch, $options: 'i' } })
-
-            res.render('admin/category', { title: "Category list", category })
-
-        } catch (err) {
-            console.log(`Error during category listing ${err}`);
-        }
-
-
-    } else {
-        res.redirect('/admin/login')
-    }
-}
-
-
-// adding new category from the modal in category file
-const newCategoryPost = async (req, res) => {
-    try {
-
-        // category entered in the form
-        const category = {
-            categoryName: req.body.newCategory,
-            categoryDescription: req.body.categoryDescription,
-            categoryAddedOn: new Date(),
-            parentCategory: false
-        }
-
-        // check if the entered category is already present in the category collection
-        const checkCategory = await categorySchema.findOne({ categoryName: req.body.newCategory })
-
-        // if category is not present then add the new category to the collection
-        if (checkCategory === null) {
-            await categorySchema.insertMany(category).then(() => {
-                console.log(`New Category added`);
-                res.redirect('/admin/category')
-            }).catch((err) => {
-                console.log(`Error occurred during adding new category to the collection ${err}`)
-            })
-
-            // if product already exist in the collection then redirect to the category page without adding them to the collection
-        }else{
-            console.log(`Product already Present`)
-            res.redirect('/admin/category')
-        }
-
-    } catch (err) {
-        console.log(`Error during adding new category ${err}`);
-    }
-}
-
-
-// edit category page
-
-const editCategory=async(req,res)=>{
-    try{
-
-        // category id from the URL
-        const categoryID=req.params.id;
-        console.log(categoryID);
-        const category=await categorySchema.findById(categoryID);
-        if(category!=null){
-            res.render('admin/editCategory',{title:`category.categoryName`,category})
-        }else{
-            res.redirect('/admin/category')
-        }
-
-
-
-    }catch(err){
-        console.log(`Error during category updating ${err}`);
-    }
-}
-
-
 
 
 
@@ -222,9 +139,6 @@ const logout = (req, res) => {
 module.exports = {
     login,
     dashboard,
-    category,
-    newCategoryPost,
-    editCategory,
     products,
     users,
     order,

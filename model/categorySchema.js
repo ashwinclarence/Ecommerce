@@ -6,10 +6,6 @@ const schema=new mongoose.Schema({
         type:String,
         require:true,
     },
-    categoryDescription:{
-        type:String,
-        require:true
-    },
     categoryAddedOn:{
         type:Date,
         require:true
@@ -17,7 +13,12 @@ const schema=new mongoose.Schema({
     parentCategory:{
         type:Boolean,
         require:true
+    },
+    isActive:{
+        type:Boolean,
+        require:true
     }
+
 })
 
 module.exports=mongoose.model("category",schema)

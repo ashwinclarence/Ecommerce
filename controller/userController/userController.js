@@ -1,7 +1,7 @@
-const userSchema = require('../model/userSchema')
+const userSchema = require('../../model/userSchema')
 const bcrypt = require('bcrypt')
-const sendOtpMail = require('../services/emailSender')
-const generateOTP = require('../services/generateOTP');
+const sendOtpMail = require('../../services/emailSender')
+const generateOTP = require('../../services/generateOTP');
 
 
 const user=(req,res)=>{

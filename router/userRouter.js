@@ -1,6 +1,6 @@
 const express=require('express')
 const user=express.Router();
-const userController=require('../controller/userController')
+const userController=require('../controller/userController/userController')
 
 user.get('/',userController.user)
 user.get('/login',userController.login)
