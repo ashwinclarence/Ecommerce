@@ -1,0 +1,87 @@
+<style>
+    .add-product-container {
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        min-height: 100vh;
+    }
+
+    .add-product-container form {
+        display: flex;
+        flex-direction: column;
+        /* justify-content: center; */
+        /* align-items: center; */
+        gap: 2rem;
+        /* border: 1px solid #b3b3b3; */
+        width: 500px;
+        border-radius: 10px;
+        margin: 5rem 0;
+    }
+
+    .add-product-container form input {
+        border: 1px solid #c5c5c5;
+        outline: none;
+        padding: 10px;
+        border-radius: 10px;
+    }
+
+    #product-description {
+        border: 1px solid #c5c5c5;
+        outline: none;
+        padding: 10px;
+        border-radius: 10px;
+        resize: vertical;
+        min-height: 100px;
+    }
+    .product-category-box{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    #product-category{
+        border: 1px solid #c5c5c5;
+        outline: none;
+        padding: 10px;
+        border-radius: 10px;
+        width: 70%;
+    }
+</style>
+
+
+
+<%- include('navbar') %>
+    <%- include('alert') %>
+
+        <div class="add-product-container">
+            <!-- because of file upload the enctype is given -->
+            <form action="/admin/add-product" method="post" enctype="multipart/form-data">
+                <h2 class="text-center">Add Product</h2>
+                <input type="text" name="productName" id="product-name" placeholder="Product name" required>
+                <input type="text" name="productPrice" id="product-price" placeholder="Product Price" required>
+                <input ype="text" name="productQuantity" id="product-quantity" placeholder="Product quantity" required>
+                <textarea name="productDescription" id="product-description" placeholder="Product description"
+                    minlength="10" maxlength="80" rows="10" required></textarea>
+
+                <div class="product-category-box">
+                    <label for="product-category">Select Category :</label>
+
+                    <select name="productCategory" id="product-category" >
+                        <% productCategory.forEach((category)=>{ %>
+                            <option value="<%= category.categoryName %>">
+                                <%= category.categoryName %>
+                            </option>
+                            <% }) %>
+                    </select>
+                </div>
+               
+
+
+                <input type="file" id="">
+                <a href="/admin/products" class="btn btn-secondary">Cancel</a>
+                <button class="btn btn-success">Add Product</button>
+            </form>
+
+        </div>
+
+
+        <%- include('footer') %>

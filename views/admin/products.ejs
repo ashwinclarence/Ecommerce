@@ -1,33 +1,39 @@
 <style>
-    .admin-customers-container{
+    .admin-customers-container {
         min-height: 100vh;
     }
-   .user-search-box{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin: 3rem 0; 
-   }
-   .admin-user-search-box{
-    border: 1px solid #000000;
-    border-radius: 10px;
-    padding: .2rem .3rem;
-    margin-top: 2rem;
-   }
-   #user-search{
-    border: none;
-    outline: none;
-    width: 30rem;
-    height: 2.5rem;
-   }
-   table th,td{
-    text-align: center;
-   }
-   .add-new-product{
-    text-align: center;
-    margin: 1rem 0 2rem 0;
-   }    
+
+    .user-search-box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin: 3rem 0;
+    }
+
+    .admin-user-search-box {
+        border: 1px solid #000000;
+        border-radius: 10px;
+        padding: .2rem .3rem;
+        margin-top: 2rem;
+    }
+
+    #user-search {
+        border: none;
+        outline: none;
+        width: 30rem;
+        height: 2.5rem;
+    }
+
+    table th,
+    td {
+        text-align: center;
+    }
+
+    .add-new-product {
+        text-align: center;
+        margin: 1rem 0 2rem 0;
+    }
 </style>
 
 
@@ -44,11 +50,11 @@
             </form>
         </div>
         <div class="add-new-product">
-            <button class="btn btn-success">Add Product <i class="fa-solid fa-plus"></i></button>
+            <a href="/admin/add-product" class="btn btn-success">Add Product <i class="fa-solid fa-plus"></i></a>
         </div>
         <div class="user-list-box">
             <table class="table table-hover">
-                <thead >
+                <thead>
                     <tr>
                         <th scope="col">sl.no</th>
                         <th scope="col">Product</th>
@@ -59,50 +65,34 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>Nike  Plain Encounter Football Stockings for Men & Women, Knee Length Stockings</td>
-                        <td><i class="fa-solid fa-indian-rupee-sign"></i> 999</td>
-                        <td>20</td>
-                        <td>Boots</td>
-                        <td>
-                            <a class="btn btn-warning" href="">Edit</a>
-                            <a class="btn btn-danger" href="">Remove</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>Nike  Plain Encounter Football Stockings for Men & Women, Knee Length Stockings</td>
-                        <td><i class="fa-solid fa-indian-rupee-sign"></i> 999</td>
-                        <td>20</td>
-                        <td>Boots</td>
-                        <td>
-                            <a class="btn btn-warning" href="">Edit</a>
-                            <a class="btn btn-danger" href="">Remove</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>Nike  Plain Encounter Football Stockings for Men & Women, Knee Length Stockings</td>
-                        <td><i class="fa-solid fa-indian-rupee-sign"></i> 999</td>
-                        <td>20</td>
-                        <td>Boots</td>
-                        <td>
-                            <a class="btn btn-warning" href="">Edit</a>
-                            <a class="btn btn-danger" href="">Remove</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>Nike  Plain Encounter Football Stockings for Men & Women, Knee Length Stockings</td>
-                        <td><i class="fa-solid fa-indian-rupee-sign"></i> 999</td>
-                        <td>20</td>
-                        <td>Boots</td>
-                        <td>
-                            <a class="btn btn-warning" href="">Edit</a>
-                            <a class="btn btn-danger" href="">Remove</a>
-                        </td>
-                    </tr>
+
+                    <% products.forEach((product,index)=>{ %>
+
+                        <tr>
+                            <th scope="row">
+                                <%= index+1 %>
+                            </th>
+                            <td>
+                                <%= product.productName %>
+                            </td>
+                            <td><i class="fa-solid fa-indian-rupee-sign"></i> 
+                                <%= product.productPrice %>
+                            </td>
+                            <td>
+                                <%= product.productQuantity %>
+                            </td>
+                            <td>
+                                <%= product.productCategory %>
+                            </td>
+                            <td>
+                                <a class="btn btn-warning" href="">Edit</a>
+                                <a class="btn btn-danger" href="">Remove</a>
+                            </td>
+                        </tr>
+
+                        <% }) %>
+                            
+
                 </tbody>
             </table>
         </div>

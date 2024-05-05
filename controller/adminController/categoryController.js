@@ -7,7 +7,7 @@ const categorySchema = require('../../model/categorySchema')
 // render the category page with search using regex
 const category = async (req, res) => {
 
-    if (req.session.admin) {
+  
         try {
 
             const categorySearch = req.query.categorySearch || '';
@@ -21,9 +21,7 @@ const category = async (req, res) => {
         }
 
 
-    } else {
-        res.redirect('/admin/login')
-    }
+  
 }
 
 
@@ -77,7 +75,7 @@ const newCategoryPost = async (req, res) => {
 
 const editCategory = async (req, res) => {
     try {
-        if (req.session.admin) {
+       
             // category id from the URL
             const categoryID = req.params.id;
             const category = await categorySchema.findById(categoryID);
@@ -87,11 +85,6 @@ const editCategory = async (req, res) => {
                 req.flash('errorMessage','An unexpected error occurred while editing the category. Please attempt the operation again.');
                 res.redirect('/admin/category')
             }
-
-
-        } else {
-            res.redirect('/admin/login')
-        }
 
     } catch (err) {
         console.log(`Error during category updating ${err}`);

@@ -33,25 +33,14 @@ const loginPost = (req, res) => {
 
 // rendering the dashboard page
 const dashboard = (req, res) => {
-    if (req.session.admin) {
-        res.render('admin/dashboard', { title: "Admin Dashboard" })
-    } else {
-        res.redirect('/admin/login')
-    }
+
+    res.render('admin/dashboard', { title: "Admin Dashboard" })
+
 }
 
 
 
 
-
-// render the product page
-const products = (req, res) => {
-    if (req.session.admin) {
-        res.render('admin/products', { title: "Product list" })
-    } else {
-        res.redirect('/admin/login')
-    }
-}
 
 
 
@@ -60,22 +49,18 @@ const products = (req, res) => {
 
 // render the order page 
 const order = (req, res) => {
-    if (req.session.admin) {
-        res.render('admin/order', { title: "Order list" })
-    } else {
-        res.redirect('/admin/login')
-    }
+
+    res.render('admin/order', { title: "Order list" })
+
 }
 
 
 
 // render the coupons page 
 const coupons = (req, res) => {
-    if (req.session.admin) {
-        res.render('admin/coupons', { title: "Coupons" })
-    } else {
-        res.redirect('/admin/login')
-    }
+
+    res.render('admin/coupons', { title: "Coupons" })
+
 }
 
 
@@ -96,10 +81,9 @@ const logout = (req, res) => {
 module.exports = {
     login,
     dashboard,
-    products,
     order,
     coupons,
     loginPost,
     logout,
-   
+
 }
