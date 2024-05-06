@@ -6,29 +6,33 @@
 
     .products-category-container {
         display: flex;
-        justify-content: space-evenly;
-        align-items: center;
-         font-family: "Roboto", sans-serif; 
+        justify-content: space-around;
+        /* align-items: center; */
+        font-family: "Roboto", sans-serif;
         /* background-color: #d0d0d0; */
         /* padding: 1rem 0; */
         flex-wrap: wrap;
         gap: 2rem;
     }
 
-    .products-category-container h6{
-       cursor: pointer;
-       transition: .3s ease-in-out;
+    .products-category-container a {
+        cursor: pointer;
+        transition: .3s ease-in-out;
+        text-decoration: none;
+        color: #000000;
     }
-    .products-category-container h6:hover{
+
+    .products-category-container a:hover {
         scale: 1.1;
     }
 
-    .products-list-box{
+    .products-list-box {
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
         justify-content: space-around;
     }
+
     .product-box {
         border: 1px solid #b2b2b2;
         border-radius: 10px;
@@ -37,124 +41,66 @@
         margin-top: 2rem;
     }
 
-    .product-image-box{
-      
+    .product-image-box {
+        height: 290px;
         width: 290px;
     }
-    .product-image-box img{
+    
+    .product-image-box img {
         margin: auto;
         width: 250px;
+        height: 290px;
         object-fit: scale-down;
     }
-   
-   
 </style>
 
 <div class="products-container">
-    <div class="products-category-container">
-        <h6>Soft Ground</h6>
-        <h6>Firm Ground</h6>
-        <h6>Artificial Grass</h6>
-        <h6>Multi Ground</h6>
-        <h6>Astro Turf</h6>
-        <h6>Indoor Court</h6>
+    <div class="products-category-container container">
+        <% category.forEach((item)=>{ %>
+            <% if(item.isActive) { %>
+                <a href="/user/home/<%= item.id %>" class="category-name">
+                    <%- item.categoryName %>
+                </a>
+                <% } %>
+
+                    <% }) %>
+
     </div>
     <div class="products-list-box container">
 
-        <div class="product-box">
-            <div class="product-image-box">
-                <img src="../../image/2.png" alt="">
-            </div>
-            <div class="product-description-box">
-                <small>Adidas</small>
-                <p class="product-name">Pro Encounter 10.0 Football Stud for Men/Comfortable and Lightweight/Sports Shoe</p>
-                <h5><i class="fa-solid fa-indian-rupee-sign"></i> 999</h5>
-            </div>
-        </div>
 
-        <div class="product-box">
-            <div class="product-image-box">
-                <img src="../../image/2.png" alt="">
-            </div>
-            <div class="product-description-box">
-                <small>Adidas</small>
-                <p class="product-name">Pro Encounter 10.0 Football Stud for Men/Comfortable and Lightweight/Sports Shoe</p>
-                <h5><i class="fa-solid fa-indian-rupee-sign"></i> 999</h5>
-            </div>
-        </div>
-        <div class="product-box">
-            <div class="product-image-box">
-                <img src="../../image/2.png" alt="">
-            </div>
-            <div class="product-description-box">
-                <small>Adidas</small>
-                <p class="product-name">Pro Encounter 10.0 Football Stud for Men/Comfortable and Lightweight/Sports Shoe</p>
-                <h5><i class="fa-solid fa-indian-rupee-sign"></i> 999</h5>
-            </div>
-        </div>
+        <% products.forEach((product)=>{ %>
 
-        <div class="product-box">
-            <div class="product-image-box">
-                <img src="../../image/2.png" alt="">
-            </div>
-            <div class="product-description-box">
-                <small>Adidas</small>
-                <p class="product-name">Pro Encounter 10.0 Football Stud for Men/Comfortable and Lightweight/Sports Shoe</p>
-                <h5><i class="fa-solid fa-indian-rupee-sign"></i> 999</h5>
-            </div>
-        </div>
-        <div class="product-box">
-            <div class="product-image-box">
-                <img src="../../image/2.png" alt="">
-            </div>
-            <div class="product-description-box">
-                <small>Adidas</small>
-                <p class="product-name">Pro Encounter 10.0 Football Stud for Men/Comfortable and Lightweight/Sports Shoe</p>
-                <h5><i class="fa-solid fa-indian-rupee-sign"></i> 999</h5>
-            </div>
-        </div>
+            <div class="product-box">
+                <div class="product-image-box">
 
-        <div class="product-box">
-            <div class="product-image-box">
-                <img src="../../image/2.png" alt="">
+                    <img src="/<%= product.productImage[0] %>" alt="">
+                </div>
+                <div class="product-description-box">
+                    <small>
+                        <%= product.productBrand %>
+                    </small>
+                    <p class="product-name">
+                        <%= product.productName %>
+                    </p>
+                    <h5><i class="fa-solid fa-indian-rupee-sign"></i>
+                        <%= product.productPrice %>
+                    </h5>
+                </div>
             </div>
-            <div class="product-description-box">
-                <small>Adidas</small>
-                <p class="product-name">Pro Encounter 10.0 Football Stud for Men/Comfortable and Lightweight/Sports Shoe</p>
-                <h5><i class="fa-solid fa-indian-rupee-sign"></i> 999</h5>
-            </div>
-        </div>
-        <div class="product-box">
-            <div class="product-image-box">
-                <img src="../../image/2.png" alt="">
-            </div>
-            <div class="product-description-box">
-                <small>Adidas</small>
-                <p class="product-name">Pro Encounter 10.0 Football Stud for Men/Comfortable and Lightweight/Sports Shoe</p>
-                <h5><i class="fa-solid fa-indian-rupee-sign"></i> 999</h5>
-            </div>
-        </div>
 
-        <div class="product-box">
-            <div class="product-image-box">
-                <img src="../../image/2.png" alt="">
-            </div>
-            <div class="product-description-box">
-                <small>Adidas</small>
-                <p class="product-name">Pro Encounter 10.0 Football Stud for Men/Comfortable and Lightweight/Sports Shoe</p>
-                <h5><i class="fa-solid fa-indian-rupee-sign"></i> 999</h5>
-            </div>
-        </div>
+            <% }) %>
 
 
 
-        
+
+
     </div>
 </div>
 
 
 <script>
-   const maxLength = 60; // Define the maximum length of the text
+    const maxLength = 60; // Define the maximum length of the text
     const productElements = document.querySelectorAll('.product-name');
     productElements.forEach(productElement => {
         let productText = productElement.textContent;

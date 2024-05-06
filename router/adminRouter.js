@@ -8,6 +8,11 @@ const productController=require('../controller/adminController/productController
 // checkAdminSession is a middleware that checks session of the admin
 const checkAdminSession=require('../middleware/adminSession')
 
+
+
+
+
+
 // login
 admin.get('/login', adminController.login);
 admin.post('/login', adminController.loginPost);
@@ -37,6 +42,7 @@ admin.get('/delete-category/:id',checkAdminSession, adminCategoryController.dele
 // product management
 admin.get('/products',checkAdminSession, productController.products);
 admin.get('/add-product',checkAdminSession,productController.addProduct)
+admin.post('/add-product',productController.multerMiddle,productController.addProductPost)
 
 
 

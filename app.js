@@ -42,6 +42,8 @@ app.use(nocache())
 // flash message 
 app.use(flash())
 
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 
 
 // Serving static files

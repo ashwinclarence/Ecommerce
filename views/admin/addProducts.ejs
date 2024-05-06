@@ -1,87 +1,314 @@
 <style>
     .add-product-container {
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-content: center;
         min-height: 100vh;
     }
 
     .add-product-container form {
-        display: flex;
-        flex-direction: column;
-        /* justify-content: center; */
-        /* align-items: center; */
-        gap: 2rem;
-        /* border: 1px solid #b3b3b3; */
-        width: 500px;
-        border-radius: 10px;
-        margin: 5rem 0;
+        margin-bottom: 5rem;
     }
 
-    .add-product-container form input {
+    .product-form-top {
+        display: flex;
+        flex-direction: row;
+        margin-bottom: 3rem;
+        flex-wrap: wrap;
+
+    }
+
+    .product-form-bottom {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        gap: 3rem;
+
+    }
+
+    .product-form-left {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        width: 50%;
+        margin-top: 3rem;
+        align-items: center;
+    }
+
+    .product-form-right {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        width: 50%;
+        margin-top: 3rem;
+        align-items: center;
+    }
+
+    .product-form-left input,
+    .product-form-right input {
         border: 1px solid #c5c5c5;
         outline: none;
         padding: 10px;
         border-radius: 10px;
+        width: 90%;
+    }
+
+    /* remove the increment and decrement arrows in input type number */
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
     }
 
     #product-description {
         border: 1px solid #c5c5c5;
         outline: none;
         padding: 10px;
+        width: 90%;
         border-radius: 10px;
         resize: vertical;
-        min-height: 100px;
+        min-height: 170px;
     }
-    .product-category-box{
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    #product-category{
+
+
+
+    #product-category {
         border: 1px solid #c5c5c5;
         outline: none;
         padding: 10px;
         border-radius: 10px;
-        width: 70%;
+        width: 90%;
+    }
+
+    #product-image-preview {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+        flex-wrap: wrap;
+        width: 90%;
+    }
+
+    .product-image-box {
+        display: flex;
+        flex-direction: column;
+        border: 1px solid #c5c5c5;
+        border-radius: 10px;
+        overflow: hidden;
+
+    }
+
+    .preview-img {
+        width: 200px;
+        height: 200px;
+        object-fit: scale-down;
+    }
+
+    .delete-button {
+        background-color: #c30606;
+        padding: 10px;
+        color: #ffffff;
+        font-weight: 600;
+        border: none;
+        outline: none;
+    }
+
+    .btn {
+        min-width: 150px;
     }
 </style>
 
 
 
 <%- include('navbar') %>
-    <%- include('alert') %>
 
-        <div class="add-product-container">
-            <!-- because of file upload the enctype is given -->
-            <form action="/admin/add-product" method="post" enctype="multipart/form-data">
-                <h2 class="text-center">Add Product</h2>
-                <input type="text" name="productName" id="product-name" placeholder="Product name" required>
-                <input type="text" name="productPrice" id="product-price" placeholder="Product Price" required>
-                <input ype="text" name="productQuantity" id="product-quantity" placeholder="Product quantity" required>
-                <textarea name="productDescription" id="product-description" placeholder="Product description"
-                    minlength="10" maxlength="80" rows="10" required></textarea>
+    <div class="add-product-container container">
+        <div class="product-header">
+            <h2 class="text-center">Add Product</h2>
+        </div>
+        <form action="/admin/add-product" method="post" enctype="multipart/form-data" id="add-product-form">
 
-                <div class="product-category-box">
-                    <label for="product-category">Select Category :</label>
+            <div class="product-form-top">
 
-                    <select name="productCategory" id="product-category" >
-                        <% productCategory.forEach((category)=>{ %>
+                <div class="product-form-left">
+
+                    <!-- input for product name -->
+                    <input type="text" name="productName" placeholder="Product name" required>
+
+                    <!-- input for product price -->
+                    <input type="number" name="productPrice" placeholder="Product price" required>
+
+                    <!-- input for product quantity -->
+                    <input type="number" name="productQuantity" placeholder="Product quantity" required>
+
+                    <!-- input for select category this category is from backend -->
+                    <select name="productCategory" id="product-category" required>
+                        <option value="" selected disabled>Select a category</option>
+                        <% productCategory.forEach((category)=> { %>
                             <option value="<%= category.categoryName %>">
                                 <%= category.categoryName %>
                             </option>
                             <% }) %>
                     </select>
+
                 </div>
-               
+                <div class="product-form-right">
+
+                    <!-- input for product brand -->
+                    <input type="text" name="productBrand" placeholder="Product Brand" required>
+
+                    <!-- input for product description -->
+                    <textarea name="productDescription" placeholder="Product description" id="product-description"
+                        required></textarea>
+
+                </div>
+            </div>
+            <div class="product-form-bottom">
+
+                <!-- input file for image upload but the button is display is set as none -->
+                <input type="file" id="product-image-upload" accept="image/png, image/jpeg" multiple required
+                    class="d-none">
+
+                <!-- using the label the image is uploaded -->
+                <label for="product-image-upload" class="btn btn-warning">
+                    <i class="fas fa-upload"></i> &nbsp; Choose Images
+                </label>
+
+                <!-- the product preview will generate based on what we select -->
+                <div id="product-image-preview"></div>
 
 
-                <input type="file" id="">
-                <a href="/admin/products" class="btn btn-secondary">Cancel</a>
-                <button class="btn btn-success">Add Product</button>
-            </form>
+                <!-- the form submission and cancel buttons -->
+                <div>
+                    <a href="/admin/products" class="btn btn-secondary">Cancel</a>
+                    <button class="btn btn-success" type="submit">Add Product</button>
+                </div>
+            </div>
 
-        </div>
+        </form>
+    </div>
+
+    <%- include('footer') %>
 
 
-        <%- include('footer') %>
+
+        <script>
+
+            const addProductForm = document.getElementById('add-product-form')
+            const productName = document.getElementsByName('productName')[0];
+            const productPrice = document.getElementsByName('productPrice')[0];
+            const productQuantity = document.getElementsByName('productQuantity')[0];
+            const productBrand = document.getElementsByName('productBrand')[0];
+            const productDescription = document.getElementsByName('productDescription')[0];
+            const productCategory = document.getElementsByName('productCategory')[0];
+
+
+
+            addProductForm.addEventListener('submit', (e) => {
+                e.preventDefault()
+                console.log(productDescription.value);
+                console.log(productCategory.value);
+
+                let isValid = true
+                let errorMessage = ""
+
+                if (productName.value.trim() === "" || productName.value.length<=0 || !isNaN(productName.value)) {
+                    errorMessage="Product Name should not be empty";
+                    isValid = false;
+                }
+
+                if (isNaN(productPrice.value) || parseFloat(productPrice.value) <= 0) {
+                    errorMessage='Product Price must be greater than zero and it should not contain any alphabets'
+                    isValid = false;
+                }
+
+                if (isNaN(productQuantity.value) || parseInt(productQuantity.value) <= 0) {
+                    errorMessage='Product quality should be a number and it must be greater than zero'
+                    isValid = false;
+                }
+
+                if (productCategory.value === null) {
+                    errorMessage='Product category is cannot be empty'
+                    isValid = false
+                }
+
+                if (productBrand.value.trim() === '' || productBrand.value.length<=0 || !isNaN(productBrand.value)) {
+                    errorMessage='Product Brand cannot be empty'
+                    isValid = false
+                }
+
+                if (productDescription.value.length <= 10 || productDescription.value.length >= 80 || productDescription.value.trim === "") {
+                    errorMessage='Product description must be between 10 to 80 word '
+                    isValid = false
+                }
+
+               if(isValid===false){
+                Swal.fire({
+                    title:"Invalid Inputs",
+                    text:errorMessage,
+                    icon:"error"
+                })
+               }
+            })
+
+
+
+
+
+            const productImageUpload = document.getElementById('product-image-upload');
+            const productImagePreview = document.getElementById("product-image-preview");
+
+            productImageUpload.addEventListener('change', () => {
+                // Clear previous previews
+                productImagePreview.innerHTML = '';
+
+                // if user select more than 4 images then show a sweet alert and make the preview empty
+                if (productImageUpload.files.length > 4) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Maximum file count is 4",
+                    });
+                    //clear the preview images
+                    productImageUpload.value = '';
+                } else if (productImageUpload.files.length === 0) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Minimum file count is 1",
+                    });
+                    //clear the preview images
+                    productImageUpload.value = '';
+
+                } else {
+                    for (let i = 0; i < productImageUpload.files.length; i++) {
+                        let reader = new FileReader();
+                        let figure = document.createElement("div");
+                        figure.classList.add('product-image-box');
+
+                        reader.onload = () => {
+                            let img = document.createElement("img");
+                            img.classList.add("preview-img");
+                            img.setAttribute("src", reader.result);
+                            figure.appendChild(img);
+
+                            // Create delete button with class delete-button
+                            let deleteButton = document.createElement("button");
+                            deleteButton.textContent = "Delete";
+                            deleteButton.classList.add("delete-button");
+                            deleteButton.addEventListener("click", () => {
+                                // Remove the parent div (figure) when the delete button is clicked
+                                figure.remove();
+                            });
+                            figure.appendChild(deleteButton);
+                        };
+
+                        productImagePreview.appendChild(figure);
+                        reader.readAsDataURL(productImageUpload.files[i]);
+                    }
+                }
+            });
+
+
+        </script>

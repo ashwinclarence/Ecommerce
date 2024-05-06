@@ -5,6 +5,10 @@ const schema = new mongoose.Schema({
         type: String,
         required: true
     },
+    productBrand: {
+        type: String,
+        required: true
+    },
     productPrice: {
         type: Number,
         required: true
@@ -17,18 +21,34 @@ const schema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    // productCategory: {
+    //    type: mongoose.Schema.Types.ObjectId,
+    //    ref: 'category'  
+    // },
     productCategory: {
-       type: mongoose.Schema.Types.ObjectId,
-       ref: 'category' 
+        type: String,
+        required: true,
     },
-    createdAt: {
+
+    productImage: {
+        type: [],
+        required:true
+    },
+    // productRatings:,
+    productDiscount:{
+        type:Number,
+    },
+    addedOn: {
         type: Date,
         default: Date.now,
         required: true
     },
-    updatedAt: {
+    updatedOn: {
         type: Date,
         default: Date.now,
         required: true
     }
 });
+
+
+module.exports = mongoose.model('product', schema)

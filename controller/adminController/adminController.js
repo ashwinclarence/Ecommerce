@@ -34,7 +34,7 @@ const loginPost = (req, res) => {
 // rendering the dashboard page
 const dashboard = (req, res) => {
 
-    res.render('admin/dashboard', { title: "Admin Dashboard" })
+    res.render('admin/dashboard', { title: "Admin Dashboard",alertMessage:req.flash('errorMessage') })
 
 }
 
@@ -50,7 +50,7 @@ const dashboard = (req, res) => {
 // render the order page 
 const order = (req, res) => {
 
-    res.render('admin/order', { title: "Order list" })
+    res.render('admin/order', { title: "Order list",alertMessage:req.flash('errorMessage')  })
 
 }
 
@@ -59,7 +59,7 @@ const order = (req, res) => {
 // render the coupons page 
 const coupons = (req, res) => {
 
-    res.render('admin/coupons', { title: "Coupons" })
+    res.render('admin/coupons', { title: "Coupons",alertMessage:req.flash('errorMessage')  })
 
 }
 

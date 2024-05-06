@@ -6,7 +6,17 @@ const checkUserSession=require('../middleware/userSession')
 user.get('/',userController.user)
 user.get('/login',userController.login)
 user.post('/login',userController.loginPost)
+
+
+
+
+// home
 user.get('/home',checkUserSession,userController.home)
+
+
+
+
+
 user.get('/wishlist',checkUserSession,userController.wishlist)
 user.get('/cart',checkUserSession,userController.cart)
 user.get('/signup',checkUserSession,userController.signup)

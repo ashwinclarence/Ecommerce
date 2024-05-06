@@ -2,12 +2,14 @@ const userSchema = require('../../model/userSchema')
 const bcrypt = require('bcrypt')
 const sendOtpMail = require('../../services/emailSender')
 const generateOTP = require('../../services/generateOTP');
+const productSchema = require('../../model/productSchema');
+const categorySchema = require('../../model/categorySchema');
 
 
-const user=(req,res)=>{
-    if(req.session.user){
+const user = (req, res) => {
+    if (req.session.user) {
         res.redirect('/user/home')
-    }else{
+    } else {
         res.redirect('/user/login')
     }
 }
@@ -125,14 +127,14 @@ const otpPost = async (req, res) => {
     try {
 
         // if otp is in the session then only data 
-        if (req.session.otp!==undefined) {
+        if (req.session.otp !== undefined) {
             // user data from session during the registration time
             const registerDetails = {
                 name: req.session.name,
                 phone: req.session.phone,
                 password: req.session.password,
                 email: req.session.email,
-                isBlocked:false
+                isBlocked: false
             }
             // if the user entered otp and otp in session is equal then only the user's data is stored in users collection
             if (req.session.otp === req.body.otp) {
@@ -149,8 +151,8 @@ const otpPost = async (req, res) => {
             }
 
             // if otp is not in the session an alert message is displayed
-        }else{
-            res.render('user/register',{title:"Signup",alertMessage:"An error occurred during OTP generation, please kindly retry."})
+        } else {
+            res.render('user/register', { title: "Signup", alertMessage: "An error occurred during OTP generation, please kindly retry." })
         }
 
 
@@ -188,26 +190,27 @@ const otpResend = (req, res) => {
 
 
 
-const home = (req, res) => {
-    if (req.session.user) {
-        res.render('user/home', { title: 'User Home' })
-    } else {
-        res.redirect('/user/login')
-    }
+const home = async (req, res) => {
+
+    const products = await productSchema.find()
+    const category = await categorySchema.find()
+
+    res.render('user/home', { title: 'User Home', products, category })
+
 }
+
+
+
+
 const wishlist = (req, res) => {
-    if (req.session.user) {
-        res.render('user/wishlist', { title: "Wishlist" })
-    } else {
-        res.redirect('/user/login')
-    }
+
+    res.render('user/wishlist', { title: "Wishlist" })
+
 }
 const cart = (req, res) => {
-    if (req.session.user) {
-        res.render('user/cart', { title: "cart" })
-    } else {
-        res.redirect('/user/login')
-    }
+
+    res.render('user/cart', { title: "cart" })
+
 }
 
 
@@ -225,5 +228,5 @@ module.exports = {
     otp,
     signupPost,
     otpPost,
-    otpResend
+    otpResend,
 }
