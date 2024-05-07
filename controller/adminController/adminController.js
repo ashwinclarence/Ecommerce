@@ -1,5 +1,15 @@
 
 const mongoose = require('mongoose')
+const productSchema = require('../../model/productSchema')
+const categorySchema = require('../../model/categorySchema')
+const userSchema = require('../../model/userSchema')
+
+
+
+// render the login page for admin only if the admin's session is not present 
+const admin = (req, res) => {
+    res.redirect('/admin/login')
+}
 
 
 
@@ -24,33 +34,37 @@ const loginPost = (req, res) => {
 }
 
 
-
-
-
-
-
-
-
 // rendering the dashboard page
-const dashboard = (req, res) => {
+const dashboard = async (req, res) => {
 
-    res.render('admin/dashboard', { title: "Admin Dashboard",alertMessage:req.flash('errorMessage') })
+    // customer details and count
+    const customerCount = await userSchema.find().countDocuments();
+    const activeCustomer = await userSchema.find({ isBlocked: false }).countDocuments()
+    // category details and count
+    const categoryCount = await categorySchema.find().countDocuments();
+    const activeCategory = await categorySchema.find({ isActive: true }).countDocuments();
+    // product details and count
+    const productsCount = await productSchema.find().countDocuments();
+    const activeProducts = await productSchema.find({ isActive: true }).countDocuments();
+
+    const stats = {
+        customerCount,
+        activeCustomer,
+        categoryCount,
+        activeCategory,
+        productsCount,
+        activeProducts
+    }
+
+    res.render('admin/dashboard', { title: "Admin Dashboard", alertMessage: req.flash('errorMessage'), stats })
 
 }
-
-
-
-
-
-
-
-
 
 
 // render the order page 
 const order = (req, res) => {
 
-    res.render('admin/order', { title: "Order list",alertMessage:req.flash('errorMessage')  })
+    res.render('admin/order', { title: "Order list", alertMessage: req.flash('errorMessage') })
 
 }
 
@@ -59,7 +73,7 @@ const order = (req, res) => {
 // render the coupons page 
 const coupons = (req, res) => {
 
-    res.render('admin/coupons', { title: "Coupons",alertMessage:req.flash('errorMessage')  })
+    res.render('admin/coupons', { title: "Coupons", alertMessage: req.flash('errorMessage') })
 
 }
 
@@ -80,6 +94,7 @@ const logout = (req, res) => {
 
 module.exports = {
     login,
+    admin,
     dashboard,
     order,
     coupons,

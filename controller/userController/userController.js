@@ -192,8 +192,8 @@ const otpResend = (req, res) => {
 
 const home = async (req, res) => {
 
-    const products = await productSchema.find()
-    const category = await categorySchema.find()
+    const products = await productSchema.find({isActive:true})
+    const category = await categorySchema.find({isActive:true})
 
     res.render('user/home', { title: 'User Home', products, category })
 

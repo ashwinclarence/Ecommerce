@@ -27,12 +27,32 @@
 
     table th,
     td {
+        overflow: hidden;
+        text-overflow: ellipsis;
         text-align: center;
     }
 
     .add-new-product {
         text-align: center;
         margin: 1rem 0 2rem 0;
+    }
+
+    .btn {
+        min-width: 90px;
+    }
+
+    .product-name-td {
+        max-width: 250px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .product-name-td:hover {
+        white-space: normal;
+        overflow: visible;
+        z-index: 3;
+
     }
 </style>
 
@@ -72,10 +92,10 @@
                             <th scope="row">
                                 <%= index+1 %>
                             </th>
-                            <td>
+                            <td class="product-name-td">
                                 <%= product.productName %>
                             </td>
-                            <td><i class="fa-solid fa-indian-rupee-sign"></i> 
+                            <td><i class="fa-solid fa-indian-rupee-sign"></i>
                                 <%= product.productPrice %>
                             </td>
                             <td>
@@ -85,13 +105,23 @@
                                 <%= product.productCategory %>
                             </td>
                             <td>
-                                <a class="btn btn-warning" href="">Edit</a>
-                                <a class="btn btn-danger" href="">Remove</a>
+                                <a class="btn btn-warning edit-product-btn"
+                                    href="/admin/edit-product/<%= product.id %>">Edit</a>
+                                <!-- <a class="btn btn-outline-danger" id="inactive-product-btn" href="">Inactive</a> -->
+                                <% if(product.isActive){ %>
+                                    <a class="btn btn-outline-danger inactive-product-btn"
+                                        href="/admin/product-inactive/<%= product.id %>">Inactive</a>
+                                    <% }else{ %>
+                                        <a class="btn btn-outline-success active-product-btn"
+                                            href="/admin/product-active/<%= product.id %>">Active</a>
+                                        <% } %>
+                                            <button class="btn btn-danger remove-product-btn"
+                                                value="<%= product.id %>">Remove</button>
                             </td>
                         </tr>
 
                         <% }) %>
-                            
+
 
                 </tbody>
             </table>
@@ -100,3 +130,125 @@
 
 
     <%- include('footer') %>
+
+        <script>
+
+
+             // confirmation for deactivating the product
+             const deactivateProduct = document.querySelectorAll(".inactive-product-btn")
+                // because of many buttons for each is used to traverse and add eventListener for each of them
+                deactivateProduct.forEach((button) => {
+                    button.addEventListener("click", function (event) {
+                        event.preventDefault(); // Prevent default link behavior
+
+                        Swal.fire({
+                            title: 'Deactivate the Product',
+                            text: "Are you sure you want to deactivate this Product?",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#d11a2a',
+                            cancelButtonColor: '#808080',
+                            confirmButtonText: 'Yes, Deactivate it!'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = event.target.href;
+                            }
+                        });
+                    });
+                })
+
+
+
+             // confirmation for activating the product
+             const activateProduct = document.querySelectorAll(".active-product-btn")
+                // because of many buttons for each is used to traverse and add eventListener for each of them
+                activateProduct.forEach((button) => {
+                    button.addEventListener("click", function (event) {
+                        event.preventDefault(); // Prevent default link behavior
+
+                        Swal.fire({
+                            title: 'Activate the Product',
+                            text: "Are you sure you want to activate this Product?",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#4BB543',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Yes, activate it!'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = event.target.href;
+                            }
+                        });
+                    });
+                })
+
+
+
+
+
+            // delete product using fetch 
+            // select all the delete buttons
+            const productInactive = document.querySelectorAll('.remove-product-btn')
+
+            // for each delete buttons add fetch routes 
+            productInactive.forEach((button) => {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+
+                    // adding confirmation to product delete button
+                    Swal.fire({
+                        title: "Are you sure want to delete?",
+                        text: "You won't be able to revert this!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Yes, delete it!"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // product id of the product from the value of button
+                            const productID = button.value;
+                            const URL = `/admin/delete-product/${productID}`
+
+                            // fetch with method DELETE to delete products
+                            fetch(URL, {
+                                method: 'DELETE'
+                            }).then((response) => {
+
+                                // if product delete response is 200 from backend then a sweet alert with delete confirm message is displayed
+                                if (response.ok) {
+                                    Swal.fire({
+                                        icon: "success",
+                                        title: "Product Deleted",
+                                        showConfirmButton: true,
+                                    }).then((result) => {
+                                        if (result) {
+                                            window.location.reload()
+                                        }
+                                    });
+                                } else {
+                                    // if the response is not 200 then error sweet alert is displayed
+                                    Swal.fire({
+                                        icon: "question",
+                                        title: "Product Not Deleted",
+                                        text: "That thing is still around?",
+                                        timer: 2500
+                                    });
+                                }
+                            }).catch((err) => {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Oops...",
+                                    text: `Something went wrong! ${err}`,
+                                    timer: 2500
+                                });
+                            })
+                        }
+                    });
+
+
+                })
+
+            })
+
+        </script>

@@ -41,12 +41,14 @@ const schema = new mongoose.Schema({
     addedOn: {
         type: Date,
         default: Date.now,
-        required: true
     },
     updatedOn: {
         type: Date,
         default: Date.now,
-        required: true
+    },
+    isActive:{
+        type:Boolean,
+        default:true,
     }
 });
 

@@ -80,7 +80,7 @@ const editCategory = async (req, res) => {
             const categoryID = req.params.id;
             const category = await categorySchema.findById(categoryID);
             if (category != null) {
-                res.render('admin/editCategory', { title: category.categoryName, category })
+                res.render('admin/editCategory', { title: category.categoryName, category, alertMessage:req.flash('errorMessage') })
             } else {
                 req.flash('errorMessage','An unexpected error occurred while editing the category. Please attempt the operation again.');
                 res.redirect('/admin/category')
