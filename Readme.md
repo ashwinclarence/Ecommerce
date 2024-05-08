@@ -52,3 +52,35 @@ Start the server
   npm start
 ```
 
+
+## Dependencies
+
+
+- **bcrypt** : Bcrypt is a library used for hashing passwords securely. It's commonly used in Node.js applications for user authentication and password storage.
+
+- **connect-flash**: Connect-flash is a middleware for storing and retrieving messages in the session. It's often used in web applications for displaying flash messages to users.
+
+- **cookie-parser** : Cookie-parser is a middleware used for parsing cookies attached to the client request. It simplifies the process of working with cookies in Express.js applications.
+
+- **dotenv** : Dotenv is a zero-dependency module that loads environment variables from a .env file into process.env. It's commonly used to keep sensitive information like API keys or database credentials out of source code.
+
+- **ejs** : EJS (Embedded JavaScript) is a simple templating language that lets you generate HTML markup with plain JavaScript. It's often used in Node.js web applications for server-side rendering.
+
+- **express** : Express is a fast, unopinionated, minimalist web framework for Node.js. It provides a robust set of features for building web applications and APIs.
+
+- **express-ejs-layouts** : Express-ejs-layouts is an extension for Express.js that allows you to easily use layouts (template files with common markup) with EJS templates.
+
+- **express-session** : Express-session is a middleware for managing sessions in Express.js applications. It provides session-based authentication and allows you to store session data on the server.
+
+- **mongoose** : Mongoose is an Object Data Modeling (ODM) library for MongoDB and Node.js. It provides a straightforward schema-based solution for modeling application data and interacting with MongoDB databases.
+
+- **multer** : Multer is a middleware for handling multipart/form-data, which is primarily used for uploading files in Express.js applications.
+
+- **nocache** : Nocache is a middleware for Express.js that prevents client-side caching of HTTP responses. It adds appropriate Cache-Control and Pragma headers to responses to instruct clients not to cache the content.
+
+- **nodemailer** : Nodemailer is a module for sending email with Node.js. It supports multiple transport methods (SMTP, sendmail, etc.) and provides a simple API for sending emails asynchronously.
+
+- **otp-generator** : OTP-generator is a library for generating one-time passwords (OTPs) in Node.js applications. It supports multiple algorithms (TOTP, HOTP) and is commonly used for two-factor authentication (2FA) implementations.
+
+- **uuid** : UUID (Universally Unique Identifier) is a library for generating unique identifiers. It provides functions for creating UUIDs in various formats (v1, v4) and is often used for generating unique identifiers in distributed systems.
+

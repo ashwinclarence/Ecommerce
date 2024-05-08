@@ -4,25 +4,29 @@ const sendOtpMail = require('../../services/emailSender')
 const generateOTP = require('../../services/generateOTP');
 const productSchema = require('../../model/productSchema');
 const categorySchema = require('../../model/categorySchema');
+const loginSchema = require('../../model/loginSchema');
 
-
-const user = (req, res) => {
-    if (req.session.user) {
+// user router if session 
+const user = (req, res) => { 
+    try{
         res.redirect('/user/home')
-    } else {
-        res.redirect('/user/login')
+    }catch(err){
+        console.log(`Error during user page routing ${err}`);
     }
 }
 
-
-
 // signup page render
 const signup = (req, res) => {
-    if (req.session.user) {
-        res.redirect('/user/home')
-    } else {
-        res.render('user/register', { title: "Signup", alertMessage: "" })
+    try {
+        if (req.session.user) {
+            res.redirect('/user/home')
+        } else {
+            res.render('user/register', { title: "Signup", alertMessage: req.flash('errorMessage') })
+        }
+    } catch (err) {
+        console.log(`Error during signup page render`);
     }
+
 }
 
 // user register with username, email, password and phone number
@@ -30,7 +34,7 @@ const signupPost = async (req, res) => {
     try {
         // getting data from input box of the register form
         const registerDetails = {
-            name: req.body.name,
+            username: req.body.name,
             phone: req.body.phone,
             // saved the hashed password using bcrypt
             password: await bcrypt.hash(req.body.password, 10),
@@ -42,29 +46,33 @@ const signupPost = async (req, res) => {
 
         // if user with same email id exist then render the register page with error message
         if (userExist) {
-            res.render('user/register', { title: 'Signup', alertMessage: "An account with this email address already exists. Please try using a different email address." })
+            req.flash('errorMessage', 'An account with this email address already exists. Please try using a different email address.')
+            res.redirect('/user/signup')
         } else {
-            // storing user data in session
-            req.session.email = registerDetails.email
-            req.session.password = registerDetails.password
-            req.session.name = registerDetails.name
-            req.session.phone = registerDetails.phone
 
             // generate otp from services/generateOTP.js file
             const otp = generateOTP();
 
             // send the mail to the registered user with the OTP
-            sendOtpMail(req.session.email, otp)
+            sendOtpMail(req.body.email, otp)
+            req.flash('errorMessage', `OTP was sended to the ${req.body.email} `)
 
-            // storing the otp and email address in the session
+            
+            // storing otp in the session
             req.session.otp = otp;
-
+            req.session.otpExpireTime=Date.now();
+            
+            // storing user data in session
+            req.session.email = registerDetails.email
+            req.session.password = registerDetails.password
+            req.session.name = registerDetails.username
+            req.session.phone = registerDetails.phone
+            
             // redirect to the otp page for validation
             res.redirect('/user/otp')
 
         }
     } catch (err) {
-
         console.log(`Error occurred while registering user ${err}`)
     }
 }
@@ -78,7 +86,7 @@ const login = (req, res) => {
     if (req.session.user) {
         res.redirect('/user/home')
     } else {
-        res.render('user/login', { title: 'Login', alertMessage: "" })
+        res.render('user/login', { title: 'Login', alertMessage: req.flash('errorMessage') })
     }
 }
 
@@ -116,17 +124,18 @@ const loginPost = async (req, res) => {
 // OTP generator page rendering
 const otp = (req, res) => {
     try {
-        res.render('user/OTP', { title: "OTP verification", emailAddress: req.session.email })
+        res.render('user/OTP', { title: "OTP verification", emailAddress: req.session.email, alertMessage:req.flash('errorMessage'),otpExpireTime:req.session.otpExpireTime })
 
     } catch (err) {
         console.log(`Error occurred during otp verification ${err}`)
+        // res.redirect('/user/signup')
     }
 }
 
 const otpPost = async (req, res) => {
     try {
 
-        // if otp is in the session then only data 
+        // if otp is in the session then continue with checking
         if (req.session.otp !== undefined) {
             // user data from session during the registration time
             const registerDetails = {
@@ -134,11 +143,10 @@ const otpPost = async (req, res) => {
                 phone: req.session.phone,
                 password: req.session.password,
                 email: req.session.email,
-                isBlocked: false
             }
+
             // if the user entered otp and otp in session is equal then only the user's data is stored in users collection
             if (req.session.otp === req.body.otp) {
-                console.log("inside if ", req.cookies.otp)
                 // adding the user data to mongodb with collection name user
                 await userSchema.insertMany(registerDetails).then(() => {
                     console.log('New user registration successful')
@@ -163,20 +171,27 @@ const otpPost = async (req, res) => {
 }
 
 
-// resend otp 
+// resend otp using fetch 
 const otpResend = (req, res) => {
     try {
+
+        const emailAddress=req.params.email
         // generate otp from services/generateOTP.js file
         const otp = generateOTP();
 
         // send the mail to the registered user with the OTP
-        sendOtpMail(req.session.email, otp)
+        sendOtpMail(emailAddress, otp)
 
-        // storing the otp and email address in the session
+        // storing the otp and otp generated time in the session
         req.session.otp = otp;
+        req.session.otpExpireTime=Date.now();
 
+        res.status(200)
+        
         // redirect to the otp page for validation
+        req.flash('errorMessage',"OTP re-sended successfully")
         res.redirect('/user/otp')
+
 
     } catch (err) {
         console.log(`Error during OTP resending ${err}`);
@@ -192,10 +207,10 @@ const otpResend = (req, res) => {
 
 const home = async (req, res) => {
 
-    const products = await productSchema.find({isActive:true})
-    const category = await categorySchema.find({isActive:true})
+    const products = await productSchema.find({ isActive: true })
+    const category = await categorySchema.find({ isActive: true })
 
-    res.render('user/home', { title: 'User Home', products, category })
+    res.render('user/home', { title: 'User Home', products, category ,alertMessage: req.flash('errorMessage')})
 
 }
 
@@ -204,13 +219,23 @@ const home = async (req, res) => {
 
 const wishlist = (req, res) => {
 
-    res.render('user/wishlist', { title: "Wishlist" })
+    res.render('user/wishlist', { title: "Wishlist",alertMessage: req.flash('errorMessage') })
 
 }
 const cart = (req, res) => {
 
-    res.render('user/cart', { title: "cart" })
+    res.render('user/cart', { title: "cart",alertMessage: req.flash('errorMessage') })
 
+}
+
+const logout=(req,res)=>{
+    req.session.destroy((err)=>{
+        if(err){
+            console.log(err);
+        }else{
+            res.redirect('/user/login')
+        }
+    })
 }
 
 
@@ -229,4 +254,5 @@ module.exports = {
     signupPost,
     otpPost,
     otpResend,
+    logout
 }

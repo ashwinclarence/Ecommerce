@@ -52,8 +52,6 @@
 
 <%- include('navbar') %>
 
-<!-- alert bar -->
-<%- include('alert')%>
 
     <div class="admin-register-container">
         <div class="register-form">
@@ -63,7 +61,8 @@
                 <input type="email" name="email" placeholder="Email address" required>
                 <input type="tel" name="phone" placeholder="Phone number" required>
                 <input type="password" name="password" placeholder="password" id="user-password" required>
-                <input type="password" name="confirmPassword" placeholder="Confirm password" id="user-confirm-password" required>
+                <input type="password" name="confirmPassword" placeholder="Confirm password" id="user-confirm-password"
+                    required>
 
                 <button class="btn btn-primary" type="submit" id="register-button">Register</button>
                 <p>Already have an account? <a href="/user/login">Login</a></p>
@@ -76,55 +75,75 @@
 
     <%- include('footer') %>
 
-    <script>
-        // password validation function
-        function validatePassword(password) {
-            // Check if the password length is at least 8 characters
-            if (password.length < 8) {
-                return false;
+        <script>
+            // password validation function
+            function validatePassword(password) {
+                // Check if the password length is at least 8 characters
+                if (password.length < 8) {
+                    return false;
+                }
+
+                // Check if the password contains at least one uppercase letter
+                if (!/[A-Z]/.test(password)) {
+                    return false;
+                }
+
+                // Check if the password contains at least one lowercase letter
+                if (!/[a-z]/.test(password)) {
+                    return false;
+                }
+
+                // Check if the password contains at least one digit
+                if (!/\d/.test(password)) {
+                    return false;
+                }
+
+                // Check if the password contains at least one special character
+                if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)) {
+                    return false;
+                }
+
+                return true;
             }
 
-            // Check if the password contains at least one uppercase letter
-            if (!/[A-Z]/.test(password)) {
-                return false;
+
+
+
+            // function to validate the password
+            function validateEmail(email) {
+                const re = /\S+@\S+\.\S+/;
+                return re.test(email);
             }
 
-            // Check if the password contains at least one lowercase letter
-            if (!/[a-z]/.test(password)) {
-                return false;
-            }
-
-            // Check if the password contains at least one digit
-            if (!/\d/.test(password)) {
-                return false;
-            }
-
-            // Check if the password contains at least one special character
-            if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)) {
-                return false;
-            }
-
-            return true;
-        }
-        const registerForm=document.getElementById('registration-form')
-        const password=document.getElementById("user-password")
-        const confirmPassword=document.getElementById("user-confirm-password")
-        const registerBtn=document.getElementById('register-button')
-
-        // event listener for registration form
-        registerForm.addEventListener('input',()=>{
-
-            // if user enter the validated password that satisfies all the constraints and the password matches with the confirm password then the register button will enable
-           if(validatePassword(password.value) && password.value===confirmPassword.value){
-                registerBtn.disabled=false
-           }else{
-                registerBtn.disabled=true
-           }
-
-
-        })
+            // validate the username
 
 
 
 
-    </script>
+            const registerForm = document.getElementById('registration-form')
+            const password = document.getElementById("user-password")
+            const confirmPassword = document.getElementById("user-confirm-password")
+            const registerBtn = document.getElementById('register-button')
+            const email=document.getElementsByName('email')[0]
+            const phoneNumber=document.getElementsByName('phone')[0]
+            const name=document.getElementsByName('name')[0]
+
+
+            // event listener for registration form
+            registerForm.addEventListener('input', () => {
+
+                // if user enter the validated password that satisfies all the constraints and the password matches with the confirm password then the register button will enable
+                // also validate the email adderss
+                if (validatePassword(password.value) && password.value === confirmPassword.value && validateEmail(email.value) && name.value.trim()!="" &&  !isNaN(phoneNumber.value) && phoneNumber.value.length===10) {
+                    registerBtn.disabled = false
+                }else {
+                    registerBtn.disabled = true
+                }
+
+
+            })
+
+
+
+
+        </script>

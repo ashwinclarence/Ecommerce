@@ -51,7 +51,14 @@
         font-size: 1rem;
         display: none;
     }
-   
+
+    #otp-timer {
+        border: none;
+        outline: none;
+        font-size: 1rem;
+        font-weight: 600;
+        width: 50px;
+    }
 </style>
 
 
@@ -63,27 +70,19 @@
             <small>One Time Password (OTP) has been sent via Email to</small>
 
             <!-- email address from backend -->
-            <b>
+            <b id="OTP-email">
                 <%= emailAddress %>
-                
+
             </b>
             <small>Enter the OTP below to verify it</small>
-            <form action="/user/otp" method="post">
-                <!-- <div class="otp-box">
-                    <input type="text" maxlength="1" required>
-                    <input type="text" maxlength="1" required>
-                    <input type="text" maxlength="1" required>
-                    <input type="text" maxlength="1" required>
-                    <input type="text" maxlength="1" required>
-                    <input type="text" maxlength="1" required>
-                </div> -->
+            <form action="/user/otp/" method="post">
                 <input type="text" name="otp" minlength="6" maxlength="6" required>
-               
-                    <small id="otp-timer-box">OTP is valid for  <span id="otp-timer">02.00</span></small>
-                    
-            
-                
-                <a href="/user/resend-otp" class="btn btn-primary" id="resend-otp">Resend OTP </a>
+
+                <small id="otp-timer-box">OTP is valid for <input type="text" id="otp-timer"></input></small>
+
+
+                <input type="text" value="<%= otpExpireTime %>" id="otp-sended-time" hidden>
+
                 <button class="btn btn-primary" type="submit" id="otp-btn">Verify OTP</button>
             </form>
         </div>
@@ -94,62 +93,90 @@
     <%- include('footer') %>
 
 
-    <script>
-        const otpTimerBox = document.getElementById('otp-timer-box');
-        const otpTimer = document.getElementById('otp-timer');
-        const resendOtp = document.getElementById('resend-otp');
-        const submitOtp = document.getElementById('otp-btn');
-    
-        let timeLeft;
-    
-        // Check if there's remaining time in local storage
-        if (localStorage.getItem('otpTimer')) {
-            timeLeft = parseInt(localStorage.getItem('otpTimer'));
-        } else {
-            // If no remaining time in local storage, set initial time to 1 minutes
-            timeLeft = 1 * 60;
-        }
-    
-        // Display the initial time
-        otpTimer.innerHTML = formatTime(timeLeft);
-    
-        // Create a setInterval function to decrement the time every second
-        let countdown = setInterval(function () {
-            // Decrement timeLeft by 1 second
-            timeLeft--;
-    
-            // Save the remaining time in local storage
-            localStorage.setItem('otpTimer', timeLeft);
-    
-            // Display the updated time
-            otpTimer.innerHTML = formatTime(timeLeft);
-    
-            // If timeLeft is 0, stop the countdown and enable the OTP resend button
-            if (timeLeft === 0) {
-                clearInterval(countdown);
-                otpTimerBox.style.color = "red";
-                otpTimerBox.innerHTML = "Your one-time password (OTP) has expired. Please request another OTP.";
-                submitOtp.style.display = "none";
-                resendOtp.style.display = "block";
-            }
-        }, 1000);
-    
-        // Function to format the time (convert seconds to minutes and seconds)
-        function formatTime(seconds) {
-            let minutes = Math.floor(seconds / 60);
-            let remainingSeconds = seconds % 60;
-            return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
-        }
-    
-        // Clear the remaining time from local storage when OTP is submitted
-        submitOtp.addEventListener('click', function () {
-            localStorage.removeItem('otpTimer');
-        });
-    
-        // Clear the remaining time from local storage when OTP is resent
-        resendOtp.addEventListener('click', function () {
-            localStorage.removeItem('otpTimer');
-        });
-    
-    </script>
-    
+        <script>
+            const otpTimerBox = document.getElementById('otp-timer-box');
+            const otpTimer = document.getElementById('otp-timer');
+            const otpSendedTime = document.getElementById('otp-sended-time');
+            const submitOtp = document.getElementById('otp-btn');
+            const otpEmail=document.getElementById('OTP-email')
+
+            const checkTimeOut = setInterval(() => {
+
+                 // maximum OTP timer is set for two seconds
+                 let otpMaxTimer = 120000
+
+                // current date in milliseconds
+                let currentDate = Date.now()
+
+                // otp sended time from backend that is store in a hidden box in the form
+                let otpExpireTime = otpSendedTime.value
+
+                // get the difference between current time and otp sended time
+                let timeLeft = currentDate - otpExpireTime
+
+                // difference between the maximum time and time left
+                let displayTimer=otpMaxTimer-timeLeft
+
+                // Calculate minutes and seconds
+                let minutes = Math.floor((displayTimer % (1000 * 60 * 60)) / (1000 * 60));
+                let seconds = Math.floor((displayTimer % (1000 * 60)) / 1000);
+
+                // Format minutes and seconds to display with leading zeros
+                let formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+                // Update the timer display
+                otpTimer.value = formattedTime;
+
+
+                // if the maximum time limit of 2 minute which is 120000 seconds
+                if (timeLeft > 120000) {
+                    Swal.fire({
+                        title: "Timer expired",
+                        text: "Do you want to resend the OTP?",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Yes, resend it!"
+                    }).then((result) => {
+
+                        // if user confirm to resend the otp then using fetch resend the otp
+                        if (result.isConfirmed) {
+                            console.log(otpEmail.innerHTML);
+
+                            const URL = `/user/resend-otp/${otpEmail.innerHTML}`
+                            fetch(URL, {
+                                method: "GET"
+                            }).then((response) => {
+                                if (response.ok) {
+                                    Swal.fire({
+                                        icon: "success",
+                                        title: "OTP Sended successfully"
+                                    }).then(()=>{
+                                        window.location.reload()
+                                    })
+                                } else {
+                                    Swal.fire({
+                                        icon: "error",
+                                        title: "Oops...",
+                                        text: "Something went wrong!",
+                                    }).then(() => {
+                                        window.location = "/user/signup"
+                                    })
+                                }
+                            })
+                        }
+
+                        // if the user cancel the otp resend request then redirect to signup page
+                        if (result.isDismissed) {
+                            window.location = "/user/signup"
+                        }
+                    });
+                    clearInterval(checkTimeOut)
+                }
+
+            }, 1000);
+
+
+
+        </script>

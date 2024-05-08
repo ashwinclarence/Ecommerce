@@ -1,4 +1,5 @@
-const mongoose=require('mongoose')
+const mongoose=require('mongoose');
+const { defaultMaxListeners } = require('nodemailer/lib/xoauth2');
 
 // defining the schema for user collection
 const schema =new mongoose.Schema({
@@ -20,6 +21,7 @@ const schema =new mongoose.Schema({
     },
     isBlocked:{
         type:Boolean,
+        default:false
     }
 })
 
