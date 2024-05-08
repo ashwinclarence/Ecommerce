@@ -34,6 +34,8 @@
     }
 
     .product-box {
+        text-decoration: none;
+        color: #000000;
         border: 1px solid #b2b2b2;
         border-radius: 10px;
         width: 300px;
@@ -64,9 +66,10 @@
 
 <div class="products-container">
     <div class="products-category-container container">
+
         <% category.forEach((item)=>{ %>
             <% if(item.isActive) { %>
-                <a href="/user/home/<%= item.id %>" class="category-name">
+                <a href="/user/home/?category=<%= item.categoryName %>" class="category-name">
                     <%- item.categoryName %>
                 </a>
                 <% } %>
@@ -79,7 +82,7 @@
 
         <% products.forEach((product)=>{ %>
 
-            <div class="product-box">
+            <a href="/user/product-view/<%= product.id %>" class="product-box">
                 <div class="product-image-box">
 
                     <img src="/<%= product.productImage[0] %>" alt="">
@@ -95,7 +98,7 @@
                         <%= product.productPrice %>
                     </h5>
                 </div>
-            </div>
+            </a>
 
             <% }) %>
 

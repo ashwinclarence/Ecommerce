@@ -1,10 +1,13 @@
 const userSchema = require("../model/userSchema")
 
 
- function  checkUserSession (req,res,next){
+async function  checkUserSession (req,res,next){
 
+    // if the user is in the session and he is not blocked by the admin then next is called else redirect to login
 
-    if(req.session.user){
+    const userDetails=await userSchema.findOne({email:req.session.user})
+
+    if(req.session.user && userDetails.isBlocked===false){
         next()
     }else{
         res.redirect('/user/login')
