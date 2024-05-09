@@ -1,9 +1,9 @@
 const express=require('express')
 const user=express.Router();
-const userController=require('../controller/userController/userController')
 const checkUserSession=require('../middleware/userSession')
+const userController=require('../controller/userController/userController')
 const forgetPasswordController=require('../controller/userController/forgetPasswordController')
-
+const productController=require('../controller/userController/productController')
 
 
 // login routes
@@ -36,6 +36,9 @@ user.post('/new-password',forgetPasswordController.updatePassword)
 
 // home
 user.get('/home',checkUserSession,userController.home)
+
+// product
+user.get('/product-view/:id',checkUserSession,productController.productView)
 
 
 user.get('/wishlist',checkUserSession,userController.wishlist)

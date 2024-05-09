@@ -1,10 +1,228 @@
+<style>
+    .product-view-container {
+        display: flex;
+        min-height: 100vh;
+        padding: 5rem 0;
+    }
+
+    .product-view-deatils {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+
+    .product-image-container {
+        width: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .product-image-array {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+        width: 90%;
+    }
+
+    .product-image-each {
+        width: 100px;
+        height: 100px;
+        border: 2px solid #8c8c8c;
+        background-color: #eaeaea;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .product-image-each img {
+        width: 100px;
+        height: 100px;
+        object-fit: scale-down;
+    }
+
+    .product-full-view {
+        width: 500px;
+        height: 500px;
+        /* border: 2px solid #8c8c8c; */
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .product-full-view img {
+        width: 400px;
+        height: 400px;
+        object-fit: scale-down;
+    }
+
+    .product-detail-container {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        width: 50%;
+    }
+
+    .product-name h5 {
+        text-align: justify;
+    }
+
+    #right-arrow-img,
+    #left-arrow-img {
+        scale: 2;
+        z-index: 3;
+        transition: .3s ease-in-out;
+        cursor: pointer;
+    }
+
+    #right-arrow-img:hover,
+    #left-arrow-img:hover {
+        scale: 1.9;
+    }
 
 
+    .offer-box {
+        background-color: red;
+        border-radius: 3px;
+        padding: 2px;
+        color: #ffffff;
+        width: 100px;
+        text-align: center;
+    }
+
+    .product-action-buttons {
+        display: flex;
+        gap: 1rem;
+        /* justify-content: space-evenly; */
+    }
+
+    .btn {
+        width: 200px;
+        font-weight: 600;
+    }
+
+    .star-rating-product {
+        font-size: 2rem;
+        cursor: pointer;
+        color: orange;
+    }
+</style>
 
 <%- include('navbar') %>
 
+    <div class="product-view-container container">
+
+        <!-- product top section -->
+        <div class="product-view-deatils">
+
+            <!-- left side product image section -->
+            <div class="product-image-container">
+                <div class="product-full-view">
+                    <i class="fa-solid fa-chevron-left" id="left-arrow-img"></i>
+                    <input type="text" name="image" value="<%= product.productImage %>" hidden>
+                    <img src="../../<%= product.productImage[0] %>" alt="" id="product-image-img">
+                    <i class="fa-solid fa-chevron-right" id="right-arrow-img"></i>
+                </div>
+                <div class="product-image-array">
+                    <% product.productImage.forEach((img)=>{ %>
+                        <div class="product-image-each">
+                            <img src="../../<%= img %>" alt="">
+                        </div>
+                        <% }) %>
+
+
+                </div>
+
+            </div>
+
+            <!-- right side product name, price, description addToCart section -->
+
+            <div class="product-detail-container">
+                <div class="product-name">
+                    <h6>
+                        <%= product.productBrand %>
+                    </h6>
+                    <h5>
+                        <%= product.productName %>
+                    </h5>
+                </div>
+                <div class="product-offer">
+                    <% if(product.productDiscount!=0){ %>
+                        <div class="offer-box">
+                            <h6>
+                                <%= product.productDiscount %>&percnt; OFF
+                            </h6>
+                        </div>
+                        <% } %>
+                            <div class="rating" id="rating">
+                                <span class="star-rating-product" data-value="1">&#9733;</span>
+                                <span class="star-rating-product" data-value="2">&#9733;</span>
+                                <span class="star-rating-product" data-value="3">&#9733;</span>
+                                <span class="star-rating-product" data-value="4">&#9733;</span>
+                                <span class="star-rating-product" data-value="5">&#9733;</span>
+                            </div>
+
+                </div>
+                <div class="product-price">
+                    <h3><i class="fa-solid fa-indian-rupee-sign product-text-row"></i>
+                        <%= product.productPrice.toLocaleString() %>
+                    </h3>
+
+                </div>
+                <div class="product-action-buttons">
+                    <button class="btn btn-warning">Add to Cart</button>
+                    <button class="btn btn-danger">Buy Now</button>
+                </div>
+                <div class="product-description mt-5">
+                    <p>
+                        <%= product.productDescription %>
+                    </p>
+                </div>
+
+            </div>
 
 
 
+        </div>
+    </div>
 
-<%- include('footer') %>
+
+
+    <%- include('footer') %>
+
+        <script>
+
+            const rightArrow = document.getElementById('right-arrow-img')
+            const leftArrow = document.getElementById('left-arrow-img')
+            const productImg = document.getElementById('product-image-img')
+            let currentIndex = 0;
+            
+            const imageList=document.getElementsByName('image')[0].value
+            let ImageArray=imageList.split(",")
+            const maxlength=ImageArray.length-1
+           
+
+            rightArrow.addEventListener('click',()=>{
+                if(currentIndex===maxlength){
+                    rightArrow.disabled=true
+                }else{
+                    currentIndex=currentIndex+1;
+                    productImg.src=`../../${ImageArray[currentIndex]}`
+                }
+                
+            })
+            leftArrow.addEventListener('click',()=>{
+                if(currentIndex===0){
+                    leftArrow.disabled=true
+                }else{
+                    currentIndex=currentIndex-1;
+                    productImg.src=`../../${ImageArray[currentIndex]}`
+                }
+
+            })
+
+           
+
+        </script>

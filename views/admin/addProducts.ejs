@@ -72,7 +72,7 @@
         width: 90%;
         border-radius: 10px;
         resize: vertical;
-        min-height: 170px;
+        min-height: 200px;
     }
 
 
@@ -172,7 +172,7 @@
 
                     <!-- input for product description -->
                     <label for="productDescription">Product Description</label>
-                    <textarea name="productDescription" placeholder="Excepted min 10 characters" id="product-description" minlength="10" maxlength="300"
+                    <textarea name="productDescription" placeholder="Excepted min 10 characters" id="product-description" minlength="10" maxlength="500"
                         required></textarea>
 
                 </div>
@@ -261,7 +261,7 @@
                     isValid = false
                 }
 
-                if (productDescription.value.length <= 10 || productDescription.value.length > 300 || productDescription.value.trim === "") {
+                if (productDescription.value.length <= 10 || productDescription.value.length > 500 || productDescription.value.trim === "") {
                     errorMessage='Product description must be between 10 to 80 word '
                     isValid = false
                 }

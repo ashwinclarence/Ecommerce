@@ -1,1 +1,5 @@
 .env
+
+
+# ignore all images files from uploads
+uploads/*
