@@ -148,7 +148,7 @@
 
                     <!-- input for product quantity -->
                     <label for="productQuantity">Product Quantity</label>
-                    <input type="number" name="productQuantity" min="1" max="100000" value="<%= product.productQuantity %>" required>
+                    <input type="number" name="productQuantity" min="0" max="100000" value="<%= product.productQuantity %>" required>
                    
                     <!-- input for product discount -->
                     <label for="productDiscount">Product Discount in percentage</label>
@@ -243,7 +243,7 @@
                     isValid = false;
                 }
 
-                if (isNaN(productQuantity.value) || parseInt(productQuantity.value) <= 0) {
+                if (isNaN(productQuantity.value) || parseInt(productQuantity.value) < 0) {
                     errorMessage='Product quality should be a number and it must be greater than zero'
                     isValid = false;
                 }

@@ -51,6 +51,18 @@
         align-items: center;
         justify-content: space-between;
     }
+    .product-out-offstock{
+        color: green;
+    }
+
+    .product-full-img-view {
+        width: 470px;
+        height: 470px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
     .product-full-view img {
         width: 400px;
@@ -71,7 +83,7 @@
 
     #right-arrow-img,
     #left-arrow-img {
-        scale: 2;
+        scale: 1.5;
         z-index: 3;
         transition: .3s ease-in-out;
         cursor: pointer;
@@ -79,7 +91,7 @@
 
     #right-arrow-img:hover,
     #left-arrow-img:hover {
-        scale: 1.9;
+        scale: 1.4;
     }
 
 
@@ -108,6 +120,23 @@
         cursor: pointer;
         color: orange;
     }
+
+    .product-coupons-section form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        justify-content: space-between;
+    }
+
+    .product-coupons-section form input {
+        width: 200px;
+        text-align: center;
+        border: 1px solid #8c8c8c;
+        border-radius: 10px;
+        padding: 5px;
+        font-size: 1.5rem;
+    }
 </style>
 
 <%- include('navbar') %>
@@ -121,8 +150,11 @@
             <div class="product-image-container">
                 <div class="product-full-view">
                     <i class="fa-solid fa-chevron-left" id="left-arrow-img"></i>
+                    <!-- the input holds the images from route and also the button is hidden -->
+                    <div class="product-full-img-view">
+                        <img src="../../<%= product.productImage[0] %>" alt="" id="product-image-img">
+                    </div>
                     <input type="text" name="image" value="<%= product.productImage %>" hidden>
-                    <img src="../../<%= product.productImage[0] %>" alt="" id="product-image-img">
                     <i class="fa-solid fa-chevron-right" id="right-arrow-img"></i>
                 </div>
                 <div class="product-image-array">
@@ -171,14 +203,26 @@
                     </h3>
 
                 </div>
+                <% if(product.productQuantity>0){ %>
                 <div class="product-action-buttons">
                     <button class="btn btn-warning">Add to Cart</button>
                     <button class="btn btn-danger">Buy Now</button>
                 </div>
+                <% }else{ %>
+                    <div class="product-out-offstock">
+                        <h5>Product is out of stock</h5>
+                    </div>
+                    <% } %>
                 <div class="product-description mt-5">
                     <p>
                         <%= product.productDescription %>
                     </p>
+                </div>
+                <div class="product-coupons-section">
+                    <form action="">
+                        <input type="text" placeholder="xxxx-xxxx-xxxx" required>
+                        <button class="btn btn-secondary">Apply Coupon</button>
+                    </form>
                 </div>
 
             </div>
@@ -188,41 +232,79 @@
         </div>
     </div>
 
+    <!-- if similar products exist in the collection then only then product is shown  -->
+    <% if(similarProducts.length!=0){ %>
+        <div class="similar-pro-container container ">
+            <h2>Similar Products</h2>
+            <%- include('similarProducts') %>
+        </div>
+        <% } %>
 
 
-    <%- include('footer') %>
+            <%- include('footer') %>
 
-        <script>
+                <script>
 
-            const rightArrow = document.getElementById('right-arrow-img')
-            const leftArrow = document.getElementById('left-arrow-img')
-            const productImg = document.getElementById('product-image-img')
-            let currentIndex = 0;
-            
-            const imageList=document.getElementsByName('image')[0].value
-            let ImageArray=imageList.split(",")
-            const maxlength=ImageArray.length-1
-           
+                    // image zoom effect
+                    const imageContainer = document.getElementsByClassName('product-full-img-view')[0]
+                    const productImg = document.getElementById('product-image-img')
 
-            rightArrow.addEventListener('click',()=>{
-                if(currentIndex===maxlength){
-                    rightArrow.disabled=true
-                }else{
-                    currentIndex=currentIndex+1;
-                    productImg.src=`../../${ImageArray[currentIndex]}`
-                }
-                
-            })
-            leftArrow.addEventListener('click',()=>{
-                if(currentIndex===0){
-                    leftArrow.disabled=true
-                }else{
-                    currentIndex=currentIndex-1;
-                    productImg.src=`../../${ImageArray[currentIndex]}`
-                }
+                    imageContainer.addEventListener("mousemove", (e) => {
+                        const rect = e.target.getBoundingClientRect();
+                        const x = (e.clientX - rect.left) / rect.width;
+                        const y = (e.clientY - rect.top) / rect.height;
 
-            })
+                        productImg.style.transformOrigin = `${x * 100}% ${y * 100}%`;
+                        productImg.style.transform = "scale(2)";
+                    });
 
-           
 
-        </script>
+
+                    imageContainer.addEventListener("mouseleave", () => {
+                        productImg.style.transformOrigin = "center"
+                        productImg.style.transform = "scale(1)"
+                    })
+
+
+
+
+                    const rightArrow = document.getElementById('right-arrow-img')
+                    const leftArrow = document.getElementById('left-arrow-img')
+
+                    // current index of the image array is first set as 0
+                    let currentIndex = 0;
+
+                    // image from backend is stored in a disabled input box
+                    const imageList = document.getElementsByName('image')[0].value
+
+                    // the imageList is get as string with commas then that is separated using the comma and added to an array
+                    let ImageArray = imageList.split(",")
+
+                    // find the length of the image array because of index starts with 0 array length is reduced by 1
+                    const maxlength = ImageArray.length - 1
+
+                    // event listener for right arrow
+                    rightArrow.addEventListener('click', () => {
+                        if (currentIndex === maxlength) {
+                            rightArrow.disabled = true
+                        } else {
+                            currentIndex = currentIndex + 1;
+                            productImg.src = `../../${ImageArray[currentIndex]}`
+                        }
+
+                    })
+
+                    // event listener for left arrow
+                    leftArrow.addEventListener('click', () => {
+                        if (currentIndex === 0) {
+                            leftArrow.disabled = true
+                        } else {
+                            currentIndex = currentIndex - 1;
+                            productImg.src = `../../${ImageArray[currentIndex]}`
+                        }
+
+                    })
+
+
+
+                </script>
