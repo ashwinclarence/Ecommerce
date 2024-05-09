@@ -7,7 +7,7 @@ const forgetPasswordController=require('../controller/userController/forgetPassw
 
 
 // login routes
-user.get('/',checkUserSession,userController.user)
+user.get('/',userController.user)
 user.get('/login',userController.login)
 user.post('/login',userController.loginPost)
 

@@ -119,7 +119,7 @@ const loginPost = async (req, res) => {
 
         } else {
             req.flash("errorMessage", `We couldn't find your user details. Please proceed with registration to access our services.`)
-            res.render('user/login')
+            res.redirect('/user/login')
         }
 
 
@@ -218,25 +218,30 @@ const otpResend = (req, res) => {
 
 // render the home page using with products and categories
 const home = async (req, res) => {
+    try {
+        // if user selected a particular category then that items are shown
+        // if user selected a category it is passed as a query using ?:
+        const selectedCategory = req.query.category || '';
 
-    // if user selected a particular category then that items are shown
-    // if user selected a category it is passed as a query using ?:
-    const selectedCategory = req.query.category || '';
+        let products;
 
-    let products;
+        // if the user didn't selected a particular category then all product are displayed 
+        if (selectedCategory === '') {
 
-    // if the user didn't selected a particular category then all product are displayed 
-    if (selectedCategory === '') {
+            products = await productSchema.find({ isActive: true })
+        } else {
 
-        products = await productSchema.find({ isActive: true })
-    } else {
+            // if the user selected a particular product then display them only
+            products = await productSchema.find({ productCategory: selectedCategory, isActive: true })
+        }
+        const category = await categorySchema.find({ isActive: true })
 
-        // if the user selected a particular product then display them only
-        products = await productSchema.find({ productCategory: selectedCategory, isActive: true })
+        res.render('user/home', { title: 'User Home', products, category, alertMessage: req.flash('errorMessage') })
+
+    } catch (err) {
+        console.log(`Error rendering home page ${err}`);
     }
-    const category = await categorySchema.find({ isActive: true })
 
-    res.render('user/home', { title: 'User Home', products, category, alertMessage: req.flash('errorMessage') })
 
 }
 

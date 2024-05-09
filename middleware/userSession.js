@@ -1,18 +1,34 @@
-const userSchema = require("../model/userSchema")
+const userSchema = require("../model/userSchema");
 
+async function checkUserSession(req, res, next) {
+    try {
+        if (!req.session.user) {
+            // User is not logged in, redirect to login
+            return res.redirect('/user/login');
+        }
 
-async function  checkUserSession (req,res,next){
+        const userDetails = await userSchema.findOne({ email: req.session.user });
 
-    // if the user is in the session and he is not blocked by the admin then next is called else redirect to login
+        if (!userDetails) {
+            // User details not found, redirect to login
+            return res.redirect('/user/login');
+        }
 
-    const userDetails=await userSchema.findOne({email:req.session.user})
+        if (userDetails.isBlocked) {
 
-    if(req.session.user && userDetails.isBlocked===false){
-        next()
-    }else{
-        res.redirect('/user/login')
+            // destroy the session if the user si blocked
+            req.session.destroy()
+            // User is blocked by admin, redirect to login
+            return res.redirect('/user/login');
+        }
+
+        // User is logged in and not blocked, proceed to next middleware
+        next();
+
+    } catch (err) {
+        // Handle any errors
+        console.error(`Error in checkUserSession middleware ${err}`);
     }
 }
 
-
-module.exports=checkUserSession
+module.exports = checkUserSession;
