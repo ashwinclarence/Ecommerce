@@ -20,7 +20,7 @@ const signup = (req, res) => {
         if (req.session.user) {
             res.redirect('/user/home')
         } else {
-            res.render('user/register', { title: "Signup", alertMessage: req.flash('errorMessage') })
+            res.render('user/register', { title: "Signup", alertMessage: req.flash('errorMessage'),user:req.session.user })
         }
     } catch (err) {
         console.log(`Error during signup page render`);
@@ -85,7 +85,7 @@ const login = (req, res) => {
     if (req.session.user) {
         res.redirect('/user/home')
     } else {
-        res.render('user/login', { title: 'Login', alertMessage: req.flash('errorMessage') })
+        res.render('user/login', { title: 'Login', alertMessage: req.flash('errorMessage'),user:req.session.user })
     }
 }
 
@@ -134,7 +134,7 @@ const loginPost = async (req, res) => {
 // OTP generator page rendering
 const otp = (req, res) => {
     try {
-        res.render('user/OTP', { title: "OTP verification", emailAddress: req.session.email, alertMessage: req.flash('errorMessage'), otpExpireTime: req.session.otpExpireTime })
+        res.render('user/OTP', { title: "OTP verification", emailAddress: req.session.email, alertMessage: req.flash('errorMessage'), otpExpireTime: req.session.otpExpireTime,user:req.session.user })
 
     } catch (err) {
         console.log(`Error occurred during otp verification ${err}`)
@@ -236,7 +236,7 @@ const home = async (req, res) => {
         }
         const category = await categorySchema.find({ isActive: true })
 
-        res.render('user/home', { title: 'User Home', products, category, alertMessage: req.flash('errorMessage') })
+        res.render('user/home', { title: 'User Home', products, category, alertMessage: req.flash('errorMessage'),user:req.session.user })
 
     } catch (err) {
         console.log(`Error rendering home page ${err}`);
@@ -250,12 +250,12 @@ const home = async (req, res) => {
 
 const wishlist = (req, res) => {
 
-    res.render('user/wishlist', { title: "Wishlist", alertMessage: req.flash('errorMessage') })
+    res.render('user/wishlist', { title: "Wishlist", alertMessage: req.flash('errorMessage'),user:req.session.user })
 
 }
 const cart = (req, res) => {
 
-    res.render('user/cart', { title: "cart", alertMessage: req.flash('errorMessage') })
+    res.render('user/cart', { title: "cart", alertMessage: req.flash('errorMessage'),user:req.session.user })
 
 }
 

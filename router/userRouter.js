@@ -45,7 +45,7 @@ user.get('/wishlist',checkUserSession,userController.wishlist)
 user.get('/cart',checkUserSession,userController.cart)
 
 // logout
-user.get('/logout',checkUserSession,userController.logout)
+user.get('/logout',userController.logout)
 
 
 module.exports=user;

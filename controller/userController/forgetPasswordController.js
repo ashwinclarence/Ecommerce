@@ -8,7 +8,7 @@ const bcrypt = require('bcrypt')
 const forgetPassword = async (req, res) => {
     try {
 
-        res.render('user/forgetPassword', { title: "Forget Password", alertMessage: req.flash('errorMessage') })
+        res.render('user/forgetPassword', { title: "Forget Password", alertMessage: req.flash('errorMessage'),user:req.session.user })
 
     } catch (err) {
         console.log(`Error during rendering forget password page ${err}`);
@@ -19,7 +19,12 @@ const forgetPassword = async (req, res) => {
 // forget password post
 const forgetPasswordPost = async (req, res) => {
     try {
-        const checkEmail = await userSchema.find({ email: req.body.email })
+        const checkEmail = await userSchema.findOne({ email: req.body.email })
+
+        if(checkEmail.isBlocked){
+            req.flash('errorMessage', 'Access to this account has been restricted. Please reach out to the administrator for further assistance and guidance on the next steps."')
+            return res.redirect('/user/login')
+        }
 
         // generate otp from services/generateOTP.js file
         const otp = generateOTP();
@@ -51,7 +56,7 @@ const forgetPasswordOtp = (req, res) => {
         if (req.session.user) {
             res.redirect('/user/home')
         } else {
-            res.render('user/forgetPasswordOTP', { title: "OTP", alertMessage: req.flash('errorMessage'), emailAddress: req.session.email, otpExpireTime: req.session.otpExpireTime })
+            res.render('user/forgetPasswordOTP', { title: "OTP", alertMessage: req.flash('errorMessage'), emailAddress: req.session.email, otpExpireTime: req.session.otpExpireTime,user:req.session.user })
         }
     } catch (err) {
         console.log(`Error during OTP page for forget password page render ${err}`);
@@ -67,7 +72,7 @@ const forgetPasswordOtpPost = async (req, res) => {
         } else {
             if (req.session.otp !== undefined) {
                 if (req.body.otp === req.session.otp) {
-                    res.render('user/newPassword', { title: "New Password", alertMessage: req.flash('errorMessage') })
+                    res.render('user/newPassword', { title: "New Password", alertMessage: req.flash('errorMessage') ,user:req.session.user})
                 } else {
                     req.flash('errorMessage', 'Invalid OTP');
                     res.redirect('/user/login')

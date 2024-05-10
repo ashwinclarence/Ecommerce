@@ -20,7 +20,7 @@ const productView=async (req,res)=>{
         return res.redirect('/user/home')
     }
 
-    res.render('user/productDetail',{title:product.productBrand,product,similarProducts,alertMessage:req.flash('errorMessage')})
+    res.render('user/productDetail',{title:product.productBrand,product,similarProducts,alertMessage:req.flash('errorMessage'),user:req.session.user})
 
 
 

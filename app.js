@@ -25,7 +25,6 @@ const nocache=require('nocache')
 const flash=require('connect-flash')
 
 
-
 // if port number from .env file is not read then 3000 is used as the default port
 const port = process.env.PORT || 3000;
 
@@ -42,8 +41,8 @@ app.use(nocache())
 // flash message 
 app.use(flash())
 
+// made the uploads file static
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
 
 
 // Serving static files
@@ -73,22 +72,16 @@ app.set('views', path.join(__dirname, 'views'));
 // First Route
 app.get('/', (req, res) => {
 
-    if(req.session && req.session.admin){
-        res.redirect('/admin/dashboard')
-    }else{
-        if(req.session.user){
-            res.redirect('/user/home')
-        }else{
-            res.redirect('/user/login');
-        }
-    }
-   
-    // if(req.session.user){
-    //     res.render('user/home')
+    // if(req.session && req.session.admin){
+    //     res.redirect('/admin/dashboard')
     // }else{
-    //     res.render('admin/login',{title:"Admin Login"});
+    //     if(req.session.user){
+    //         res.redirect('/user/home')
+    //     }else{
+    //         res.redirect('/user/login');
+    //     }
     // }
-    
+    res.redirect('/user/home')
 });
 
 
