@@ -6,7 +6,7 @@ const userController=require('../controller/userController/userController')
 const forgetPasswordController=require('../controller/userController/forgetPasswordController')
 const productController=require('../controller/userController/productController')
 const profileController=require('../controller/userController/profileController')
-
+const orderController=require('../controller/userController/orderController')
 // login routes
 user.get('/',userController.user)
 user.get('/login',userController.login)
@@ -47,6 +47,10 @@ user.get('/product-view/:id',checkUserBlocked,productController.productView)
 // profile route
 // if user is blocked in and the session is not there then user is redirect to login page
 user.get('/profile',checkUserSession,profileController.profileView)
+
+// order route
+user.get('/orders',checkUserSession,orderController.order)
+user.get('/cancelled-orders',checkUserSession,orderController.cancelledOrder)
 
 
 // wishlist

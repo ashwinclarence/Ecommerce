@@ -1,10 +1,226 @@
+<style>
+    .profile-container {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 3rem;
+        padding: 5rem 0;
+    }
 
+    .profile-box {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        border: 2px solid #e1e0e0;
+        background: url('../../image/profile-banner2.png');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        border-radius: 10px;
+        padding: 2rem;
+        gap: 3rem;
+    }
+
+    .left-profile-box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+
+    }
+
+    .profile-image-box {
+        width: 250px;
+        height: 250px;
+        border-radius: 50%;
+        overflow: hidden;
+        background-color: #ffffff;
+
+    }
+
+    .profile-image-box img {
+        width: 250px;
+        height: 250px;
+        object-fit: cover;
+    }
+
+    .right-profile-box {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 1rem;
+
+    }
+
+    /* add address modal */
+
+    #add-address-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        padding: 2rem;
+    }
+
+    #add-address-form input {
+        padding: .5rem;
+        border: 1px solid #aaaaaa;
+        border-radius: 5px;
+    }
+
+    .add-address-box {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .added-address-details {
+        display: grid;
+        grid-template-columns: auto auto;
+        gap: 2rem;
+    }
+
+    .added-inner-address {
+        display: flex;
+        gap: 1rem;
+        border: 2px solid #aaaaaa;
+        padding: 10px;
+        border-radius: 10px;
+    }
+
+    .profile-add-address-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3rem;
+    }
+
+    .address-actions {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 1rem;
+    }
+</style>
 
 <%- include('navbar') %>
 
-<div class="profile-container">
-    <div class="profile-left"></div>
-    <div class="profile-right"></div>
-</div>
+    <div class="profile-container container">
+        <div class="profile-box">
+            <div class="left-profile-box">
+                <div class="profile-image-box">
+                    <img src="../../image/user.png" alt="">
+                </div>
+                <button class="btn btn-warning">Update Profile</button>
 
-<%- include('footer') %>
+            </div>
+            <div class="right-profile-box">
+                <h1>
+                    <%= userDetail.name %>
+                </h1>
+                <h6><i class="fa-solid fa-envelope"></i>
+                    <%= userDetail.email %>
+                </h6>
+                <h6><i class="fa-solid fa-phone"></i>
+                    <%= userDetail.phone %>
+                </h6>
+                <h6><i class="fa-solid fa-location-dot"></i> location</h6>
+            </div>
+        </div>
+
+        <!-- second row of profile page with user address -->
+        <div class="profile-add-address-container">
+            <!-- Large modal for adding address-->
+            <button class="btn btn-primary" type="button" data-toggle="modal" data-target=".add-new-address-modal">Add
+                address</button>
+
+            <!-- address section -->
+            <div class="added-address-details">
+
+                <% if(userDetail.address){ %>
+                    <% userDetail.address.forEach((address,index)=>{ %>
+                        <div class="added-inner-address">
+                            <div class="address-content">
+                                <h5>Address <%= index+1 %>
+                                </h5>
+                                <ul>
+                                    <li>
+                                        <%= address.contactName %>
+                                    </li>
+                                    <li>
+                                        <%= address.pincode %>
+                                    </li>
+                                    <li>
+                                        <%= address.houseAddress %>
+                                    </li>
+                                    <li>
+                                        <%= address.areaAddress %>
+                                    </li>
+                                    <li>
+                                        <%= address.landmark %>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="address-actions">
+                                <button class="btn btn-warning"><i class="fa-solid fa-pen"></i></button>
+                                <button class="btn btn-danger"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <% }) %>
+                            <% } %>
+
+            </div>
+
+
+            <!-- new address adding modal -->
+            <div class="modal fade add-new-address-modal" tabindex="-1" role="dialog"
+                aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content ">
+                        <div class="modal-body">
+                            <form action="/user/add-address" method="post" id="add-address-form">
+                                <h2 class="text-center">Add Address</h2>
+                                <div class="add-address-box">
+                                    <label for="contact-name">Contact user name</label>
+                                    <input type="text" name="name" id="contact-name">
+                                </div>
+                                <div class="add-address-box">
+                                    <label for="address-pincode">Pincode</label>
+                                    <input type="text" name="pincode" id="address-pincode" placeholder="XXXXXX">
+                                </div>
+                                <div class="add-address-box">
+                                    <label for="address-house">Flat, House no., Building, Company, Apartment</label>
+                                    <input type="text" name="addressHome" id="address-house" maxlength="100">
+                                </div>
+                                <div class="add-address-box">
+                                    <label for="address-area">Area, Street, Sector, Village</label>
+                                    <input type="text" name="addressArea" id="address-area" maxlength="100">
+                                </div>
+
+                                <div class="add-address-box">
+                                    <label for="address-landmark">Landmark</label>
+                                    <input type="text" name="addressLandmark" id="address-landmark" maxlength="100"
+                                        placeholder="near international airport">
+                                </div>
+                                <div class="text-center">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+
+                                    <button class="btn btn-success" type="submit">Add Address</button>
+                                </div>
+
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+        </div>
+    </div>
+
+    <%- include('footer') %>

@@ -8,6 +8,7 @@
         /* border-bottom: 1px solid #b7b7b7; */
         box-shadow: 1px 1px 5px #d7d7d7;
         z-index: 99;
+        position: relative;
     }
 
     .logo {
@@ -19,7 +20,9 @@
 
     .admin-navlinks {
         display: flex;
+        align-items: center;
         gap: 2rem;
+        cursor: pointer;
     }
 
     .admin-navlinks a {
@@ -47,8 +50,66 @@
     .navbar-search-box button i {
         color: #d7d7d7;
     }
-    .nav-link-items{
+
+    .nav-link-items {
         scale: 1.3;
+    }
+
+    /* side bar  */
+    .sidebar {
+        height: 100%;
+        width: 250px;
+        position: fixed;
+        top: 0;
+        right: -250px;
+        background-color: #f8f8f8;
+        transition: right 0.3s ease;
+        box-shadow: 0 0 20px #000000;
+        z-index: 10;
+    }
+
+    .sidebar ul {
+        color: #000000;
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        margin-top: 2rem;
+
+    }
+
+    .sidebar ul li {
+        width: 90%;
+        padding: 10px;
+        cursor: pointer;
+        border-radius: 10px;
+        font-weight: 700;
+        transition: .3s ease-in-out;
+    }
+
+    .sidebar ul li:hover {
+        border: 1px solid #bcbcbc;
+    }
+
+    .sidebar ul li a {
+        display: block;
+        width: 100%;
+        text-decoration: none;
+        color: #000000;
+    }
+
+    .toggle-btn {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+    }
+
+    #go-back-home {
+        background-color: #707070;
+        color: #ffffff;
     }
 </style>
 
@@ -62,13 +123,27 @@
     <nav class="admin-navlinks">
         <a href="/user/wishlist" class="nav-link-items"><i class="fa-solid fa-heart"></i></a>
         <a href="/user/cart" class="nav-link-items"><i class="fa-solid fa-cart-shopping"></i></a>
-        <a href="/user/profile" class="nav-link-items"><i class="fa-solid fa-user"></i></a>
-        <!-- <a href="/user/logout" class="nav-link-items"><i class="fa-solid fa-right-from-bracket"></i></a> -->
+
+        <!-- if user is logged in -->
         <% if (user) { %>
-            <a href="/user/logout" class="nav-link-items">Logout</a>
-        <% } else { %>
-            <a href="/user/login" class="nav-link-items">Login</a>
-        <% } %>
+            <span class="nav-link-items" onclick="toggleSidebar()"><i class="fa-solid fa-user"></i></span>
+            <div class="sidebar" id="sidebar">
+                <ul>
+                    <li id="go-back-home" onclick="toggleSidebar()"><span><i class="fa-solid fa-angles-left"></i> Go
+                            back</span></li>
+                    <li><a href="/user/profile"><i class="fa-solid fa-user"></i> Profile</a></li>
+                    <li><a href="/user/orders"><i class="fa-solid fa-box-open"></i> Orders</a></li>
+                    <li><a href="/user/cancelled-orders"><i class="fa-solid fa-trash-can"></i> Canceled Orders</a></li>
+                    <li><a href="/user/forget-password"><i class="fa-solid fa-lock"></i> Reset Password</a></li>
+                    <li><a href="/user/logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+                </ul>
+            </div>
+            <% } else { %>
+                <a href="/user/login" class="btn btn-outline-secondary">Login</a>
+                <% } %>
+
+
+
 
     </nav>
 </header>
@@ -76,3 +151,15 @@
 <!-- alert bar -->
 <%- include('alert')%>
 
+    <script>
+        // toggle side bar
+        function toggleSidebar() {
+            var sidebar = document.getElementById("sidebar");
+            if (sidebar.style.right === "-250px") {
+                sidebar.style.right = "0";
+            } else {
+                sidebar.style.right = "-250px";
+            }
+        }
+
+    </script>

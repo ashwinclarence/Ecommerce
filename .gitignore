@@ -3,3 +3,7 @@
 
 # ignore all images files from uploads
 uploads/*
+
+
+#message to remember during route handling
+imp.txt

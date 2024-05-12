@@ -1,0 +1,116 @@
+<style>
+    .order-container {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        padding: 5rem 0;
+        gap: 2rem;
+    }
+
+    /* each order box */
+    .order-box {
+        display: flex;
+        flex-direction: column;
+        border-radius: 10px;
+        border: 2px solid #b0b0b0;
+        padding: 1rem;
+    }
+
+    .order-placed-details {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 3px solid #dcdcdc;
+        padding: 1rem;
+    }
+
+    .order-placed-details-inner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .order-item-details {
+        display: grid;
+        grid-template-columns: auto auto auto;
+        gap: 1rem;
+        padding-top: 1rem;
+
+    }
+
+ 
+
+    .ordered-product-image-box {
+        width: 150px;
+        height: 150px;
+        overflow: hidden;
+    }
+
+    .ordered-product-image-box img {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+    }
+</style>
+
+
+
+
+
+<%- include('navbar') %>
+    <div class="order-container container">
+            <div class="order-header">
+                <h2>Cancelled Orders</h2>
+            </div>
+
+
+            <!-- each orders -->
+            <div class="order-box">
+                <div class="order-placed-details">
+                    <div class="order-placed-details-inner">
+                        <small>Order Placed</small>
+                        <b>11/05/2023</b>
+                    </div>
+                    <div class="order-placed-details-inner">
+                        <small> Quantity</small>
+                        <b>1</b>
+                    </div>
+                    <div class="order-placed-details-inner">
+                        <small> Total</small>
+                        <b>&#8377; 1299</b>
+                    </div>
+                    <div class="order-placed-details-inner">
+                        <small>shipping address</small>
+                        <b>ASHWIN CLARENCE</b>
+                    </div>
+                    <div class="order-placed-details-inner">
+                        <small>Order Status</small>
+                        <b>Cancelled</b>
+                    </div>
+                </div>
+                <div class="order-item-details">
+                    <div class="order-item-details-inner">
+                        <div class="ordered-product-image-box">
+                            <img src="../../image/r1.jpg">
+                        </div>
+                    </div>
+                    <div class="order-item-details-inner">
+                        <h6>adidas</h6>
+                        <h6>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Officiis reprehenderit laudantium
+                            saepe optio ea quis sequi? Mollitia quae est, at aspernatur alias reprehenderit non impedit
+                            tempore quasi quam incidunt sequi.</h6>
+                    </div>
+                    <div class="order-item-details-inner">
+                        <h6>Reason for cancellation</h6>
+                        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Necessitatibus, praesentium provident ex, dolorem obcaecati voluptas, cumque nulla soluta debitis impedit sunt magni enim? Eligendi eius delectus, natus saepe esse facere!</p>
+                    </div>
+                </div>
+            </div>
+            <!-- each order end -->
+          
+
+
+
+    </div>
+    <%- include('footer') %>

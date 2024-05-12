@@ -4,6 +4,7 @@
     
     function checkAdminSession(req,res,next){
         if(req.session.admin){
+            // if admin is present in session then redirect to next route
             next()
         }else{
             res.redirect('/admin/login')
