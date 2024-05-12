@@ -1,10 +1,11 @@
 const express=require('express')
 const user=express.Router();
 const checkUserSession=require('../middleware/userSession')
+const checkUserBlocked=require('../middleware/userSectionBlocked')
 const userController=require('../controller/userController/userController')
 const forgetPasswordController=require('../controller/userController/forgetPasswordController')
 const productController=require('../controller/userController/productController')
-
+const profileController=require('../controller/userController/profileController')
 
 // login routes
 user.get('/',userController.user)
@@ -34,13 +35,21 @@ user.post('/new-password',forgetPasswordController.updatePassword)
 
 
 
-// home
-user.get('/home',checkUserSession,userController.home)
+// home route
+// if the user is blocked then the user is redirect to login page
+user.get('/home',checkUserBlocked,userController.home)
 
-// product
-user.get('/product-view/:id',checkUserSession,productController.productView)
+// product route
+// if the user is blocked then the user is redirect to login page
+user.get('/product-view/:id',checkUserBlocked,productController.productView)
 
 
+// profile route
+// if user is blocked in and the session is not there then user is redirect to login page
+user.get('/profile',checkUserSession,profileController.profileView)
+
+
+// wishlist
 user.get('/wishlist',checkUserSession,userController.wishlist)
 user.get('/cart',checkUserSession,userController.cart)
 

@@ -100,7 +100,7 @@ const loginPost = async (req, res) => {
         const checkUser = await userSchema.findOne({ email: req.body.username })
         if (checkUser != null) {
             if (checkUser.isBlocked) {
-                req.flash('errorMessage', 'Access to this account has been restricted. Please reach out to the administrator for further assistance and guidance on the next steps."')
+                req.flash('errorMessage', 'Access to this account has been restricted. Please reach out to the administrator for further assistance and guidance on the next steps.')
                 res.redirect('/user/login')
             } else {
                 // check the entered password in login form and data stored in user collection is same
@@ -161,19 +161,19 @@ const otpPost = async (req, res) => {
                 await userSchema.insertMany(registerDetails).then(() => {
                     console.log('New user registration successful')
                     req.flash('errorMessage', 'user registration successful');
-                    res.redirect('user/login')
+                    res.redirect('/user/login')
                 }).catch((err) => {
                     console.log(`Error occurred while user registration ${err}`);
                 })
             } else {
                 req.flash('errorMessage', 'It appears the OTP you entered is invalid. Please ensure you enter the OTP correctly.')
-                res.redirect('user/OTP')
+                res.redirect('/user/OTP')
             }
 
             // if otp is not in the session an alert message is displayed
         } else {
             req.flash('errorMessage', 'An error occurred during OTP generation, please kindly retry.')
-            res.redirect('user/register')
+            res.redirect('/user/register')
         }
 
 

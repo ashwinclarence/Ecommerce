@@ -4,11 +4,11 @@ async function checkUserSession(req, res, next) {
     try {
 
         const userDetails = await userSchema.findOne({ email: req.session.user });
-        if(req.session.user && userDetails && userDetails.isBlocked){
+        if(req.session.user && userDetails && !userDetails.isBlocked){
+            next();
+        }else{
             req.session.user=""
             res.redirect('/user/login')
-        }else{
-            next();
         }
        
     } catch (err) {
