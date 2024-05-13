@@ -1,0 +1,185 @@
+<style>
+    .product-filter-container {
+        display: flex;
+        gap: 2rem;
+
+    }
+
+    .product-filter-box form {
+        display: flex;
+        flex-direction: column;
+        width: 200px;
+        gap: 1rem;
+        padding: 1rem 2rem;
+    }
+
+    .rating-filter {
+        color: orange;
+        font-size: 25px;
+    }
+
+    .product-filter-inner {
+        text-transform: capitalize;
+    }
+
+    .product-filter-price {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .product-filter-price input {
+        border: 1px solid #a3a3a3;
+        padding: .5rem;
+        border-radius: 10px;
+    }
+
+    .product-section-right {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
+</style>
+
+
+
+
+
+<%- include('navbar') %>
+
+    <div class="product-filter-container">
+        <div class="product-filter-box mt-5">
+            <form action="/user/filter-products/" method="get" id="product-filter-form">
+                <div class="product-filter-inner">
+                    <input type="checkbox" name="newArrivals" value="1" id="new-arrivals">
+                    <label for="new-arrivals">New Arrivals</label>
+                </div>
+                <!-- <div class="product-filter-inner">
+                    <input type="checkbox" name="popularProduct" value="1" id="popular-product">
+                    <label for="popular-product">Popular</label>
+                </div> -->
+
+                <div>
+                    <div class="product-filter-price">
+                        <input type="number" name="minPrice" placeholder="Min Price">
+                        <input type="number" name="maxPrice" placeholder="Max Price">
+                    </div>
+                </div>
+                <div class="product-filter-inner">
+                    <b>Discount Sort</b>
+                </div>
+                <div>
+                    <div class="product-filter-inner">
+                        <input type="radio" name="discountSort" value="0" id="Discount-sort-low">
+                        <label for="Discount-sort-low">MIN - MAX</label>
+                    </div>
+                    <div class="product-filter-inner">
+                        <input type="radio" name="discountSort" value="1" id="Discount-sort-high">
+                        <label for="Discount-sort-high">MAX - MIN</label>
+                    </div>
+                </div>
+
+                <div class="product-filter-inner">
+                    <b>Rating Filter</b>
+                </div>
+                <div>
+                    <div class="product-filter-inner">
+                        <input type="radio" name="ratingFilter" value="5" id="rating-filter5">
+                        <label for="rating-filter5" class="rating-filter">&starf;&starf;&starf;&starf;&starf;</label>
+                    </div>
+                    <div class="product-filter-inner">
+                        <input type="radio" name="ratingFilter" value="4" id="rating-filter4">
+                        <label for="rating-filter4" class="rating-filter">&starf;&starf;&starf;&starf;&star;</label>
+                    </div>
+                    <div class="product-filter-inner">
+                        <input type="radio" name="ratingFilter" value="3" id="rating-filter3">
+                        <label for="rating-filter3" class="rating-filter">&starf;&starf;&starf;&star;&star;</label>
+                    </div>
+                    <div class="product-filter-inner">
+                        <input type="radio" name="ratingFilter" value="2" id="rating-filter2">
+                        <label for="rating-filter2" class="rating-filter">&starf;&starf;&star;&star;&star;</label>
+                    </div>
+                    <div class="product-filter-inner">
+                        <input type="radio" name="ratingFilter" value="1" id="rating-filter1">
+                        <label for="rating-filter1" class="rating-filter">&starf;&star;&star;&star;&star;</label>
+                    </div>
+                </div>
+                <div class="product-filter-inner">
+                    <b>Category</b>
+                </div>
+                <div>
+                    <% category.forEach((category)=>{ %>
+                        <div class="product-filter-inner">
+                            <input type="radio" name="category" value="<%= category.categoryName %>"
+                                id="rating-sort-high">
+                            <label for="rating-sort-high">
+                                <%= category.categoryName %>
+                            </label>
+                        </div>
+                        <% }) %>
+                </div>
+
+
+                <button class="btn btn-primary">Apply Filter</button>
+            </form>
+
+        </div>
+        <div class="product-section-right">
+
+            <% if(products.length===0){ %>
+                <%- include('noProduct') %>
+                    <% }else{ %>
+                        <%- include('products') %>
+
+                            <% } %>
+
+        </div>
+    </div>
+    <%- include('footer') %>
+
+        <script>
+            const productFilterForm = document.getElementById('product-filter-form')
+            const minPrice = document.getElementsByName('minPrice')[0]
+            const maxPrice = document.getElementsByName('maxPrice')[0]
+
+
+            // event listener for form submission
+            productFilterForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                // validation for min price and max price
+                if (isNaN(minPrice.value) || isNaN(maxPrice.value) || minPrice.value < 0) {
+                    // if validation fail then fire an alert 
+                    Swal.fire({
+                        icon: "error",
+                        title: "Price should be a number",
+                        text: "Please make sure that the price is a number and is between 0 and 100000",
+                    })
+                } else {
+                    // if min price is greater than maximum price then fire an alert
+                    if (parseInt(minPrice.value) > parseInt(maxPrice.value)) {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Price logic error",
+                            text: "Min price should be less than Max price"
+                        })
+                    } else {
+                        // if validation passes then fire an alert that sort is success
+                        Swal.fire({
+                            icon: "success",
+                            title: "Product Sorted",
+                            showConfirmButton: false,
+                            timer: 1000
+                        })
+
+                        // after 1 second submit the form
+                        setTimeout(() => {
+                            productFilterForm.submit()
+                        }, 1000);
+                    }
+                }
+
+            })
+
+
+        </script>

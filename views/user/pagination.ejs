@@ -1,0 +1,59 @@
+<style>
+    .pagination-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        gap: 2rem;
+    }
+
+    .pagination-container .btn {
+        width: 100px;
+    }
+</style>
+
+
+<div class="pagination-container">
+    <form action="" method="get" id="pagination-form">
+        <!-- Previous button -->
+        <button class="btn btn-secondary" name="page" type="submit">Previous</button>
+        <!-- Next button -->
+        <button class="btn btn-dark" name="page" type="submit">Next</button>
+    </form>
+</div>
+
+
+
+
+<script>
+
+
+    // Function to get the value of a query parameter from the URL
+    function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+    }
+
+
+    // get the current page number and convert to integer 
+    const currentPage = parseInt(getQueryParam('page')) || 0
+
+    const paginationForm = document.getElementById('pagination-form')
+    const previousButton = document.getElementsByName('page')[0]
+    const nextButton = document.getElementsByName('page')[1]
+
+    // add action for next button for incrementing the page number
+    nextButton.addEventListener('click', () => {
+        nextButton.value = currentPage + 1
+    })
+
+    // add action for previous button for decrementing the page number
+    previousButton.addEventListener('click', () => {
+        if (currentPage > 0) {
+            previousButton.value = currentPage - 1
+        } else {
+            previousButton.value = 0
+        }
+    })
+
+
+</script>

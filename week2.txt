@@ -9,6 +9,7 @@ Cart management (Add to cart, list products in cart, remove products from cart)
 Qty (add to cart) should be controlled based on stocks left
 Handle maximum qty per person to add to cart for a product 
 Out of stock product need to shown or hidden based on filter
+
 Advanced search with sort based on 
 Popularity 
 Price: low to high
@@ -18,6 +19,9 @@ Featured
 New arrivals 
 aA - zZ 
 zZ - aA 
+
+
+
 Checkout page(Multiple address,edit and saved address)
 Place order with Cash on Delivery(Address selection)
 Stocks left - should be shown in product listing and product details page

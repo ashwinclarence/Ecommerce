@@ -2,33 +2,16 @@
     .products-container {
         padding: 2rem 0;
         margin-bottom: 5rem;
-    }
-
-    .products-category-container {
         display: flex;
-        justify-content: space-around;
-        /* align-items: center; */
-        font-family: "Roboto", sans-serif;
-        /* background-color: #d0d0d0; */
-        /* padding: 1rem 0; */
-        flex-wrap: wrap;
-        gap: 2rem;
+        flex-direction: column;
+        gap: 5rem;
     }
 
-    .products-category-container a {
-        cursor: pointer;
-        transition: .3s ease-in-out;
-        text-decoration: none;
-        color: #000000;
-    }
-
-    .products-category-container a:hover {
-        scale: 1.1;
-    }
-
+    
     .products-list-box {
         display: flex;
         flex-direction: row;
+        gap: 1rem;
         flex-wrap: wrap;
         justify-content: space-around;
     }
@@ -93,18 +76,7 @@
 </style>
 
 <div class="products-container">
-    <div class="products-category-container container">
 
-        <% category.forEach((item)=>{ %>
-            <% if(item.isActive) { %>
-                <a href="/user/home/?category=<%= item.categoryName %>" class="category-name">
-                    <%- item.categoryName %>
-                </a>
-                <% } %>
-
-                    <% }) %>
-
-    </div>
     <div class="products-list-box container">
 
         <!-- this will render each product on the product collection which is not blocked -->
@@ -131,7 +103,7 @@
 
                         <!-- image of product which is stored in uploads folder -->
                             <div class="product-image-box">
-                                <img src="/<%= product.productImage[0] %>" alt="">
+                                <img src="/<%= product.productImage[0] %>" loading="lazy">
                             </div>
                             <!-- product description with text overflow as ... -->
                             <div class="product-description-box">
@@ -154,7 +126,9 @@
 
 
     </div>
+   <%- include("pagination")%>
 </div>
+
 
 
 <!-- <script>

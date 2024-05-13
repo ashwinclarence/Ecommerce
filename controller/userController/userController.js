@@ -223,17 +223,10 @@ const home = async (req, res) => {
         // if user selected a category it is passed as a query using ?:
         const selectedCategory = req.query.category || '';
 
-        let products;
-
-        // if the user didn't selected a particular category then all product are displayed 
-        if (selectedCategory === '') {
-
-            products = await productSchema.find({ isActive: true })
-        } else {
-
-            // if the user selected a particular product then display them only
-            products = await productSchema.find({ productCategory: selectedCategory, isActive: true })
-        }
+        // using regex the selectedCategory is sorted
+        const products = await productSchema.find({ productCategory: { $regex: selectedCategory , $options: 'i' }, isActive: true });
+        
+        // find all category which is active
         const category = await categorySchema.find({ isActive: true })
 
         res.render('user/home', { title: 'User Home', products, category, alertMessage: req.flash('errorMessage'),user:req.session.user })

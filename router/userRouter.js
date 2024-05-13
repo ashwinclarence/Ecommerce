@@ -42,6 +42,7 @@ user.get('/home',checkUserBlocked,userController.home)
 // product route
 // if the user is blocked then the user is redirect to login page
 user.get('/product-view/:id',checkUserBlocked,productController.productView)
+user.get('/filter-products',checkUserBlocked,productController.filterProduct)
 
 
 // profile route

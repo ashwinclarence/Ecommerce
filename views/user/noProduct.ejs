@@ -1,0 +1,28 @@
+<style>
+    .product-not-found-container {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        gap: 3rem;
+        align-items: center;
+        justify-content: center;
+        color: #adadad;
+        width: 100vh;
+    }
+</style>
+
+
+<!-- this page is to display if no product is available at the particular category instead of plain page -->
+<div class="product-not-found-container">
+    <h2>No Product found</h2>
+    <button onclick="showProducts()" class="btn btn-primary">View Other Products</button>
+</div>
+
+
+<script>
+
+    // function to remove and query in the url and show only the path
+    function showProducts() {
+        window.location = window.location.pathname
+    }
+</script>
