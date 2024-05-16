@@ -83,7 +83,8 @@
 
     .added-inner-address {
         display: flex;
-        gap: 1rem;
+        justify-content: space-between;
+        gap: 2rem;
         border: 2px solid #aaaaaa;
         padding: 10px;
         border-radius: 10px;
@@ -102,6 +103,14 @@
         flex-direction: column;
         justify-content: center;
         gap: 1rem;
+    }
+
+    .profile-actions {
+        display: flex;
+        justify-content: space-evenly;
+        width: 100%;
+        gap: 4rem;
+        padding: 3rem 0;
     }
 </style>
 
@@ -132,46 +141,67 @@
 
         <!-- second row of profile page with user address -->
         <div class="profile-add-address-container">
-            <!-- Large modal for adding address-->
-            <button class="btn btn-primary" type="button" data-toggle="modal" data-target=".add-new-address-modal">Add
-                address</button>
+            <div class="profile-actions">
+                <!-- button for showing the modal of adding new address-->
+                <button class="btn btn-outline-secondary border-2" type="button" data-toggle="modal"
+                    data-target=".add-new-address-modal" id="add-address-button">Add
+                    address</button>
+                <a href="/user/orders" class="btn btn-outline-secondary border-2">View Orders</a>
+                <a href="/user/cancelled-orders" class="btn btn-outline-secondary border-2">Cancelled Orders</a>
+                <a href="/user/forget-password" class="btn btn-outline-secondary border-2" id="reset-password">Reset
+                    Password</a>
+            </div>
 
             <!-- address section -->
             <div class="added-address-details">
 
                 <% if(userDetail.address){ %>
+                    <input type="text" id="address-count-index" value="<%= userDetail.address.length %>" hidden>
                     <% userDetail.address.forEach((address,index)=>{ %>
                         <div class="added-inner-address">
                             <div class="address-content">
                                 <h5>Address <%= index+1 %>
                                 </h5>
                                 <ul>
-                                    <li>
-                                        <%= address.contactName %>
+                                    <li>Contact Name &nbsp;:
+                                        <b>
+                                            <%= address.contactName %>
+                                        </b>
                                     </li>
-                                    <li>
-                                        <%= address.pincode %>
+                                    <li>Pincode &nbsp;:
+                                        <b>
+                                            <%= address.pincode %>
+                                        </b>
                                     </li>
-                                    <li>
-                                        <%= address.houseAddress %>
+                                    <li>Home Address &nbsp;:
+                                        <b>
+                                            <%= address.homeAddress %>
+                                        </b>
                                     </li>
-                                    <li>
-                                        <%= address.areaAddress %>
+                                    <li>Area Address &nbsp;:
+                                        <b>
+                                            <%= address.areaAddress %>
+                                        </b>
                                     </li>
-                                    <li>
-                                        <%= address.landmark %>
+                                    <li>LandMark &nbsp;:
+                                        <b>
+                                            <%= address.landmark %>
+                                        </b>
                                     </li>
                                 </ul>
                             </div>
                             <div class="address-actions">
-                                <button class="btn btn-warning"><i class="fa-solid fa-pen"></i></button>
-                                <button class="btn btn-danger"><i class="fa-solid fa-trash"></i></button>
+                                <!-- edit the address -->
+                                
+                                <a href="/user/edit-address/?addressNumber=<%= index %>" class="btn btn-warning"><i class="fa-solid fa-pen"></i></a>
+                                <a href="/user/delete-user/<%= index %>" class="btn btn-danger delete-address-button"><i class="fa-solid fa-trash"></i></a>
                             </div>
                         </div>
                         <% }) %>
                             <% } %>
 
             </div>
+            <!-- end of address section -->
 
 
             <!-- new address adding modal -->
@@ -216,11 +246,124 @@
                     </div>
                 </div>
             </div>
-
-
-
+            <!-- end of modal for adding new address -->
 
         </div>
     </div>
 
     <%- include('footer') %>
+
+        <script>
+            const addressForm = document.getElementById('add-address-form')
+            const contactName = document.getElementsByName('name')[0]
+            const pincode = document.getElementsByName('pincode')[0]
+            const homeAddress = document.getElementsByName('addressHome')[0]
+            const areaAddress = document.getElementsByName('addressArea')[0]
+            const landmark = document.getElementsByName('addressLandmark')[0]
+
+
+            // validation for adding new address
+            addressForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                let isvalid = true;
+                let validateMessage = ""
+
+                // check name is empty and it's only having number
+                if (contactName.value.trim() === "" || !isNaN(contactName.value)) {
+                    validateMessage = "Enter a valid name"
+                    isvalid = false
+                }
+                // check pincode
+                else if (pincode.value.length > 6 || isNaN(pincode.value) || pincode.value.length <= 0) {
+                    validateMessage = "Enter a valid Pincode with six digits"
+                    isvalid = false
+                }
+                // validate home address
+                else if (homeAddress.value.length > 100 || homeAddress.value.length < 20 || !isNaN(homeAddress.value)) {
+                    validateMessage = "Enter a valid home address between 20 and 100 characters"
+                    isvalid = false
+                }
+                // validate area address
+                else if (areaAddress.value.length > 100 || areaAddress.value.length < 10 || !isNaN(areaAddress.value)) {
+                    validateMessage = "Enter a valid area address between 10 and 100 characters"
+                    isvalid = false
+                }
+                // validate landmark
+                else if (landmark.value.length > 50 || !isNaN(landmark.value)) {
+                    validateMessage = "Enter a valid landmark with maximum 50 characters"
+                    isvalid = false
+                }
+
+                // if anything of the above is invalid then an alert message is fired
+                if (isvalid === false) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Invalid Information",
+                        text: validateMessage
+                    })
+                } else {
+                    addressForm.submit()
+                }
+            })
+
+
+            // confirmation for resetting password
+            document.getElementById('reset-password').addEventListener('click', (e) => {
+                e.preventDefault()
+                Swal.fire({
+                    icon: "question",
+                    title: "Reset password",
+                    text: "Are you sure want to reset your password",
+                    showCancelButton: true,
+                }).then((result) => {
+                    // if okay button is clicked then redirect to the link in href
+                    if (result.isConfirmed) {
+                        window.location.href = e.target.href;
+                    }
+                })
+            })
+
+
+            // if the address limit of 4 reached and the user is tried to add new address then an alert will be fired
+            // a hidden input field holds the number of address in the ejs and the value is used below
+            const addressCount = document.getElementById('address-count-index').value
+            const addAddressButton = document.getElementById('add-address-button')
+            addAddressButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                // if the address count reaches greater than or equals to 4 then alert message is fired and page is refreshed
+                if (parseInt(addressCount) >= 4) {
+                    Swal.fire({
+                        icon: "info",
+                        title: "Address limit reached",
+                        text: "Maximum address limit reached.",
+                        showConfirmButton: false,
+                        timer: 2500
+                    }).then(() => {
+                        // reload the page to hide the modal from adding again
+                        window.location.reload()
+                    })
+                }
+            })
+
+
+
+
+            // delete address confirmation message
+            const deleteAddressButton=document.querySelectorAll('.delete-address-button')
+            deleteAddressButton.forEach((button)=>{
+                button.addEventListener('click',(e)=>{
+                    e.preventDefault();
+                    Swal.fire({
+                        icon:"question",
+                        title:"Delete Address",
+                        text:"Are you sure want to delete the address ?",
+                        showCancelButton:true,
+                    }).then((result)=>{
+                        if(result.isConfirmed){
+                            window.location.href=e.target.href;
+                        }
+                    })
+                })
+            })
+        </script>

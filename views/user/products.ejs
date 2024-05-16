@@ -32,6 +32,7 @@
     .product-image-box {
         height: 290px;
         width: 290px;
+        position: relative;
     }
 
     .product-image-box img {
@@ -73,6 +74,27 @@
         align-items: center;
         gap: .5rem;
     }
+    .product-star-rating{
+        position: absolute;
+        bottom: 0;
+        right: 1rem;
+    }
+    .product-star-icon{
+        color: orange;
+    }
+    .product-availability{
+        position: absolute;
+        top: 50%;
+        left: 0;
+        width: 100%;
+        background-color: rgba(255, 255, 255, 0.499);
+        padding: 1rem 0;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: red;
+        text-align: center;
+        z-index: 200;
+    }
 </style>
 
 <div class="products-container">
@@ -100,10 +122,12 @@
                         </div>
                         <% } %>
 
-
                         <!-- image of product which is stored in uploads folder -->
                             <div class="product-image-box">
                                 <img src="/<%= product.productImage[0] %>" loading="lazy">
+
+                                <!-- product review -->
+                                <h6 class="product-star-rating">4.5 <span class="product-star-icon">&starf;</span></h6>
                             </div>
                             <!-- product description with text overflow as ... -->
                             <div class="product-description-box">
@@ -116,7 +140,12 @@
                                 <h5 class="product-price"><i class="fa-solid fa-indian-rupee-sign product-text-row"></i>
                                     <%= product.productPrice.toLocaleString() %>
                                 </h5>
-                            </div>
+                             
+                                <!-- product availability -->
+                                <% if(product.productQuantity<=0){ %>
+                                    <h6 class="product-availability">Product Out of stock</h6>
+                                  <% } %>
+                            </div>  
             </a>
 
             <% }) %>
@@ -131,16 +160,3 @@
 
 
 
-<!-- <script>
-    const maxLength = 60; // Define the maximum length of the text
-    const productElements = document.querySelectorAll('.product-name');
-    productElements.forEach(productElement => {
-        let productText = productElement.textContent;
-
-        if (productText.length > maxLength) {
-            productText = productText.substring(0, maxLength) + '...';
-        }
-
-        productElement.textContent = productText;
-    });
-</script> -->

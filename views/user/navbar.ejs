@@ -62,14 +62,14 @@
         position: fixed;
         top: 0;
         right: -250px;
-        background-color: #f8f8f8;
+        background-color: #373A47;
         transition: right 0.3s ease;
-        box-shadow: 0 0 20px #000000;
+        /* box-shadow: 0 0 20px #000000; */
         z-index: 10;
     }
 
     .sidebar ul {
-        color: #000000;
+        color: #ffffff;
         list-style-type: none;
         padding: 0;
         margin: 0;
@@ -88,6 +88,7 @@
         border-radius: 10px;
         font-weight: 700;
         transition: .3s ease-in-out;
+        background-color: #707070;
     }
 
     .sidebar ul li:hover {
@@ -98,7 +99,8 @@
         display: block;
         width: 100%;
         text-decoration: none;
-        color: #000000;
+        color: #ffffff;
+        font-weight: 600;
     }
 
     .toggle-btn {
@@ -135,7 +137,7 @@
                     <li><a href="/user/orders"><i class="fa-solid fa-box-open"></i> Orders</a></li>
                     <li><a href="/user/cancelled-orders"><i class="fa-solid fa-trash-can"></i> Canceled Orders</a></li>
                     <li><a href="/user/forget-password"><i class="fa-solid fa-lock"></i> Reset Password</a></li>
-                    <li><a href="/user/logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+                    <li class="mt-5"><a href="/user/logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
                 </ul>
             </div>
             <% } else { %>

@@ -4,8 +4,11 @@
 User side : 
 
 User profile(Show user details, show address, show orders, edit profile, cancel orders, forgot password).
+
 Add address management in user profile( Multiple Address, Add, Edit, Delete).
+
 Cart management (Add to cart, list products in cart, remove products from cart)
+
 Qty (add to cart) should be controlled based on stocks left
 Handle maximum qty per person to add to cart for a product 
 Out of stock product need to shown or hidden based on filter
