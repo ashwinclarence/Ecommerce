@@ -33,9 +33,10 @@
         return urlParams.get(param);
     }
 
+    console.log()
 
     // get the current page number and convert to integer 
-    const currentPage = parseInt(getQueryParam('page')) || 0
+    const currentPage = parseInt(getQueryParam('page')) || 1
 
     const paginationForm = document.getElementById('pagination-form')
     const previousButton = document.getElementsByName('page')[0]
@@ -54,6 +55,9 @@
             previousButton.value = 0
         }
     })
+
+    
+
 
 
 </script>

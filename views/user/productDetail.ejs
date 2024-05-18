@@ -51,7 +51,8 @@
         align-items: center;
         justify-content: space-between;
     }
-    .product-out-offstock{
+
+    .product-out-offstock {
         color: green;
     }
 
@@ -104,13 +105,20 @@
         text-align: center;
     }
 
-    .product-action-buttons {
+    #product-add-to-cart-form {
         display: flex;
         gap: 1rem;
+        flex-wrap: wrap;
         /* justify-content: space-evenly; */
     }
 
-    .btn {
+    #product-add-to-cart-form select {
+        /* width: 50px; */
+        border-radius: 10px;
+        padding: 0 10px;
+    }
+
+    #product-add-to-cart-form .btn {
         width: 200px;
         font-weight: 600;
     }
@@ -204,26 +212,42 @@
 
                 </div>
                 <% if(product.productQuantity>0){ %>
-                <div class="product-action-buttons">
-                    <button class="btn btn-warning">Add to Cart</button>
-                    <button class="btn btn-danger">Buy Now</button>
-                </div>
-                <% }else{ %>
-                    <div class="product-out-offstock">
-                        <h5>Product is out of stock</h5>
-                    </div>
-                    <% } %>
-                <div class="product-description mt-5">
-                    <p>
-                        <%= product.productDescription %>
-                    </p>
-                </div>
-                <div class="product-coupons-section">
-                    <form action="">
-                        <input type="text" placeholder="xxxx-xxxx-xxxx" required>
-                        <button class="btn btn-secondary">Apply Coupon</button>
+
+                    <!-- form for add to cart with product id as path params and price as query params -->
+                    <form action="/user/add-to-cart/<%= product.id %>/?price=<%= product.productPrice %>" method="post"
+                        id="product-add-to-cart-form">
+                        <!-- <select name="productCount" >
+                        <option value="1" disabled selected>Select Quantity</option>
+                        <option value="1" selected>1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                    </select> -->
+                        <button type="submit" class="btn btn-warning" id="add-to-cart-btn">Add to Cart</button>
+                        <a href="/user/buy-now/<%= product.id %>" class="btn btn-danger" id="buy-now-btn">Buy Now</a>
                     </form>
-                </div>
+                    <% }else{ %>
+                        <div class="product-out-offstock">
+                            <h5>Product is out of stock</h5>
+                        </div>
+                        <% } %>
+                            <div class="product-description mt-5">
+                                <p>
+                                    <%= product.productDescription %>
+                                </p>
+                            </div>
+                            <div class="product-coupons-section">
+                                <form action="">
+                                    <input type="text" placeholder="xxxx-xxxx-xxxx" required>
+                                    <button class="btn btn-secondary">Apply Coupon</button>
+                                </form>
+                            </div>
 
             </div>
 
@@ -304,6 +328,28 @@
                         }
 
                     })
+
+
+
+                    // adding product to cart 
+                    const addToCartForm = document.getElementById('product-add-to-cart-form')
+                    addToCartForm.addEventListener('submit', (e) => {
+                        e.preventDefault()
+
+                        // an animation of success for every button click
+                        Swal.fire({
+                            icon: "success",
+                            title: "Item added to cart",
+                            showConfirmButton: false,
+                            timer: 1000
+                        })
+
+                        setTimeout(() => {
+                            addToCartForm.submit()
+                        }, 1000)
+
+                    })
+
 
 
 

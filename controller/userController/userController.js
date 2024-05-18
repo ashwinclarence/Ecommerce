@@ -108,7 +108,7 @@ const loginPost = async (req, res) => {
 
                 // if the user entered password and password in the collection is same then redirect to home page with session
                 if (checkUser && mongoPassword) {
-                    req.session.user = req.body.username //user section is created
+                    req.session.user = checkUser.id //user section is created
                     res.redirect('/user/home')
                 } else {
                     req.flash("errorMessage", "Invalid username or password")
@@ -216,27 +216,7 @@ const otpResend = (req, res) => {
 
 
 
-// render the home page using with products and categories
-const home = async (req, res) => {
-    try {
-        // if user selected a particular category then that items are shown
-        // if user selected a category it is passed as a query using ?:
-        const selectedCategory = req.query.category || '';
 
-        // using regex the selectedCategory is sorted
-        const products = await productSchema.find({ productCategory: { $regex: selectedCategory , $options: 'i' }, isActive: true });
-        
-        // find all category which is active
-        const category = await categorySchema.find({ isActive: true })
-
-        res.render('user/home', { title: 'User Home', products, category, alertMessage: req.flash('errorMessage'),user:req.session.user })
-
-    } catch (err) {
-        console.log(`Error rendering home page ${err}`);
-    }
-
-
-}
 
 
 
@@ -246,11 +226,7 @@ const wishlist = (req, res) => {
     res.render('user/wishlist', { title: "Wishlist", alertMessage: req.flash('errorMessage'),user:req.session.user })
 
 }
-const cart = (req, res) => {
 
-    res.render('user/cart', { title: "cart", alertMessage: req.flash('errorMessage'),user:req.session.user })
-
-}
 
 const logout = (req, res) => {
     req.session.destroy((err) => {
@@ -270,13 +246,11 @@ module.exports = {
     user,
     login,
     loginPost,
-    home,
-    wishlist,
-    cart,
     signup,
     signupPost,
     otp,
     otpPost,
     otpResend,
+    wishlist,
     logout
 }

@@ -9,7 +9,7 @@ async function checkUserBlocked(req, res, next) {
         // if user is logged in. check whether that user is blocked or not. if blocked then redirect to login page else move to next route
         if(req.session.user){
             // get the user details from user collection who is logged in
-            const userDetails = await userSchema.findOne({ email: req.session.user });
+            const userDetails = await userSchema.findById(req.session.user);
             if(userDetails && !userDetails.isBlocked){
                 next()
             }else{

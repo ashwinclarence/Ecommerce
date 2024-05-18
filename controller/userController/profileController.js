@@ -4,7 +4,7 @@ const profileView = async (req, res) => {
     try {
 
         // find the user details using the user's email
-        const userDetail = await userSchema.findOne({ email: req.session.user });
+        const userDetail = await userSchema.findById(req.session.user)
 
         // if user data is not available by any chance then redirect to home page with an alert message
         if (userDetail === null) {
@@ -36,7 +36,7 @@ const addAddress = async (req, res) => {
         
         
         // get current user data from collection
-        const user = await userSchema.findOne({ email: req.session.user })
+        const user = await userSchema.findById(req.session.user)
         
         // if maximum address size reached then redirect to login page
         if (user.address.length > 3) {
@@ -61,7 +61,7 @@ const editAddress = async (req, res) => {
     try {
         const addressNumber = req.query.addressNumber
 
-        const userDetails = await userSchema.findOne({ email: req.session.user })
+        const userDetails = await userSchema.findById(req.session.user)
 
         if (userDetails === null) {
             req.flash("errorMessage", "unexpected error occurred. Please try again later");
@@ -90,7 +90,7 @@ const editAddressPost = async (req, res) => {
             landmark: req.body.addressLandmark
         }
          // get current user data from collection
-         const user = await userSchema.findOne({ email: req.session.user })
+         const user = await userSchema.findById(req.session.user)
 
          user.address[addressIndex]=userAddress
          await user.save();
@@ -110,7 +110,7 @@ const deleteAddress=async (req,res)=>{
     const addressIndex=req.body.id;
 
     // Get the current user data from the collection
-    const user = await userSchema.findOne({ email: req.session.user });
+    const user = await userSchema.findById(req.session.user);
 
     // Remove the address at the specified index in the user's address array
     user.address.splice(addressIndex, 1);

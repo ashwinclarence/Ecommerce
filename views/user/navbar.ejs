@@ -126,19 +126,40 @@
         <a href="/user/wishlist" class="nav-link-items"><i class="fa-solid fa-heart"></i></a>
         <a href="/user/cart" class="nav-link-items"><i class="fa-solid fa-cart-shopping"></i></a>
 
-        <!-- if user is logged in -->
+        <!-- if user is logged in then show the profile and other options else show the login button -->
+
         <% if (user) { %>
-            <span class="nav-link-items" onclick="toggleSidebar()"><i class="fa-solid fa-user"></i></span>
-            <div class="sidebar" id="sidebar">
-                <ul>
-                    <li id="go-back-home" onclick="toggleSidebar()"><span><i class="fa-solid fa-angles-left"></i> Go
-                            back</span></li>
-                    <li><a href="/user/profile"><i class="fa-solid fa-user"></i> Profile</a></li>
-                    <li><a href="/user/orders"><i class="fa-solid fa-box-open"></i> Orders</a></li>
-                    <li><a href="/user/cancelled-orders"><i class="fa-solid fa-trash-can"></i> Canceled Orders</a></li>
-                    <li><a href="/user/forget-password"><i class="fa-solid fa-lock"></i> Reset Password</a></li>
-                    <li class="mt-5"><a href="/user/logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
-                </ul>
+
+            <!-- button for side bar toggle with user icon -->
+            <span data-bs-toggle="offcanvas" data-bs-target="#side-bar-home-right" aria-controls="offcanvasRight"><i
+                    class="fa-solid fa-user"></i></span>
+
+            <!-- side bar right -->
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="side-bar-home-right"
+                aria-labelledby="offcanvasRightLabel">
+                <div class="offcanvas-header">
+                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                        aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <div class="list-group list-group-flush d-flex flex-column gap-4">
+                        <a href="/user/profile" class="text-center">
+                            <img src="../../image/icon.png" class="w-50" alt="">
+                        </a>
+
+                        <a href="/user/profile" class="list-group-item list-group-item-action"><i
+                                class="fa-solid fa-user"></i> Profile</a>
+                        <a href="/user/orders" class="list-group-item list-group-item-action"><i
+                                class="fa-solid fa-box-open"></i> Orders</a>
+                        <a href="/user/cancelled-orders" class="list-group-item list-group-item-action"><i
+                                class="fa-solid fa-trash-can"></i> Canceled Orders</a>
+                        <a href="/user/forget-password" class="list-group-item list-group-item-action"><i
+                                class="fa-solid fa-lock"></i> Reset Password</a>
+                        <a href="/user/logout" class="list-group-item list-group-item-action"><i
+                                class="fa-solid fa-right-from-bracket"></i> Logout</a>
+
+                    </div>
+                </div>
             </div>
             <% } else { %>
                 <a href="/user/login" class="btn btn-outline-secondary">Login</a>
@@ -152,16 +173,3 @@
 
 <!-- alert bar -->
 <%- include('alert')%>
-
-    <script>
-        // toggle side bar
-        function toggleSidebar() {
-            var sidebar = document.getElementById("sidebar");
-            if (sidebar.style.right === "-250px") {
-                sidebar.style.right = "0";
-            } else {
-                sidebar.style.right = "-250px";
-            }
-        }
-
-    </script>

@@ -6,7 +6,7 @@ async function checkUserSession(req, res, next) {
     try {
         if (req.session.user) {
             // get the user details from user collection who has the session 
-            const userDetails = await userSchema.findOne({ email: req.session.user });
+            const userDetails = await userSchema.findById(req.session.user);
 
             // if the logged user is blocked then cancel the session and redirect to login
             if (userDetails && !userDetails.isBlocked) {

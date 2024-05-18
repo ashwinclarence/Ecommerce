@@ -7,6 +7,11 @@ const forgetPasswordController=require('../controller/userController/forgetPassw
 const productController=require('../controller/userController/productController')
 const profileController=require('../controller/userController/profileController')
 const orderController=require('../controller/userController/orderController')
+const cartController=require('../controller/userController/cartController')
+const homeController=require('../controller/userController/homeController')
+
+
+
 // login routes
 user.get('/',userController.user)
 user.get('/login',userController.login)
@@ -37,12 +42,11 @@ user.post('/new-password',forgetPasswordController.updatePassword)
 
 // home route
 // if the user is blocked then the user is redirect to login page
-user.get('/home',checkUserBlocked,userController.home)
+user.get('/home',checkUserBlocked,homeController.home)
 
 // product route
 // if the user is blocked then the user is redirect to login page
 user.get('/product-view/:id',checkUserBlocked,productController.productView)
-user.get('/filter-products',checkUserBlocked,productController.filterProduct)
 
 
 // profile route
@@ -51,7 +55,7 @@ user.get('/profile',checkUserSession,profileController.profileView)
 user.post('/add-address',checkUserSession,profileController.addAddress)
 user.get('/edit-address',checkUserSession,profileController.editAddress)
 user.post('/edit-address/:id',checkUserSession,profileController.editAddressPost)
-user.get('/delete-user/:id',checkUserSession,profileController.deleteAddress)
+user.get('/delete-address/:id',checkUserSession,profileController.deleteAddress)
 
 // order route
 user.get('/orders',checkUserSession,orderController.order)
@@ -60,7 +64,12 @@ user.get('/cancelled-orders',checkUserSession,orderController.cancelledOrder)
 
 // wishlist
 user.get('/wishlist',checkUserSession,userController.wishlist)
-user.get('/cart',checkUserSession,userController.cart)
+
+
+// cart routes
+user.get('/cart',checkUserSession,cartController.cart)
+user.post('/add-to-cart/:id',checkUserSession,cartController.addToCartPost )
+
 
 // logout
 user.get('/logout',userController.logout)
