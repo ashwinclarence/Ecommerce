@@ -1,85 +1,212 @@
-
 <style>
-    .cart-container{
+    .cart-container {
         display: flex;
         flex-direction: row;
-        justify-content: space-around;
+        gap: 2rem;
+        margin-top: 5rem;
+        margin-bottom: 5rem;
+        flex-wrap: wrap-reverse;
     }
-    .cart-item-container{
-       display: flex;
-       flex-direction: column;
-       justify-content: space-around;
-    }
-    .cart-item-box{
+
+    .cart-item-container {
         display: flex;
-        justify-content: space-between;
+        flex-direction: column;
+        gap: 2rem;
+
+    }
+
+    .cart-item-box {
+        display: flex;
+        gap: 1rem;
         border: 1px solid #bababa;
         border-radius: 10px;
-        margin-top: 2rem;
         padding: 1rem;
-        /* height: 150px; */
         overflow: hidden;
+        text-overflow: ellipsis;
+        flex-wrap: wrap;
+       
     }
-    .cart-item-image{
+
+    .cart-item-image {
         width: 150px;
-        /* height: 150px; */
+        height: 150px;
         overflow: hidden;
-        margin: auto;
+        margin-right: 1rem;
     }
-    .cart-image{
+
+    .cart-image {
         width: 150px;
-        /* height: 150px; */
-        object-fit: scale-down;
+        height: 150px;
+        object-fit: contain;
     }
+
+
+    .cart-item-description {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+    .cart-price-box{
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+    }
+
+
+    .strike-price {
+        color: #8d8d8d;
+        /* font-size: 1rem; */
+        text-decoration: line-through;
+    }
+
+    .discount-label-cart {
+        background-color: rgba(0, 128, 0, 0.763);
+        color: #ffffff;
+        padding: 0 1rem;
+        border-radius: 5px;
+        text-align: center;
+    }
+
+    .cart-price-container {
+        display: flex;
+        flex-direction: column;
+    }
+
 </style>
 
 <%- include('navbar') %>
 
-<div class="cart-container container">
-    <div class="cart-item-container">
+    <div class="cart-container container">
+        <div class="cart-item-container">
 
-        <div class="cart-item-box">
-            <div class="cart-item-image">
-                <img src="../../image/3.png" alt="" class="cart-image">
-            </div>
-            <div class="cart-item-description">
-                <small>Adidas</small>
-                <p class="cart-product-name">Pro Encounter 10.0 Football Stud for Men/Comfortable and Lightweight/Sports
-                    Shoe</p>
-                <h5><i class="fa-solid fa-indian-rupee-sign"></i> 999</h5>
-                <a href="" class="btn btn-danger">Remove</a>
-            </div>
-        </div>
-        <div class="cart-item-box">
-            <div class="cart-item-image">
-                <img src="../../image/3.png" alt="" class="cart-image">
-            </div>
-            <div class="cart-item-description">
-                <small>Adidas</small>
-                <p class="cart-product-name">Pro Encounter 10.0 Football Stud for Men/Comfortable and Lightweight/Sports
-                    Shoe</p>
-                <h5><i class="fa-solid fa-indian-rupee-sign"></i> 999</h5>
-                <a href="" class="btn btn-danger">Remove</a>
-            </div>
-        </div>
-        <div class="cart-item-box">
-            <div class="cart-item-image">
-                <img src="../../image/3.png" alt="" class="cart-image">
-            </div>
-            <div class="cart-item-description">
-                <small>Adidas</small>
-                <p class="cart-product-name">Pro Encounter 10.0 Football Stud for Men/Comfortable and Lightweight/Sports
-                    Shoe</p>
-                <h5><i class="fa-solid fa-indian-rupee-sign"></i> 999</h5>
-                <a href="" class="btn btn-danger">Remove</a>
-            </div>
-        </div>
+            <% cart.forEach((items)=>{ %>
+                <div class="cart-item-box">
+                    <div class="cart-item-image">
+                        <img src="../../<%= items.productImage[0] %>" class="cart-image">
+                    </div>
+                    <div class="cart-item-description">
+                        <small>
+                            <%= items.productBrand %>
+                        </small>
+                        <h6 class="cart-product-name">
+                            <%= items.productName %>
+                        </h6>
+                        <div class="cart-price-box">
+                            <% if(items.productDiscount!=0){ %>
+                                <h5><i class="fa-solid fa-indian-rupee-sign"></i>
+                                    <%= parseInt((items.productDiscount/100)*items.productPrice).toLocaleString() %>
+                                </h5>
+                                <h5 class="strike-price"><i class="fa-solid fa-indian-rupee-sign"></i>
+                                    <%= items.productPrice.toLocaleString() %>
+                                </h5>
+                                <span class="discount-label-cart">
+                                    <b>
+                                        <%= items.productDiscount %>&percnt; OFF
+                                    </b>
+                                </span>
 
 
+                                <% }else { %>
+                                    <h5><i class="fa-solid fa-indian-rupee-sign"></i>
+                                        <%= items.productPrice.toLocaleString() %>
+                                    </h5>
+                                    <% } %>
+                        </div>
+                        <form action="" method="get" class="product-cart-form">
+                            <input type="text" value="<%= items.id %>" class="productId-cart" hidden>
+                            <label for="product-quantity">Select Quantity</label>
+                            <select name="productQuantity" class="product-quantity"
+                                onchange="updateProductCount('<%= items.id%>',value)">
+                                <option value="<%= items.productPrice %>" disabled selected><%= items.productPrice%></option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                            </select>
+                        </form>
+
+                        <button class="btn btn-danger mt-2 btn-sm">Remove Product</button>
+                    </div>
+                </div>
+                <% }) %>
+
+        </div>
+        <div class="cart-price-container">
+            <table class="table table-hover">
+                <tr>
+                    <th>Total Price</th>
+                    <th>:</th>
+                    <th>
+                        <%= parseInt(totalPriceWithoutDiscount).toLocaleString() %>
+                    </th>
+                </tr>
+                <tr>
+                    <th>Savings</th>
+                    <th> :</th>
+                    <th>
+                        <%= parseInt(totalPriceWithoutDiscount-totalPrice).toLocaleString() %>
+                    </th>
+                </tr>
+                <tr>
+                    <th>Payable Amount</th>
+                    <th> :</th>
+                    <th>
+                        <%= parseInt(totalPrice).toLocaleString() %>
+                    </th>
+                </tr>
+            </table>
+        </div>
     </div>
-    <div class="cart-price-container">
 
-    </div>
-</div>
+    <%- include('footer') %>
 
-<%- include('footer') %>
+
+
+
+        <script>
+
+            const productForm = document.querySelectorAll('.product-cart-form')
+            const productCount = document.querySelectorAll('.productId-cart')
+
+
+            // product quantity and productID on onChange function
+            function updateProductCount(productID, value) {
+
+                const URL = `/user/cart-count/${productID}/?productCount=${value}`
+
+                fetch(URL, {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+
+                }).then((Response) => {
+                    console.log(Response)
+                    if (Response.ok) {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Count Updated",
+                            showConfirmButton: false,
+                            timer: 800
+                        })
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text: "Unexpected error occurred please try again later"
+                        })
+                    }
+                })
+            }
+
+
+
+        </script>

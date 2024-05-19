@@ -1,6 +1,6 @@
 const productSchema = require('../../model/productSchema')
 const categorySchema = require('../../model/categorySchema')
-
+const cartSchema=require('../../model/cartSchema')
 
 
 
@@ -20,7 +20,6 @@ const home = async (req, res) => {
             allCategory.push(item.categoryName);
         })
 
-
         // if user select a particular category then it will added to selected category else all category names from above will be added.
         const selectedCategory = req.query.productCategory || allCategory;
         const minPrice = parseInt(req.query.minPrice) || 0
@@ -32,8 +31,6 @@ const home = async (req, res) => {
         const productsPerPage = 12;
         const currentPage = req.query.page || 0
 
-
-
         // using regex the selectedCategory is sorted
         // const products = await productSchema.find({ productCategory: { $regex: selectedCategory , $options: 'i' }, isActive: true });
 
@@ -43,20 +40,6 @@ const home = async (req, res) => {
             isActive: true,
             productPrice: { $lte: maxPrice, $gte: minPrice }
         }).skip(currentPage * productsPerPage).limit(productsPerPage).sort({ productDiscount: productDiscount })
-
-
-        // product discount zero means sort in descending order
-        // if(productDiscount===0){
-        //     products.sort((a, b) => {
-        //         return b.productDiscount - a.productDiscount;
-        //     });
-        // }
-
-        // if(productDiscount===1){
-        //     products.sort((a,b)=>{
-        //         return a.productDiscount - b.productDiscount
-        //     })
-        // }
 
 
         // render the home page
