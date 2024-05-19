@@ -7,59 +7,34 @@ const cart = async (req, res) => {
     try {
 
         // get the cart items from the collection 
-        const cart = await cartSchema.findOne({ userID: req.session.user })
+        const cart = await cartSchema.findOne({ userID: req.session.user }).populate('items.productID')
 
-        if (cart!=null) {
-            // an empty array for the cart products ID's
-            const cartProductID = []
+        var totalPrice = 0;
+        var totalPriceWithoutDiscount = 0
 
-            // push all the product's ID to the cartProduct
-            cart.items.forEach((items) => {
-                cartProductID.push(items.productID)
-            })
+        if (cart != null) {
 
-            // find the products details from the productID's
-            const cartItems = await productSchema.find({ _id: { $in: cartProductID } })
-
-
-            const productsArray = []
+            // find the total price of cart items
             cart.items.forEach((ele) => {
-                const obj = {
-                    productID: ele.productID,
-                    productPrice: ele.productPrice
-                }
-                productsArray.push(obj)
-            })
-
-            
-
-
-
-            // find the total price of cart
-            var totalPrice = 0;
-            var totalPriceWithoutDiscount = 0
-            cartItems.forEach((products) => {
-
-                // for the product with no discount then add the productPrice with the total price
-                if (products.productDiscount === 0) {
-                    totalPrice = products.productPrice + totalPrice
-                    totalPriceWithoutDiscount = products.productPrice + totalPriceWithoutDiscount
+                // if the product have discount then find the total price after making a discount from the actual price
+                if (ele.productID.productDiscount === 0) {
+                    totalPrice += (ele.productID.productPrice*ele.productCount);
+                    totalPriceWithoutDiscount += (ele.productID.productPrice*ele.productCount)
                 } else {
-                    // if the product have discount then find the discounted amount and add then with the totalPrice
-                    const discountedPrice = (products.productDiscount / 100) * products.productPrice
-                    totalPrice = discountedPrice + totalPrice
-                    totalPriceWithoutDiscount = products.productPrice + totalPriceWithoutDiscount
+                    // get the product discount price from the product price
+                    const discountPrice = (ele.productID.productDiscount / 100) * (ele.productID.productPrice*ele.productCount)
+                    totalPrice += discountPrice
+                    totalPriceWithoutDiscount += (ele.productID.productPrice*ele.productCount)
                 }
             })
+
             // render the cart
-            res.render('user/cart', { title: "cart", cart: cartItems, totalPrice, totalPriceWithoutDiscount, alertMessage: req.flash('errorMessage'), user: req.session.user })
-            
-        }else{
-            res.render('user/emptyCart', { title: "cart", alertMessage: req.flash('errorMessage'), user: req.session.user })
+            res.render('user/cart', { title: "cart", cart: cart.items, totalPrice, totalPriceWithoutDiscount, alertMessage: req.flash('errorMessage'), user: req.session.user })
+        } else {
 
+            // render the cart
+            res.render('user/cart', { title: "cart", cart: [], totalPrice, totalPriceWithoutDiscount, alertMessage: req.flash('errorMessage'), user: req.session.user })
         }
-
-
 
     } catch (err) {
         console.log(`Error during rendering cart ${err}`);
@@ -81,7 +56,8 @@ const addToCartPost = async (req, res) => {
         const actualProductDetails = await productSchema.findById(productID)
 
         // check the user have cart already
-        const checkUserCart = await cartSchema.findOne({ userID: req.session.user })
+        const checkUserCart = await cartSchema.findOne({ userID: req.session.user }).populate('items.productID')
+
 
         // if the user have a cart then cart is updated
         if (checkUserCart) {
@@ -89,7 +65,7 @@ const addToCartPost = async (req, res) => {
             let productExist = false;
             // check if product already exist 
             checkUserCart.items.forEach(product => {
-                if (product.productID === productID) {
+                if (product.productID.id === productID) {
                     product.productPrice = productPrice
                     if (product.productCount < 10) {
                         product.productCount += productQuantity;
@@ -102,7 +78,7 @@ const addToCartPost = async (req, res) => {
 
             // if product not exist in cart add the product
             if (!productExist) {
-                checkUserCart.items.push({ productID: actualProductDetails._id , productCount: productQuantity, productPrice: productPrice })
+                checkUserCart.items.push({ productID: actualProductDetails._id, productCount: productQuantity, productPrice: productPrice })
             }
 
             // save the modified data in cart collection
@@ -148,11 +124,11 @@ const cartCountFetch = async (req, res) => {
         }
 
         // get the cart details of the current user
-        const cartItem = await cartSchema.findOne({ userID: req.session.user })
+        const cartItem = await cartSchema.findOne({ userID: req.session.user }).populate('items.productID')
 
         // filter out the current product from the items inside the cart collections
         const currentProduct = cartItem.items.filter((item) => {
-            if (item.productID === productID) {
+            if (item.productID.id === productID) {
                 return item
             }
         })

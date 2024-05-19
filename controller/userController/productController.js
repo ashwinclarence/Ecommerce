@@ -22,11 +22,11 @@ const productView = async (req, res) => {
     // if user logged in then check the cart items
     if (req.session.user) {
         // check the product is already in the cart
-        const cartCheck = await cartSchema.findOne({ userID: req.session.user })
+        const cartCheck = await cartSchema.findOne({ userID: req.session.user }).populate('items.productID')
 
         if (cartCheck) {
             cartCheck.items.forEach((items) => {
-                if (items.productID === productID) {
+                if (items.productID.id === productID) {
                     itemInCart = true
                 }
             })
