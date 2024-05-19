@@ -18,13 +18,13 @@ const cart = async (req, res) => {
             cart.items.forEach((ele) => {
                 // if the product have discount then find the total price after making a discount from the actual price
                 if (ele.productID.productDiscount === 0) {
-                    totalPrice += (ele.productID.productPrice*ele.productCount);
-                    totalPriceWithoutDiscount += (ele.productID.productPrice*ele.productCount)
+                    totalPrice += (ele.productID.productPrice * ele.productCount);
+                    totalPriceWithoutDiscount += (ele.productID.productPrice * ele.productCount)
                 } else {
                     // get the product discount price from the product price
-                    const discountPrice = (ele.productID.productDiscount / 100) * (ele.productID.productPrice*ele.productCount)
+                    const discountPrice = (ele.productID.productDiscount / 100) * (ele.productID.productPrice * ele.productCount)
                     totalPrice += discountPrice
-                    totalPriceWithoutDiscount += (ele.productID.productPrice*ele.productCount)
+                    totalPriceWithoutDiscount += (ele.productID.productPrice * ele.productCount)
                 }
             })
 
@@ -150,9 +150,47 @@ const cartCountFetch = async (req, res) => {
 }
 
 
+// remove product from cart
+const removeCartItem = async (req, res) => {
+    try {
+
+        // product of the product to remove from cart
+        const productID = req.params.id;
+
+        // get the cart items
+        const cartItems = await cartSchema.findOne({ userID: req.session.user }).populate('items.productID')
+
+
+        if(cartItems===null){
+            return res.status(404).json({error:"An error occurred while removing the product"})
+        }
+
+        // filter out the cart products without the removed products
+        const newCart = cartItems.items.filter((ele) => {
+            if (ele.productID.id != productID) {
+                return ele
+            }
+        })
+
+        // update the cart items without the removed the product from cart
+        cartItems.items = newCart
+
+        // save the changes in collection
+        await cartItems.save()
+
+        return res.status(200).json({ message: "Product removed from cart" })
+
+    } catch (err) {
+        console.log(`Error during removing the product from cart using fetch ${err}`);
+        return res.status(500).json({ error: `An error occurred while removing the product from cart ${err}` })
+    }
+}
+
+
 
 module.exports = {
     cart,
     addToCartPost,
     cartCountFetch,
+    removeCartItem,
 }

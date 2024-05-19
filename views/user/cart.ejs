@@ -1,7 +1,11 @@
 <style>
     .cart-container {
-        display: flex;
+        /* display: flex;
         flex-direction: row;
+        justify-content: space-between; */
+        display: grid;
+        grid-template-columns: 80% 20%;
+
         gap: 2rem;
         margin-top: 5rem;
         margin-bottom: 5rem;
@@ -88,7 +92,7 @@
         flex-direction: row;
         gap: 2rem;
         align-items: center;
-       
+        flex-wrap: wrap;
     }
 
     .cart-items-count-row {
@@ -165,10 +169,17 @@
                                 </div>
                                 <div class="cart-items-count-row">
                                     <b>Total Price</b>
-                                    <h4> &#8377;
-                                        <%= parseInt((items.productID.productDiscount/100)*items.productID.productPrice*items.productCount).toLocaleString()
-                                            %>
-                                    </h4>
+                                    <% if(items.productID.productDiscount!=0){ %>
+                                        <h4> &#8377;
+                                            <%= parseInt((items.productID.productDiscount/100)*items.productID.productPrice*items.productCount).toLocaleString()
+                                                %>
+                                        </h4>
+                                        <% }else { %>
+                                            <h4> &#8377;
+                                                <%= parseInt(items.productID.productPrice*items.productCount).toLocaleString()
+                                                    %>
+                                            </h4>
+                                            <% }%>
 
                                 </div>
                                 <!-- <div class="cart-items-count-row"></div> -->
@@ -176,36 +187,11 @@
 
 
 
-                            <button class="btn btn-danger mt-2 btn-sm">Remove Product</button>
+                            <button class="btn btn-danger mt-2 btn-sm"
+                                onclick="removeCartProduct('<%= items.productID.id%>')">Remove Product</button>
                         </div>
                     </div>
                     <% }) %>
-            </div>
-
-            <div class="cart-price-container">
-                <table class="table table-hover">
-                    <tr>
-                        <th>Total Price</th>
-                        <th>:</th>
-                        <th>
-                            <%= parseInt(totalPriceWithoutDiscount).toLocaleString() %>
-                        </th>
-                    </tr>
-                    <tr>
-                        <th>Savings</th>
-                        <th>:</th>
-                        <th>
-                            <%= parseInt(totalPriceWithoutDiscount-totalPrice).toLocaleString() %>
-                        </th>
-                    </tr>
-                    <tr>
-                        <th>Payable Amount</th>
-                        <th>:</th>
-                        <th>
-                            <%= parseInt(totalPrice).toLocaleString() %>
-                        </th>
-                    </tr>
-                </table>
             </div>
             <% }else { %>
                 <div class="empty-cart-container">
@@ -213,6 +199,32 @@
                     <!-- <a href="/user/home" class="btn btn-primary">Go Back Home</a> -->
                 </div>
                 <% } %>
+                    <div class="cart-price-container">
+                        <table class="table table-hover">
+                            <tr>
+                                <th>Total Price</th>
+                                <th>:</th>
+                                <th>
+                                    <%= parseInt(totalPriceWithoutDiscount).toLocaleString() %>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>Savings</th>
+                                <th>:</th>
+                                <th>
+                                    <%= parseInt(totalPriceWithoutDiscount-totalPrice).toLocaleString() %>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>Payable Amount</th>
+                                <th>:</th>
+                                <th>
+                                    <%= parseInt(totalPrice).toLocaleString() %>
+                                </th>
+                            </tr>
+                        </table>
+                    </div>
+
     </div>
 
     <%- include('footer') %>
@@ -221,15 +233,19 @@
 
             // product quantity and productID on onChange function
             function updateProductCount(productID, value) {
+
+                // url for the fetch request 
                 const URL = `/user/cart-count/${productID}/?productCount=${value}`;
 
+                // fetch request for updating product count in cart
                 fetch(URL, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                     },
                 }).then((Response) => {
-                    console.log(Response);
+
+                    // if the product updated without any error then an alert with success is fired
                     if (Response.ok) {
                         Swal.fire({
                             icon: "success",
@@ -237,10 +253,11 @@
                             showConfirmButton: false,
                             timer: 800,
                         });
-                        setTimeout(()=>{
+                        // after the timer from sweet alert then reload the page
+                        setTimeout(() => {
                             window.location.reload()
-                        },800)
-                        
+                        }, 800)
+
                     } else {
                         Swal.fire({
                             icon: "error",
@@ -249,5 +266,46 @@
                         });
                     }
                 });
+            }
+
+
+
+            // remove the product from cart
+            function removeCartProduct(productID) {
+
+                // confirmation message for removing the cart items
+                Swal.fire({
+                    icon: 'question',
+                    title: "Remove product from cart",
+                    text: "Are you sure want to remove this product from cart",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes, remove it!",
+                }).then((result) => {
+
+                    // if confirmed then fire a fetch request
+                    if (result.isConfirmed) {
+                        URL = `/user/remove-cart-product/${productID}`
+                        fetch(URL, {
+                            method: 'DELETE',
+                            headers: {
+                                "Content-Type": "application/json",
+                            }
+                        }).then((Response) => {
+                            if (Response.ok) {
+                                Swal.fire({
+                                    icon: "success",
+                                    title: "Product removed",
+                                    showConfirmButton: false,
+                                    timer: 800
+                                })
+                                setTimeout(() => {
+                                    window.location.reload()
+                                }, 800)
+                            }
+                        })
+                    }
+                })
+
+
             }
         </script>

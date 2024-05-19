@@ -68,8 +68,9 @@ user.get('/wishlist',checkUserSession,userController.wishlist)
 
 // cart routes
 user.get('/cart',checkUserSession,cartController.cart)
-user.post('/add-to-cart/:id',checkUserSession,cartController.addToCartPost )
+user.post('/add-to-cart/:id',checkUserSession,cartController.addToCartPost)
 user.post('/cart-count/:id',checkUserSession,cartController.cartCountFetch)
+user.delete('/remove-cart-product/:id',checkUserSession,cartController.removeCartItem)
 
 
 // logout
