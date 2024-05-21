@@ -74,6 +74,7 @@
     .cart-price-container {
         display: flex;
         flex-direction: column;
+        gap: 3rem;
     }
 
     .empty-cart-container {
@@ -195,8 +196,8 @@
             </div>
             <% }else { %>
                 <div class="empty-cart-container">
-                    <button onclick="history.back()" class="btn btn-primary">Go Back</button>
-                    <!-- <a href="/user/home" class="btn btn-primary">Go Back Home</a> -->
+                    <!-- <button onclick="history.back()" class="btn btn-primary">Go Back</button> -->
+                    <a href="/user/home" class="btn btn-primary">Go Back Home</a>
                 </div>
                 <% } %>
                     <div class="cart-price-container">
@@ -223,6 +224,10 @@
                                 </th>
                             </tr>
                         </table>
+                        <!-- checkout button -->
+                        <div class="checkout-button text-center">
+                            <a href="/user/checkout" class="btn btn-success">Proceed to CheckOut</a>
+                        </div>
                     </div>
 
     </div>

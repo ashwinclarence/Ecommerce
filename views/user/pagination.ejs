@@ -14,6 +14,8 @@
 
 <div class="pagination-container">
     <form action="" method="get" id="pagination-form">
+        <!-- total product count -->
+        <input type="text" hidden value="<%= products.length %>" id="pagination-page-number">
         <!-- Previous button -->
         <button class="btn btn-secondary" name="page" type="submit">Previous</button>
         <!-- Next button -->
@@ -25,39 +27,46 @@
 
 
 <script>
-
-
     // Function to get the value of a query parameter from the URL
     function getQueryParam(param) {
         const urlParams = new URLSearchParams(window.location.search);
         return urlParams.get(param);
     }
 
-    console.log()
+    // Get the current page number and convert to integer 
+    const currentPage = parseInt(getQueryParam('page')) || 0;
 
-    // get the current page number and convert to integer 
-    const currentPage = parseInt(getQueryParam('page')) || 1
+    const paginationForm = document.getElementById('pagination-form');
+    const previousButton = document.getElementsByName('page')[0];
+    const nextButton = document.getElementsByName('page')[1];
+    const productsCount=document.getElementById('pagination-page-number').value
 
-    const paginationForm = document.getElementById('pagination-form')
-    const previousButton = document.getElementsByName('page')[0]
-    const nextButton = document.getElementsByName('page')[1]
-
-    // add action for next button for incrementing the page number
-    nextButton.addEventListener('click', () => {
-        nextButton.value = currentPage + 1
-    })
-
-    // add action for previous button for decrementing the page number
-    previousButton.addEventListener('click', () => {
-        if (currentPage > 0) {
-            previousButton.value = currentPage - 1
-        } else {
-            previousButton.value = 0
-        }
-    })
+    console.log(productsCount)
 
     
+    // if product count reaches o then the next button is set as disabled
+    if(Number(productsCount)===0){
+        nextButton.disabled="true"
+    }
 
+    // Add action for next button for incrementing the page number
+    nextButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        const nextPage = currentPage + 1;
+        updateQueryParam('page', nextPage);
+    });
 
+    // Add action for previous button for decrementing the page number
+    previousButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        const previousPage = currentPage > 0 ? currentPage - 1 : 0;
+        updateQueryParam('page', previousPage);
+    });
 
+    // Function to update query parameters and submit the form
+    function updateQueryParam(key, value) {
+        const url = new URL(window.location);
+        url.searchParams.set(key, value);
+        window.location.href = url.toString();
+    }
 </script>

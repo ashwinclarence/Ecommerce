@@ -26,20 +26,28 @@ const home = async (req, res) => {
         const maxPrice = parseInt(req.query.maxPrice) || 100000
         const productRating = parseInt(req.query.productRating) || 0
         const productDiscount = parseInt(req.query.productDiscount) || -1
+        const userSearch=req.query.userSearch || ""
 
         // pagination values
         const productsPerPage = 12;
         const currentPage = req.query.page || 0
 
-        // using regex the selectedCategory is sorted
-        // const products = await productSchema.find({ productCategory: { $regex: selectedCategory , $options: 'i' }, isActive: true });
-
         // get all product from product collection and with the query strings
         const products = await productSchema.find({
+            productName:{$regex:userSearch,$options:"i"},
             productCategory: { $in: selectedCategory },
             isActive: true,
             productPrice: { $lte: maxPrice, $gte: minPrice }
         }).skip(currentPage * productsPerPage).limit(productsPerPage).sort({ productDiscount: productDiscount })
+
+
+        // count the number of document satisfied the filter
+        const productsCount = await productSchema.find({
+            productName:{$regex:userSearch,$options:"i"},
+            productCategory: { $in: selectedCategory },
+            isActive: true,
+            productPrice: { $lte: maxPrice, $gte: minPrice }
+        }).countDocuments()
 
 
         // render the home page

@@ -76,21 +76,27 @@ const addToCartPost = async (req, res) => {
                 }
             });
 
+
             // if product not exist in cart add the product
             if (!productExist) {
                 checkUserCart.items.push({ productID: actualProductDetails._id, productCount: productQuantity, productPrice: productPrice })
             }
+
 
             // save the modified data in cart collection
             await checkUserCart.save()
 
 
         } else {
+            
+           totalPrice=actualProductDetails.productDiscount===0?actualProductDetails.productPrice:(actualProductDetails.productDiscount/100)*actualProductDetails.productPrice
+           totalPriceWithoutDiscount=actualProductDetails.productPrice
 
             // if the user does not have a cart then a cart is created 
             const newCart = new cartSchema({
                 userID: userID,
                 items: [{ productID: actualProductDetails._id, productCount: productQuantity, productPrice: productPrice }],
+
             })
 
             // save the update in the cart 
@@ -108,7 +114,7 @@ const addToCartPost = async (req, res) => {
 
 
 
-
+// product count using fetch
 const cartCountFetch = async (req, res) => {
     try {
 
@@ -125,6 +131,7 @@ const cartCountFetch = async (req, res) => {
 
         // get the cart details of the current user
         const cartItem = await cartSchema.findOne({ userID: req.session.user }).populate('items.productID')
+
 
         // filter out the current product from the items inside the cart collections
         const currentProduct = cartItem.items.filter((item) => {
@@ -161,8 +168,8 @@ const removeCartItem = async (req, res) => {
         const cartItems = await cartSchema.findOne({ userID: req.session.user }).populate('items.productID')
 
 
-        if(cartItems===null){
-            return res.status(404).json({error:"An error occurred while removing the product"})
+        if (cartItems === null) {
+            return res.status(404).json({ error: "An error occurred while removing the product" })
         }
 
         // filter out the cart products without the removed products
