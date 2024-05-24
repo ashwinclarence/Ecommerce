@@ -85,7 +85,9 @@
 
     }
 
-    .login-with-socialmedia-box i {
+    .login-with-socialmedia-box a {
+        text-decoration: none;
+        color: #000000;
         cursor: pointer;
     }
 </style>
@@ -107,13 +109,13 @@
                         <button class="btn btn-primary" type="submit">Login</button>
 
             </form>
-            <!-- <div class="login-methods-box">
+            <div class="login-methods-box">
                 <b class="continue-with-label">Or Continue with</b>
             </div>
             <div class="login-with-socialmedia-box">
-                <i class="fa-brands fa-facebook"></i>
-                <i class="fa-brands fa-google"></i>
-            </div> -->
+                <a href="/user/auth/facebook"><i class="fa-brands fa-facebook"></i></a>
+               <a href="/user/auth/google"> <i class="fa-brands fa-google"></i></a>
+            </div>
             <div class="signup-page-render">
                 <p>If you are a new user? <a href="/user/signup">Signup</a></p>
             </div>

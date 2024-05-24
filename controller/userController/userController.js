@@ -4,7 +4,8 @@ const sendOtpMail = require('../../services/emailSender')
 const generateOTP = require('../../services/generateOTP');
 const productSchema = require('../../model/productSchema');
 const categorySchema = require('../../model/categorySchema');
-
+const passport=require('passport-google-oauth2')
+// const googlePassport=require('../../services/auth')
 // user router if session 
 const user = (req, res) => {
     try {
@@ -238,7 +239,38 @@ const logout = (req, res) => {
     })
 }
 
+const googleAuth=(req,res)=>{
+    try {
 
+        passport.authenticate('google', { scope:
+            [ 'email', 'profile' ] 
+        })
+        
+    } catch (err) {
+        console.log(`Error on google authentication ${err}`)
+    }
+}
+
+const googleAuthCallback=(req,res)=>{
+    try {
+
+        passport.authenticate( 'google', {
+            successRedirect: '/user/home',
+            failureRedirect: '/auth/google/failure'
+    })
+        
+    } catch (err) {
+        console.log(`Error on google auth callback ${err}`)
+    }
+}
+
+const facebookAuth=(req,res)=>{
+    try {
+        
+    } catch (err) {
+        console.log(`Error on facebook authentication ${err}`)
+    }
+}
 
 
 
@@ -252,5 +284,8 @@ module.exports = {
     otpPost,
     otpResend,
     wishlist,
+    googleAuth,
+    googleAuthCallback,
+    facebookAuth,
     logout
 }

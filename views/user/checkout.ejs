@@ -1,16 +1,349 @@
 <style>
+    .checkout-container {
+        padding: 4rem 0;
+        min-height: 100vh;
+    }
 
+    .card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        word-wrap: break-word;
+        background-color: #fff;
+        background-clip: border-box;
+        border: 0 solid rgba(0, 0, 0, .125);
+        border-radius: 1rem;
+    }
 
+    .card-body {
+        -webkit-box-flex: 1;
+        -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
+        padding: 1.5rem 1.5rem;
+    }
+
+    .image-container-checkout {
+        width: 100px;
+        height: 100px;
+        overflow: hidden;
+    }
+
+    .image-container-checkout img {
+        width: 100px;
+        height: 100px;
+        object-fit: contain;
+    }
+
+    .product-name-checkout {
+        width: 300px;
+        text-overflow: ellipsis;
+    }
+
+    .address-table tr {
+        display: grid;
+        grid-template-columns: 20% 5% 75%;
+    }
 </style>
 
 
 
-<%- includes('navbar') %>
-<div class="checkout-container container">
-    
-</div>
-<%- includes('footer') %>
+<%- include('secondaryNavbar') %>
+    <div class="checkout-container container">
+        <h1 class="h3 mb-5">Checkout</h1>
+        <div class="row">
+            <!-- left side -->
+            <div class="accordion col-lg-9" id="accordionExample">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            <h4>Delivery Address</h4>
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
+                        data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
 
-<script>
+                            <form action="" method="get" id="address-input-form">
+                                <% addressData.forEach((address,index)=>{ %>
+                                    <div class="form-check mt-4 ">
+                                        <input class="form-check-input checkout-address" type="radio"
+                                            name="checkoutAddress" id="checkout-address" value="<%= index %>" />
+                                        <!-- inner -->
+                                        <div class="border border-3 rounded p-3 table-responsive"
+                                            for="checkout-address">
+                                            <strong>
+                                                <%= address.contactName %>
+                                            </strong>
+                                            <table class="table address-table">
+                                                <tr>
+                                                    <td>pincode</td>
+                                                    <td>:</td>
+                                                    <td>
+                                                        <%= address.pincode %>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Home Address</td>
+                                                    <td>:</td>
+                                                    <td>
+                                                        <%= address.homeAddress %>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Area Address</td>
+                                                    <td>:</td>
+                                                    <td>
+                                                        <%= address.areaAddress %>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>LandMark</td>
+                                                    <td>:</td>
+                                                    <td>
+                                                        <%= address.landmark %>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <% }) %>
 
-</script>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- end of first accordion -->
+
+
+                <!-- second accordion -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingThree">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            <h4>Selected items</h4>
+                        </button>
+                    </h2>
+                    <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
+                        data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+
+                            <table class="table">
+
+                                <tr class="text-center">
+                                    <th>Sl.no</th>
+                                    <th>Image</th>
+                                    <th>Name</th>
+                                    <th>Brand</th>
+                                    <th>Price</th>
+                                    <th>Category</th>
+                                    <th>Quantity</th>
+                                </tr>
+
+                                <% cartItems.forEach((product,index)=>{ %>
+                                    <tr class="text-center">
+                                        <th>
+                                            <%= index+1 %>
+                                        </th>
+                                        <td class="image-container-checkout"><img
+                                                src="../../<%= product.productID.productImage[0] %>" alt=""
+                                                class="image-fluid"></td>
+                                        <td class="product-name-checkout">
+                                            <%= product.productID.productName %>
+                                        </td>
+                                        <td>
+                                            <%= product.productID.productBrand %>
+                                        </td>
+                                        <% if(product.productID.productDiscount===0){ %>
+                                            <td>&#8377;
+                                                <%= product.productID.productPrice %>
+                                            </td>
+                                            <% }else { %>
+                                                <td>&#8377;
+                                                    <%= Math.round(product.productID.productPrice-((product.productID.productDiscount/100)*product.productID.productPrice))
+                                                        %>
+                                                </td>
+                                                <% }%>
+                                                    <td>
+                                                        <%= product.productID.productCategory %>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <%= product.productCount %>
+                                                    </td>
+                                    </tr>
+                                    <% }) %>
+                            </table>
+
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- second accordion -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            <h4>Select a payment method </h4>
+                        </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+                        data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+
+                            <!-- Default radio -->
+                            <div class="form-check">
+                                <input class="form-check-input payment-method-cod" type="radio" name="paymentMethod"
+                                    id="payment-method-cod" value="0" />
+                                <div class="form-check-label" for="payment-method-cod">
+                                    Cash On Delivery
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+            </div>
+
+            <!-- Right -->
+            <div class="col-lg-3">
+                <div class="card position-sticky top-0 border-1">
+                    <div class="p-3 bg-light bg-opacity-10">
+                        <h6 class="card-title mb-3">Order Summary</h6>
+                        <div class="d-flex justify-content-between mb-1 small">
+                            <span>Subtotal</span> <span>&#8377;<%= (cartDetails.totalPrice).toLocaleString() %></span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-1 small text-success">
+                            <span>Savings</span> <span>&#8377;<%=
+                                    (cartDetails.totalPrice-cartDetails.payableAmount).toLocaleString() %></span>
+                        </div>
+                        <% if(cartDetails.payableAmount<500){ %>
+                            <div class="d-flex justify-content-between mb-1 small ">
+                                <span>Shipping</span> <span>&#8377;100.00</span>
+                            </div>
+                            <% }else{ %>
+                                <div class="d-flex justify-content-between mb-1 small text-success">
+                                    <span>Shipping</span> <span>Free</span>
+                                </div>
+                                <% } %>
+
+                                    <hr>
+                                    <div class="d-flex justify-content-between mb-4 small">
+                                        <span>TOTAL</span> <strong class="text-dark">&#8377;<%=
+                                                (cartDetails.payableAmount).toLocaleString() %></strong>
+                                    </div>
+                                    <!-- <div class="form-check mb-1 small">
+                            <input class="form-check-input" type="checkbox" value="" id="tnc">
+                            <label class="form-check-label" for="tnc">
+                                I agree to the <a href="#">terms and conditions</a>
+                            </label>
+                        </div>
+                        <div class="form-check mb-3 small">
+                            <input class="form-check-input" type="checkbox" value="" id="subscribe">
+                            <label class="form-check-label" for="subscribe">
+                                Get emails about product updates and events. If you change your mind, you can
+                                unsubscribe at any time. <a href="#">Privacy Policy</a>
+                            </label>
+                        </div> -->
+                                    <form action="" method="post" id="place-order-form">
+
+                                        <button type="submit" class="btn btn-success w-100 mt-2">Place
+                                            order</button>
+                                    </form>
+                                    <button onclick="history.back()" class="btn btn-secondary w-100 mt-2">Go
+                                        Back</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <%- include('footer') %>
+
+        <script>
+
+            // find the selected address based on the index of stored address
+            const addressCount = document.querySelectorAll('.checkout-address')
+            let addressIndex
+            addressCount.forEach((ele) => {
+                ele.addEventListener('change', (e) => {
+                    e.preventDefault()
+                    addressIndex = parseInt(ele.value)
+                })
+            })
+
+            // find the payment method 
+            const paymentMethod = document.querySelectorAll('.payment-method-cod')
+            let paymentMode
+            paymentMethod.forEach((ele) => {
+                ele.addEventListener('change', (e) => {
+                    e.preventDefault()
+                    paymentMode = parseInt(ele.value)
+                })
+            })
+
+
+            //order placement using fetch
+            // onclick event for place order function
+            const orderPlacementForm = document.getElementById('place-order-form')
+            orderPlacementForm.addEventListener('submit', (e) => {
+                e.preventDefault()
+
+                let validated = true
+                // validation for selected address 
+                if (addressIndex < 0 || addressIndex >= 4 || addressIndex===undefined) {
+                    validated = false
+                    Swal.fire({
+                        icon: "warning",
+                        title: "Invalid Delivery Address",
+                        text: "Please selected a valid address",
+                    })
+                }
+
+                // validation for payment method
+                if (paymentMode != 0) {
+                    validated = false
+                    Swal.fire({
+                        icon: "warning",
+                        title: "Invalid Payment method",
+                        text: "Please selected a payment method",
+                    })
+                }
+
+                // if both are valid then proceed with order placement
+                if (validated) {
+                    const URL = `/user/place-order/${addressIndex}/${paymentMode}`
+                    orderPlacementForm.action = URL
+                    orderPlacementForm.submit()
+                }
+
+            })
+
+
+
+
+            // if both are valid then proceed with order placement using fetch
+            // if (validated) {
+
+
+            //     fetch(URL,{
+            //         method:'POST'
+            //     }).then((Response)=>{
+            //         if(Response.ok){
+
+            //         }
+            //     })
+            // }
+
+
+
+
+
+        </script>

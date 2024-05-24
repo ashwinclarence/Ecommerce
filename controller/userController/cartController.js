@@ -22,11 +22,21 @@ const cart = async (req, res) => {
                     totalPriceWithoutDiscount += (ele.productID.productPrice * ele.productCount)
                 } else {
                     // get the product discount price from the product price
-                    const discountPrice = (ele.productID.productDiscount / 100) * (ele.productID.productPrice * ele.productCount)
+                    const discountPrice = (ele.productID.productPrice * ele.productCount) - ((ele.productID.productDiscount / 100) * (ele.productID.productPrice * ele.productCount))
                     totalPrice += discountPrice
                     totalPriceWithoutDiscount += (ele.productID.productPrice * ele.productCount)
                 }
             })
+
+            // if the totalPrice and payable amount in the cart and the calculated total price is different then update the collection with the new values
+            if (cart.payableAmount != totalPrice || cart.totalPrice != totalPriceWithoutDiscount) {
+                // update the price details
+                cart.payableAmount = Math.round(totalPrice);
+                cart.totalPrice = Math.round(totalPriceWithoutDiscount);
+            }
+
+            //   save the changes in the collection
+            await cart.save()
 
             // render the cart
             res.render('user/cart', { title: "cart", cart: cart.items, totalPrice, totalPriceWithoutDiscount, alertMessage: req.flash('errorMessage'), user: req.session.user })
@@ -49,7 +59,7 @@ const addToCartPost = async (req, res) => {
         // product id of the product to be added to the cart collection
         const productID = req.params.id
         const userID = req.session.user
-        const productPrice = req.query.price
+        const productPrice = parseInt(req.query.price)
         const productQuantity = 1
 
         // find the product from collection
@@ -58,58 +68,49 @@ const addToCartPost = async (req, res) => {
         // check the user have cart already
         const checkUserCart = await cartSchema.findOne({ userID: req.session.user }).populate('items.productID')
 
-
-        // if the user have a cart then cart is updated
+        // if user has cart already
         if (checkUserCart) {
+            let productExist = false
 
-            let productExist = false;
-            // check if product already exist 
-            checkUserCart.items.forEach(product => {
-                if (product.productID.id === productID) {
-                    product.productPrice = productPrice
-                    if (product.productCount < 10) {
-                        product.productCount += productQuantity;
-                    } else {
-                        req.flash('errorMessage', 'Your order has reached the product limit. Please add additional items in your next order.');
-                    }
-                    productExist = true;
+            // check the product exist in the cart 
+            checkUserCart.items.forEach((ele) => {
+                if (ele.productID.id === productID) {
+                    // ele.productCount=productQuantity
+                    // ele.productPrice=ele.productID.productPrice
+                    productExist = true
                 }
-            });
-
-
-            // if product not exist in cart add the product
-            if (!productExist) {
-                checkUserCart.items.push({ productID: actualProductDetails._id, productCount: productQuantity, productPrice: productPrice })
-            }
-
-
-            // save the modified data in cart collection
-            await checkUserCart.save()
-
-
-        } else {
-            
-           totalPrice=actualProductDetails.productDiscount===0?actualProductDetails.productPrice:(actualProductDetails.productDiscount/100)*actualProductDetails.productPrice
-           totalPriceWithoutDiscount=actualProductDetails.productPrice
-
-            // if the user does not have a cart then a cart is created 
-            const newCart = new cartSchema({
-                userID: userID,
-                items: [{ productID: actualProductDetails._id, productCount: productQuantity, productPrice: productPrice }],
-
             })
 
-            // save the update in the cart 
-            await newCart.save();
+            // if the product not exist in the cart
+            if (!productExist) {
+                checkUserCart.items.push({ productID: actualProductDetails._id, productCount: 1, productPrice: productPrice })
+            }
+
+            // save the changes in the collection
+            await checkUserCart.save()
+
+        } else {
+
+            // create a new cart
+            const newCart = new cartSchema({
+                userID: userID,
+                items: [{ productID: actualProductDetails._id, productCount: 1, productPrice: productPrice }],
+            })
+
+            // save the changes in collection
+            await newCart.save()
+
         }
 
         res.redirect(`/user/product-view/${productID}`)
 
-
-
     } catch (err) {
-        console.log(`Error during adding product to cart post using fetch ${err}`);
+        console.log(`Error during adding product to cart post  ${err}`);
     }
+
+
+
+
 }
 
 
@@ -154,6 +155,8 @@ const cartCountFetch = async (req, res) => {
         console.log(`Error during updating the count of products in cart using FETCH ${err}`);
         return res.status(500).json({ error: `An error occurred while updating the product count ${err}` })
     }
+
+
 }
 
 

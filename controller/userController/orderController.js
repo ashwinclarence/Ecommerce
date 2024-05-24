@@ -1,6 +1,18 @@
-const order = (req, res) => {
+const checkoutSchema = require("../../model/checkoutSchema");
+
+
+
+
+
+const order = async (req, res) => {
     try {
 
+        const orderDetails=await checkoutSchema.find({userID:req.session.user})
+        console.log("🚀 ~ file: orderController.js:11 ~ order ~ orderDetails:", orderDetails)
+
+        // orderDetails.
+
+                                                                                                                                                                                                                                                                                                                   
         res.render('user/orders',{title:"Order",user:req.session.user,alertMessage:req.flash('errorMessage')})
     } catch (err) {
         console.log(`Error rendering the order page ${err}`);

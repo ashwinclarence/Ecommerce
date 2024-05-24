@@ -21,9 +21,11 @@ const cartSchema = new mongoose.Schema({
     items: [itemSchema],
     payableAmount:{
         type:Number,
+        default:0
     },
     totalPrice:{
         type:Number,
+        default:0
     }
 });
 

@@ -9,13 +9,15 @@ const profileController=require('../controller/userController/profileController'
 const orderController=require('../controller/userController/orderController')
 const cartController=require('../controller/userController/cartController')
 const homeController=require('../controller/userController/homeController')
-
+const checkoutController=require('../controller/userController/checkoutController')
 
 
 // login routes
 user.get('/',userController.user)
 user.get('/login',userController.login)
 user.post('/login',userController.loginPost)
+user.get('/auth/google',userController.googleAuth)
+user.get('/auth/facebook',userController.facebookAuth)
 
 
 // signup routes
@@ -73,6 +75,10 @@ user.post('/cart-count/:id',checkUserSession,cartController.cartCountFetch)
 user.delete('/remove-cart-product/:id',checkUserSession,cartController.removeCartItem)
 
 
+
+// checkout
+user.get('/checkout',checkUserSession,checkoutController.checkout)
+user.post('/place-order/:address/:payment',checkUserSession,checkoutController.placeOrder)
 // logout
 user.get('/logout',userController.logout)
 

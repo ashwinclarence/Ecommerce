@@ -102,6 +102,12 @@
         align-items: center;
         gap: 1rem;
     }
+    .cart-product-name{
+        text-decoration: none;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #000000;
+    }
 </style>
 
 <%- include('navbar') %>
@@ -121,14 +127,14 @@
                             <small>
                                 <%= items.productID.productBrand %>
                             </small>
-                            <h6 class="cart-product-name">
+                            <a href="/user/product-view/<%= items.productID.id %>" class="cart-product-name">
                                 <%= items.productID.productName %>
-                            </h6>
+                            </a>
                             <div class="cart-price-box">
                                 <% if(items.productID.productDiscount!=0){ %>
                                     <h5>
                                         <i class="fa-solid fa-indian-rupee-sign"></i>
-                                        <%= parseInt((items.productID.productDiscount/100)*items.productID.productPrice).toLocaleString()
+                                        <%= parseInt(items.productID.productPrice-(items.productID.productDiscount/100)*items.productID.productPrice).toLocaleString()
                                             %>
                                     </h5>
                                     <h5 class="strike-price">
@@ -172,7 +178,7 @@
                                     <b>Total Price</b>
                                     <% if(items.productID.productDiscount!=0){ %>
                                         <h4> &#8377;
-                                            <%= parseInt((items.productID.productDiscount/100)*items.productID.productPrice*items.productCount).toLocaleString()
+                                            <%= parseInt(items.productID.productPrice*items.productCount-(items.productID.productDiscount/100)*items.productID.productPrice*items.productCount).toLocaleString()
                                                 %>
                                         </h4>
                                         <% }else { %>
@@ -213,7 +219,7 @@
                                 <th>Savings</th>
                                 <th>:</th>
                                 <th>
-                                    <%= parseInt(totalPriceWithoutDiscount-totalPrice).toLocaleString() %>
+                                    <%= Math.round(totalPriceWithoutDiscount-totalPrice).toLocaleString() %>
                                 </th>
                             </tr>
                             <tr>
@@ -225,8 +231,9 @@
                             </tr>
                         </table>
                         <!-- checkout button -->
-                        <div class="checkout-button text-center">
-                            <a href="/user/checkout" class="btn btn-success">Proceed to CheckOut</a>
+                        <div class="checkout-button d-flex flex-column ">
+                            <a href="/user/checkout" class="btn btn-primary">Proceed to CheckOut</a>
+                            <a href="/user/home" class="btn btn-secondary mt-2">Back to Home</a>
                         </div>
                     </div>
 
