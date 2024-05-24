@@ -70,29 +70,29 @@
             <h2>Your Orders</h2>
         </div>
 
-
-        <!-- each orders -->
+        <% orderDetails.forEach((ele,index)=>{ %>
+             <!-- each orders -->
         <div class="order-box">
             <div class="order-placed-details">
                 <div class="order-placed-details-inner">
                     <small>Order Placed</small>
-                    <b>11/05/2023</b>
+                    <b><%= ele.orderDate.toDateString() %></b>
                 </div>
                 <div class="order-placed-details-inner">
                     <small> Quantity</small>
-                    <b>1</b>
+                    <b><%= ele.products.quantity %></b>
                 </div>
                 <div class="order-placed-details-inner">
                     <small> Total</small>
-                    <b>&#8377; 1299</b>
+                    <b>&#8377; <%= parseInt(ele.products.price*ele.products.quantity-(ele.products.discountPrice/100)*ele.products.price*ele.products.quantity).toLocaleString() %></b>
                 </div>
                 <div class="order-placed-details-inner">
                     <small>Ship To</small>
-                    <b>ASHWIN CLARENCE</b>
+                    <b><%= ele.address.contactName %></b>
                 </div>
                 <div class="order-placed-details-inner">
                     <small>Order Status</small>
-                    <b>Delivered</b>
+                    <b><%= ele.products.productStatus %></b>
                 </div>
             </div>
             <div class="order-item-details">
@@ -102,10 +102,8 @@
                     </div>
                 </div>
                 <div class="order-item-details-inner">
-                    <h6>adidas</h6>
-                    <h6>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Officiis reprehenderit laudantium
-                        saepe optio ea quis sequi? Mollitia quae est, at aspernatur alias reprehenderit non impedit
-                        tempore quasi quam incidunt sequi.</h6>
+                    <h6><%= ele.products.productBrand %></h6>
+                    <h6><%= ele.products.productName %></h6>
                 </div>
                 <div class="order-item-details-inner">
                     <button class="btn btn-warning">Add Product Review</button>
@@ -114,6 +112,8 @@
             </div>
         </div>
         <!-- each order end -->
+       <% }) %>
+       
 
 
 

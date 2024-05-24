@@ -14,12 +14,11 @@ const schema = new mongoose.Schema({
     totalQuantity: { type: Number },
     totalPrice: { type: Number },
     address: {
-        firstName: String,
-        lastName: String,
-        state: String,
-        address: String,
-        city: String,
-        zip: String,
+        contactName: String,
+        pincode: String,
+        homeAddress: String,
+        areaAddress: String,
+        landmark: String
     },
     paymentMethod: {
         type: String

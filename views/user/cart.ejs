@@ -102,7 +102,8 @@
         align-items: center;
         gap: 1rem;
     }
-    .cart-product-name{
+
+    .cart-product-name {
         text-decoration: none;
         font-size: 1rem;
         font-weight: 600;
@@ -189,7 +190,12 @@
                                             <% }%>
 
                                 </div>
-                                <!-- <div class="cart-items-count-row"></div> -->
+                                <% if(items.productID.productQuantity<10) { %>
+                                <div class="cart-items-count-row text-danger">
+                                   <b> <%= items.productID.productQuantity %> More Items Remaining</b>
+                                
+                                </div>
+                                <% } %>
                             </div>
 
 
@@ -267,7 +273,7 @@
                         });
                         // after the timer from sweet alert then reload the page
                         setTimeout(() => {
-                            window.location.reload()
+                            // window.location.reload()
                         }, 800)
 
                     } else {
@@ -277,7 +283,17 @@
                             text: "Unexpected error occurred please try again later",
                         });
                     }
-                });
+                    return Response.json();
+                }).then((data)=>{
+                    console.log(data);
+                   if(data.error){
+                    Swal.fire({
+                            icon: "error",
+                            title: `${data.message} Product is remaining`,
+                            text: data.error,
+                        });
+                   }
+                })
             }
 
 

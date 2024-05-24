@@ -140,6 +140,11 @@ const cartCountFetch = async (req, res) => {
                 return item
             }
         })
+         
+        // if the product stock is not enough then show an error
+        if(currentProduct[0].productID.productQuantity-productCount<0){
+            return res.status(422).json({error:"Please reduce the product count. The selected quantity is not available right now",message:currentProduct[0].productID.productQuantity})
+        }
 
         // update the product count of the product in the collection with the selected count
         currentProduct[0].productCount = productCount

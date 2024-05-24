@@ -7,13 +7,10 @@ const checkoutSchema = require("../../model/checkoutSchema");
 const order = async (req, res) => {
     try {
 
-        const orderDetails=await checkoutSchema.find({userID:req.session.user})
-        console.log("🚀 ~ file: orderController.js:11 ~ order ~ orderDetails:", orderDetails)
-
-        // orderDetails.
+        const orderDetails=await checkoutSchema.aggregate([{$match:{userID:req.session.user}},{$unwind:"$products"}])
 
                                                                                                                                                                                                                                                                                                                    
-        res.render('user/orders',{title:"Order",user:req.session.user,alertMessage:req.flash('errorMessage')})
+        res.render('user/orders',{title:"Order",user:req.session.user,orderDetails,alertMessage:req.flash('errorMessage')})
     } catch (err) {
         console.log(`Error rendering the order page ${err}`);
     }

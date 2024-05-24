@@ -2,6 +2,8 @@ const cartSchema = require("../../model/cartSchema")
 const userSchema = require("../../model/userSchema")
 const checkoutSchema=require('../../model/checkoutSchema')
 
+
+
 const checkout=async (req,res)=>{
     try {
 
@@ -44,6 +46,13 @@ const placeOrder=async(req,res)=>{
         ]
 
         cartItems.items.forEach((ele)=>{
+
+            // check the product count is available at the product stock
+            if(ele.productID.productQuantity-ele.productCount<0){
+                req.flash('errorMessage','The selected quantity for one or more items is not available. Please adjust your order and try again.')
+                return res.redirect('/user/cart') 
+            }
+
             // add each products details in the cart to an array called products
             products.push({
                 productID:ele.productID._id,
@@ -59,9 +68,10 @@ const placeOrder=async(req,res)=>{
             totalQuantity+=ele.productCount
         })
 
+        // find the user details 
         const userDetails=await userSchema.findById(req.session.user)
         
-        // 
+        // add a new order 
         const newOder=new checkoutSchema({
             userID: req.session.user,
             products:products,
@@ -81,6 +91,12 @@ const placeOrder=async(req,res)=>{
         // save the updated data to collection
         newOder.save().then(async()=>{
             await cartItems.deleteOne({userID:req.session.user})
+
+            // reduce the number of products purchased from the product stock
+            cartItems.items.forEach((ele)=>{
+                ele.productID.productQuantity-=ele.productCount
+            })
+
             req.flash('errorMessage','Thank you for your purchase! Your order has been successfully placed.')
             res.redirect('/user/orders')
         }).catch((err)=>{
