@@ -4,12 +4,9 @@ const adminController = require('../controller/adminController/adminController')
 const adminCategoryController = require('../controller/adminController/categoryController')
 const userManagement=require('../controller/adminController/userManagement')
 const productController=require('../controller/adminController/productController')
-
+const orderController=require('../controller/adminController/orderController')
 // checkAdminSession is a middleware that checks session of the admin
 const checkAdminSession=require('../middleware/adminSession')
-
-
-
 
 
 
@@ -51,8 +48,10 @@ admin.get('/product-active/:id',checkAdminSession,productController.productActiv
 admin.delete('/delete-product/:id',checkAdminSession,productController.productDelete)
 
 
+// order management 
+admin.get('/orders',checkAdminSession, orderController.order);
 
-admin.get('/orders',checkAdminSession, adminController.order);
+
 admin.get('/coupons',checkAdminSession, adminController.coupons);
 
 

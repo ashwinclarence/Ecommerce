@@ -201,16 +201,10 @@
                                     Cash On Delivery
                                 </div>
                             </div>
-
-
+                            
                         </div>
                     </div>
                 </div>
-
-
-
-
-
             </div>
 
             <!-- Right -->
@@ -298,7 +292,7 @@
 
                 let validated = true
                 // validation for selected address 
-                if (addressIndex < 0 || addressIndex >= 4 || addressIndex===undefined) {
+                if (addressIndex < 0 || addressIndex >= 4 || addressIndex === undefined) {
                     validated = false
                     Swal.fire({
                         icon: "warning",
@@ -325,22 +319,6 @@
                 }
 
             })
-
-
-
-
-            // if both are valid then proceed with order placement using fetch
-            // if (validated) {
-
-
-            //     fetch(URL,{
-            //         method:'POST'
-            //     }).then((Response)=>{
-            //         if(Response.ok){
-
-            //         }
-            //     })
-            // }
 
 
 

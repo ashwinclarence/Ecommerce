@@ -79,30 +79,31 @@
             function validatePassword(password) {
                 // Check if the password length is at least 8 characters
                 if (password.length < 8) {
-                    return false;
+                    return true;
                 }
 
                 // Check if the password contains at least one uppercase letter
                 if (!/[A-Z]/.test(password)) {
-                    return false;
+                    return true;
                 }
 
                 // Check if the password contains at least one lowercase letter
                 if (!/[a-z]/.test(password)) {
-                    return false;
+                    return true;
                 }
 
                 // Check if the password contains at least one digit
                 if (!/\d/.test(password)) {
-                    return false;
+                    return true;
                 }
 
                 // Check if the password contains at least one special character
                 if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)) {
-                    return false;
+                    console.log("issue");
+                    return true;
                 }
 
-                return true;
+                return false;
             }
 
 
@@ -125,42 +126,43 @@
 
 
             // event listener for registration form
-            registerForm.addEventListener('submit', () => {
+            registerForm.addEventListener('submit', (e) => {
+                e.preventDefault()
 
                 let isValid = true
                 let errorMessage = ""
 
 
-                if (name.trim() === '' || !isNaN(name) || name.length > 40) {
+                if (name.value.trim() === '' || !isNaN(name) || name.value.length > 40) {
                     isValid = false
                     errorMessage = "Username should not contain number and maximum size limit is 40 charters"
                 }
 
-                if (!validateEmail(email.value)) {
+                else if (!validateEmail(email.value)) {
                     isValid = false;
                     errorMessage = "Check Your email address and enter correct address"
                 }
 
-                if (!isNaN(phoneNumber.value) || phoneNumber.value.length != 10) {
+                else if (isNaN(phoneNumber.value) || phoneNumber.value.length != 10) {
                     isValid = false;
                     errorMessage = "Phone number should be a valid one"
                 }
-                if (validatePassword(password.value)) {
+                else if (validatePassword(password.value)) {
                     isValid = false;
                     errorMessage = "Invalid Password. It must be strong"
                 }
-                if (password.value === confirmPassword.value) {
+                else if (password.value != confirmPassword.value) {
                     isValid = false;
                     errorMessage = "Password and confirm password must be same"
                 }
 
-                if(isValid===false){
+                if (isValid === false) {
                     Swal.fire({
-                        title:"Invalid Inputs",
-                    text:errorMessage,
-                    icon:"error"
+                        title: "Invalid Inputs",
+                        text: errorMessage,
+                        icon: "error"
                     })
-                }else{
+                } else {
                     registerForm.submit()
                 }
 

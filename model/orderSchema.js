@@ -9,7 +9,8 @@ const schema = new mongoose.Schema({
         quantity: { type: Number },
         price: { type: Number },
         productStatus: { type: String },
-        discountPrice: { type: Number }
+        discountPrice: { type: Number },
+        productImage: { type: String }
     }],
     totalQuantity: { type: Number },
     totalPrice: { type: Number },

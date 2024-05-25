@@ -1,4 +1,4 @@
-const checkoutSchema = require("../../model/checkoutSchema");
+const orderSchema = require("../../model/orderSchema");
 
 
 
@@ -7,8 +7,7 @@ const checkoutSchema = require("../../model/checkoutSchema");
 const order = async (req, res) => {
     try {
 
-        const orderDetails=await checkoutSchema.aggregate([{$match:{userID:req.session.user}},{$unwind:"$products"}])
-
+        const orderDetails=await orderSchema.aggregate([{$match:{userID:req.session.user}},{$unwind:"$products"}])
                                                                                                                                                                                                                                                                                                                    
         res.render('user/orders',{title:"Order",user:req.session.user,orderDetails,alertMessage:req.flash('errorMessage')})
     } catch (err) {

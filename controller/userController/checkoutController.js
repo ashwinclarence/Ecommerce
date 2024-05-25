@@ -1,6 +1,6 @@
 const cartSchema = require("../../model/cartSchema")
 const userSchema = require("../../model/userSchema")
-const checkoutSchema=require('../../model/checkoutSchema')
+const orderSchema=require('../../model/orderSchema')
 
 
 
@@ -62,6 +62,7 @@ const placeOrder=async(req,res)=>{
                 price:ele.productID.productPrice,
                 productStatus:"Order placed",
                 discountPrice:ele.productID.productDiscount,
+                productImage:ele.productID.productImage[0]
             })
 
             // increment the product total quantity
@@ -72,7 +73,7 @@ const placeOrder=async(req,res)=>{
         const userDetails=await userSchema.findById(req.session.user)
         
         // add a new order 
-        const newOder=new checkoutSchema({
+        const newOder=new orderSchema({
             userID: req.session.user,
             products:products,
             totalQuantity: totalQuantity,

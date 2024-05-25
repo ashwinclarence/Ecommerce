@@ -209,7 +209,7 @@
             <% }else { %>
                 <div class="empty-cart-container">
                     <!-- <button onclick="history.back()" class="btn btn-primary">Go Back</button> -->
-                    <a href="/user/home" class="btn btn-primary">Go Back Home</a>
+                    <!-- <a href="/user/home" class="btn btn-primary">Go Back Home</a> -->
                 </div>
                 <% } %>
                     <div class="cart-price-container">
@@ -238,7 +238,9 @@
                         </table>
                         <!-- checkout button -->
                         <div class="checkout-button d-flex flex-column ">
-                            <a href="/user/checkout" class="btn btn-primary">Proceed to CheckOut</a>
+                            <% if(cart.length!=0){ %>
+                                <a href="/user/checkout" class="btn btn-primary">Proceed to CheckOut</a>
+                                <% } %>
                             <a href="/user/home" class="btn btn-secondary mt-2">Back to Home</a>
                         </div>
                     </div>

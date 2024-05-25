@@ -34,9 +34,11 @@
     }
 
     .order-item-details {
-        display: grid;
-        grid-template-columns: auto auto auto;
-        gap: 1rem;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 2rem;
+        flex-wrap: wrap;
 
     }
 
@@ -56,7 +58,11 @@
     .ordered-product-image-box img {
         width: 150px;
         height: 150px;
-        object-fit: cover;
+        object-fit: contain;
+    }
+    .no-order-prompt{
+        color: #b0b0b0;
+        font-family: monospace;
     }
 </style>
 
@@ -70,52 +76,80 @@
             <h2>Your Orders</h2>
         </div>
 
-        <% orderDetails.forEach((ele,index)=>{ %>
+        <% if(orderDetails.length!=0){ %>
+        <% orderDetails.forEach((ele,index) => { %>
              <!-- each orders -->
-        <div class="order-box">
-            <div class="order-placed-details">
-                <div class="order-placed-details-inner">
-                    <small>Order Placed</small>
-                    <b><%= ele.orderDate.toDateString() %></b>
-                </div>
-                <div class="order-placed-details-inner">
-                    <small> Quantity</small>
-                    <b><%= ele.products.quantity %></b>
-                </div>
-                <div class="order-placed-details-inner">
-                    <small> Total</small>
-                    <b>&#8377; <%= parseInt(ele.products.price*ele.products.quantity-(ele.products.discountPrice/100)*ele.products.price*ele.products.quantity).toLocaleString() %></b>
-                </div>
-                <div class="order-placed-details-inner">
-                    <small>Ship To</small>
-                    <b><%= ele.address.contactName %></b>
-                </div>
-                <div class="order-placed-details-inner">
-                    <small>Order Status</small>
-                    <b><%= ele.products.productStatus %></b>
-                </div>
-            </div>
-            <div class="order-item-details">
-                <div class="order-item-details-inner">
-                    <div class="ordered-product-image-box">
-                        <img src="../../image/a1.jpg">
-                    </div>
-                </div>
-                <div class="order-item-details-inner">
-                    <h6><%= ele.products.productBrand %></h6>
-                    <h6><%= ele.products.productName %></h6>
-                </div>
-                <div class="order-item-details-inner">
-                    <button class="btn btn-warning">Add Product Review</button>
-                    <button class="btn btn-danger mt-2">Cancel Order</button>
-                </div>
-            </div>
+        	<div class="order-box">
+            	<div class="order-placed-details">
+                	<div class="order-placed-details-inner">
+                    	<small>Order Placed</small>
+                    	<b><%= ele.orderDate.toDateString() %></b>
+                	</div>
+                	<div class="order-placed-details-inner">
+                    	<small> Quantity</small>
+                    	<b><%= ele.products.quantity %></b>
+                	</div>
+                	<div class="order-placed-details-inner">
+                    	<small> Total</small>
+                    	<b>&#8377; <%= parseInt(ele.products.price*ele.products.quantity-(ele.products.discountPrice/100)*ele.products.price*ele.products.quantity).toLocaleString() %></b>
+                	</div>
+                	<div class="order-placed-details-inner">
+                    	<small>Ship To</small>
+                    	<b><%= ele.address.contactName %></b>
+                	</div>
+                	<div class="order-placed-details-inner">
+                    	<small>Order Status</small>
+                    	<b><%= ele.products.productStatus %></b>
+                	</div>
+            	</div>
+            	<div class="order-item-details">
+                	<div class="order-item-details-inner">
+                    	<div class="ordered-product-image-box">
+                        	<img src="../../<%= ele.products.productImage %>">
+                    	</div>
+                	</div>
+                	<div class="order-item-details-inner">
+                    	<h6><%= ele.products.productBrand %></h6>
+                    	<h6><%= ele.products.productName %></h6>
+                	</div>
+                	<div class="order-item-details-inner">
+                    	<button class="btn btn-warning">Add Product Review</button>
+                    	<button class="btn btn-danger mt-2" onclick="cancelOrder('<%= ele.id %>','<%= ele.products.id %>')">Cancel Order</button>
+                	</div>
+            	</div>
+        	</div>
+        	<!-- each order end -->
+       	<% }) %>
+       <% } else { %>
+        <div class="row text-center">
+            <h2 class="no-order-prompt">No orders available yet </h2>
         </div>
-        <!-- each order end -->
-       <% }) %>
+       <% }  %>
        
 
 
 
     </div>
     <%- include('footer') %>
+
+
+    <script>
+
+
+        // write the product review
+        function cancelOrder(orderID,productID){
+
+            Swal.fire({
+                icon:"question",
+                title:"Return product",
+                text:"Are you sure want to return this product"
+            }).then((result)=>{
+                if(result.isConfirmed){
+
+                    console.log("🚀 ~ file: orders.ejs:141 ~ cancelOrder ~ productID:", productID)
+                    console.log("🚀 ~ file: orders.ejs:141 ~ cancelOrder ~ orderID:", orderID)
+                }
+            })
+
+        }
+    </script>
