@@ -7,3 +7,7 @@ uploads/*
 
 #message to remember during route handling
 imp.txt
+
+
+#node modules
+node_modules

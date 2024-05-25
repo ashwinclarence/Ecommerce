@@ -1,29 +1,87 @@
 <style>
-    .admin-customers-container{
+    .admin-customers-container {
         min-height: 100vh;
     }
-   .user-search-box{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin: 3rem 0; 
-   }
-   .admin-user-search-box{
-    border: 1px solid #000000;
-    border-radius: 10px;
-    padding: .2rem .3rem;
-    margin-top: 2rem;
-   }
-   #user-search{
-    border: none;
-    outline: none;
-    width: 30rem;
-    height: 2.5rem;
-   }
-   table th,td{
-    text-align: center;
-   }
+
+    .user-search-box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin: 3rem 0;
+    }
+
+    .admin-user-search-box {
+        border: 1px solid #000000;
+        border-radius: 10px;
+        padding: .2rem .3rem;
+        margin-top: 2rem;
+    }
+
+    #user-search {
+        border: none;
+        outline: none;
+        width: 30rem;
+        height: 2.5rem;
+    }
+
+    table th,
+    td {
+        text-align: center;
+    }
+
+    .product-name-td {
+        max-width: 250px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .product-name-td:hover {
+        white-space: normal;
+        overflow: visible;
+        z-index: 3;
+
+    }
+
+    #view-order-modal-form {
+        padding: 3rem 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    #view-order-modal-form input {
+        width: 90%;
+        height: 3rem;
+        border: none;
+        outline: none;
+    }
+
+    .product-overview-box {
+        width: 90%;
+        display: grid;
+        grid-template-columns: 30% 70%;
+        align-items: center;
+    }
+
+    .order-product-container {
+        height: 150px;
+        width: 150px;
+        overflow: hidden;
+    }
+
+    .order-product-container img {
+        height: 150px;
+        width: 150px;
+        object-fit: contain;
+    }
+    .table-view-order tr{
+        display: grid;
+        grid-template-columns: 20% 10% auto;
+    }
+
 </style>
 
 
@@ -34,18 +92,18 @@
     <div class="admin-customers-container container">
         <div class="user-search-box">
             <h3>Orders</h3>
-            <form action="" method="post" class="admin-user-search-box">
+            <form action="" method="get" class="admin-user-search-box">
                 <input type="text" name="search" id="user-search" placeholder="Find Orders" required>
                 <button class="btn"><i class="fa-solid fa-magnifying-glass"></i></button>
             </form>
         </div>
         <div class="user-list-box">
             <table class="table table-hover">
-                <thead >
+                <thead>
                     <tr>
                         <th scope="col">sl.no</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Order Date</th>
+                        <th scope="col">Product Name</th>
+                        <th scope="col">Ordered Date</th>
                         <th scope="col">Payment Method</th>
                         <th scope="col">Status</th>
                         <th scope="col">Price</th>
@@ -53,58 +111,100 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>ASHWIN CLARENCE</td>
-                        <td> 28/04/2024</td>
-                        <td>Cash on Delivery</td>
-                        <td>Processing</td>
-                        <td><i class="fa-solid fa-indian-rupee-sign"></i> 999</td>
-                        <td>
-                            <a class="btn btn-warning" href="">View</a>
-                            <!-- <a class="btn btn-danger" href="">Cancel</a> -->
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>ASHWIN CLARENCE</td>
-                        <td> 28/04/2024</td>
-                        <td>Cash on Delivery</td>
-                        <td>Processing</td>
-                        <td><i class="fa-solid fa-indian-rupee-sign"></i> 999</td>
-                        <td>
-                            <a class="btn btn-warning" href="">View</a>
-                            <!-- <a class="btn btn-danger" href="">Cancel</a> -->
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>ASHWIN CLARENCE</td>
-                        <td> 28/04/2024</td>
-                        <td>Cash on Delivery</td>
-                        <td>Processing</td>
-                        <td><i class="fa-solid fa-indian-rupee-sign"></i> 999</td>
-                        <td>
-                            <a class="btn btn-warning" href="">View</a>
-                            <!-- <a class="btn btn-danger" href="">Cancel</a> -->
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>ASHWIN CLARENCE</td>
-                        <td> 28/04/2024</td>
-                        <td>Cash on Delivery</td>
-                        <td>Processing</td>
-                        <td><i class="fa-solid fa-indian-rupee-sign"></i> 999</td>
-                        <td>
-                            <a class="btn btn-warning" href="">View</a>
-                            <!-- <a class="btn btn-danger" href="">Cancel</a> -->
-                        </td>
-                    </tr>
+
+                    <% orderDetails.forEach((ele,index)=>{ %>
+                        <tr>
+                            <th scope="row">
+                                <%= index+1 %>
+                            </th>
+                            <td class="product-name-td">
+                                <%= ele.products.productName %>
+                            </td>
+                            <td>
+                                <%= ele.orderDate.toDateString() %>
+                            </td>
+                            <td>
+                                <%= ele.paymentMethod %>
+                            </td>
+                            <td>
+                                <%= ele.products.productStatus %>
+                            </td>
+                            <td>&#8377;<%= ele.products.price.toLocaleString() %>
+                            </td>
+                            <td>
+                                <!-- <a href='/admin/view-order/<%=ele.products.productID%>/<%=ele._id%>' class="btn btn-warning" >View</a> -->
+                                <button onclick="viewOrder('<%=ele.products.productID%>','<%=ele._id%>')" type="button"
+                                    data-toggle="modal" data-target=".view-order-modal"
+                                    class="btn btn-warning">View</button>
+                            </td>
+                        </tr>
+                        <% }) %>
+
                 </tbody>
             </table>
+        </div>
+
+        <!--  modal for product detail review -->
+        <div class="modal fade view-order-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <form action="/user/edit-order" method="post" id="view-order-modal-form">
+                        <h2>View Order </h2>
+                        <div class="product-overview-box">
+                            <div class="order-product-container">
+                                <img src="../../image/a1.jpg" class="image-fluid">
+                            </div>
+                            <h6>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Facilis quas, pariatur eaque
+                                sit hic aliquam iure, maxime quia officiis vel accusantium, eos ea in? Recusandae
+                                adipisci quam cumque necessitatibus enim?</h6>
+                            <h6 class="text-center">&#8377; 699</h6>
+                            <h6>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Excepturi odio assumenda
+                                voluptatum, officiis.</h6>
+                        </div>
+                        <table class="table table-view-order">
+                            <tr colspan="2">Address</tr>
+                            <tr>
+                                <td>Contact Name</td>
+                                <td>:</td>
+                                <td>Contact Name</td>
+                            </tr>
+                            <tr>
+                                <td>Pincode</td>
+                                <td>:</td>
+                                <td>695007</td>
+                            </tr>
+                            <tr>
+                                <td>Home Address</td>
+                                <td>:</td>
+                                <td>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Pariatur illo labore corrupti optio non cum nostrum reiciendis unde reprehenderit fugiat, consequuntur sit facere soluta corporis ab qui itaque libero praesentium?</td>
+                            </tr>
+                            <tr>
+                                <td>Area Address</td>
+                                <td>:</td>
+                                <td>Lorem ipsum dolor sit amet consectetur adipisicing elit. Non magni et, praesentium tempora pariatur dolores repellat expedita eum minima saepe nemo doloribus deleniti id alias necessitatibus vel! Quaerat, asperiores obcaecati.</td>
+                            </tr>
+                           
+                        </table>
+
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 
 
     <%- include('footer') %>
+
+
+        <script>
+
+            console.log("🚀 ~ file: order.ejs:171 ~ orderDetails:", orderDetail)
+            const orderDetail = orderDetails
+
+            // function for order detail view in modal
+            function viewOrder(productId, orderID) {
+                
+            }
+
+        </script>

@@ -29,7 +29,7 @@ const home = async (req, res) => {
         const userSearch=req.query.userSearch || ""
 
         // pagination values
-        const productsPerPage = 12;
+        const productsPerPage = 4;
         const currentPage = req.query.page || 0
 
         // get all product from product collection and with the query strings
