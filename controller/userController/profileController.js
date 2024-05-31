@@ -21,6 +21,32 @@ const profileView = async (req, res) => {
     }
 }
 
+
+// update the user profile
+const updateProfile=async (req,res)=>{
+    try {
+
+        // get the form data
+        const userName=req.body.name;
+        const phone=req.body.phone;
+
+        // update the user details
+        const profileUpdate=await userSchema.findByIdAndUpdate(req.session.user,{name:userName,phone:phone})
+
+        if(profileUpdate){
+            req.flash('errorMessage','Profile updated');
+        }else{
+            req.flash("errorMessage",'Error during updating the user profile please try again')
+        }
+        res.redirect("/user/profile")
+        
+    } catch (err) {
+        console.log(`Error during updating the user profile ${err}`);
+    }
+}
+
+
+// address management in the user side 
 const addAddress = async (req, res) => {
     try {
 
@@ -57,6 +83,8 @@ const addAddress = async (req, res) => {
     }
 }
 
+
+// render the user address based on the address index
 const editAddress = async (req, res) => {
     try {
         const addressNumber = req.query.addressNumber
@@ -78,6 +106,8 @@ const editAddress = async (req, res) => {
     }
 }
 
+
+// edit the user address 
 const editAddressPost = async (req, res) => {
     try {
 
@@ -129,6 +159,7 @@ const deleteAddress=async (req,res)=>{
 
 module.exports = {
     profileView,
+    updateProfile,
     addAddress,
     editAddress,
     editAddressPost,

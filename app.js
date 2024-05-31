@@ -9,25 +9,27 @@ const expressLayouts = require('express-ejs-layouts');
 const { v4: uuidv4 } = require('uuid');
 
 // admin and user routers
-const adminRoutes=require('./router/adminRouter')
-const userRoutes=require('./router/userRouter')
+const adminRoutes = require('./router/adminRouter')
+const userRoutes = require('./router/userRouter')
 
 // mongodb required connection
-const connectDB=require('./config/connection')
+const connectDB = require('./config/connection')
 
 // cookie-parser
-const cookieParser=require('cookie-parser')
+const cookieParser = require('cookie-parser')
 
 // nocache
-const nocache=require('nocache')
+const nocache = require('nocache')
 
 // flash message
-const flash=require('connect-flash')
+const flash = require('connect-flash')
+
+// passport
+const passport=require('passport')
 
 
 // if port number from .env file is not read then 3000 is used as the default port
 const port = process.env.PORT || 3000;
-
 
 // cookieParser
 app.use(cookieParser())
@@ -58,12 +60,17 @@ app.use(express.urlencoded({ extended: true }));
 app.use(session({
     secret: uuidv4(),
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: true,
+    cookie: { secure: false }
 }));
+
+// initialize the passport
+app.use(passport.initialize())
+app.use(passport.session())
 
 // EJS setup
 app.use(expressLayouts);
-app.set('layout','./layouts/layout')
+app.set('layout', './layouts/layout')
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
@@ -90,8 +97,8 @@ app.use('/user', userRoutes);
 app.use('/admin', adminRoutes);
 
 // page to render for those un-described routes
-app.get("*",(req,res)=>{
-    res.render('pageNotFound',{title:"404 Page not found"})
+app.get("*", (req, res) => {
+    res.render('pageNotFound', { title: "404 Page not found" })
 })
 
 

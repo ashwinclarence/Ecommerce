@@ -16,7 +16,10 @@ const checkoutController=require('../controller/userController/checkoutControlle
 user.get('/',userController.user)
 user.get('/login',userController.login)
 user.post('/login',userController.loginPost)
+
+// login using google
 user.get('/auth/google',userController.googleAuth)
+user.get('/auth/')
 user.get('/auth/facebook',userController.facebookAuth)
 
 
@@ -58,6 +61,7 @@ user.post('/add-address',checkUserSession,profileController.addAddress)
 user.get('/edit-address',checkUserSession,profileController.editAddress)
 user.post('/edit-address/:id',checkUserSession,profileController.editAddressPost)
 user.get('/delete-address/:id',checkUserSession,profileController.deleteAddress)
+user.post('/update-profile',checkUserSession,profileController.updateProfile)
 
 // order route
 user.get('/orders',checkUserSession,orderController.order)

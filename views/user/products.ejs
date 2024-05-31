@@ -7,7 +7,6 @@
         gap: 5rem;
     }
 
-
     .products-list-box {
         display: flex;
         flex-direction: row;
@@ -73,7 +72,7 @@
         display: flex;
         flex-direction: row;
         align-items: center;
-        gap: .5rem;
+        gap: 0.5rem;
     }
 
     .product-star-rating {
@@ -109,20 +108,25 @@
         height: 50vh;
         width: 100%;
     }
+    .product-description-box{
+        text-decoration: none;
+        color: #000000;
+    }
+    .like-btn{
+        display: none;
+        scale: 1.5;
+    }
 </style>
 
 <div class="products-container">
-
     <div class="products-list-box container">
-
         <!-- check if any product exist -->
         <% if(products.length!=0){ %>
             <!-- this will render each product on the product collection which is not blocked -->
             <% products.forEach((product)=>{ %>
 
                 <!-- this is the product container and when it is clicked it redirect to product detail page -->
-                <a href="/user/product-view/<%= product.id %>" class="product-box">
-
+                <div class="product-box">
                     <!-- if product discount is available then it is shown as a banner in product top  -->
                     <% if(product.productDiscount!=0){ %>
                         <div class="product-discount-box">
@@ -132,7 +136,8 @@
                         </div>
 
                         <!-- if the product is added which one day then new arrival banner is shown on top of the product box -->
-                        <% }else if (new Date(product.addedOn).getTime()> (Date.now() - (1 * 24 * 60 * 60 * 1000))){ %>
+                        <% }else if (new Date(product.addedOn).getTime()> (Date.now() - (1 * 24 *
+                            60 * 60 * 1000))){ %>
                             <div class="product-new-arrival-box">
                                 <h6>New Arrival</h6>
                             </div>
@@ -140,44 +145,47 @@
 
                                 <!-- image of product which is stored in uploads folder -->
                                 <div class="product-image-box">
-                                    <img src="/<%= product.productImage[0] %>" loading="lazy">
+                                    <img src="/<%= product.productImage[0] %>" loading="lazy" />
+
 
                                     <!-- product review -->
-                                    <h6 class="product-star-rating">4.5 <span class="product-star-icon">&starf;</span>
+                                    <h6 class="product-star-rating">
+                                        4.5 <span class="product-star-icon">&starf;</span>
                                     </h6>
                                 </div>
                                 <!-- product description with text overflow as ... -->
-                                <div class="product-description-box">
+                                <a href="/user/product-view/<%= product.id %>" class="product-description-box">
                                     <h6 class="product-text-row">
                                         <%= product.productBrand %>
                                     </h6>
                                     <p class="product-name product-text-row">
                                         <%= product.productName %>
                                     </p>
-                                    <h5 class="product-price"><i
-                                            class="fa-solid fa-indian-rupee-sign product-text-row"></i>
+                                    <h5 class="product-price">
+                                        <i class="fa-solid fa-indian-rupee-sign product-text-row"></i>
                                         <%= product.productPrice.toLocaleString() %>
                                     </h5>
+                                </a>
+                                <div>
+                                    <hr>
+                                    <div class="d-flex justify-content-between">
+                                        <button class="btn btn-secondary btn-sm w-75">Add to Cart</button>
+                                        <button class="btn btn-white "> <i class="fa-solid fa-heart like-btn"></i></button>
+                                    </div>
 
                                     <!-- product availability -->
                                     <% if(product.productQuantity<=0){ %>
                                         <h6 class="product-availability">Product Out of stock</h6>
                                         <% } %>
                                 </div>
-                </a>
+                                
+
+                </div>
 
                 <% }) %>
                     <% }else{ %>
-                        <div class="no-product-banner">
-                        </div>
+                        <div class="no-product-banner"></div>
                         <% } %>
-
-
-
-
-
-
-
     </div>
     <%- include("pagination")%>
 </div>

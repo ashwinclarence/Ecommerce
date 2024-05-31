@@ -1,4 +1,4 @@
-const passport=require('passport-google-oauth2')
+const passport=require('passport')
 const  GoogleStrategy = require( 'passport-google-oauth2' ).Strategy;
 const dotenv=require('dotenv').config()
 
@@ -10,9 +10,10 @@ passport.use(new GoogleStrategy({
     passReqToCallback   : true
   },
   function(request, accessToken, refreshToken, profile, done) {
-    User.findOrCreate({ googleId: profile.id }, function (err, user) {
-      return done(err, user);
-    });
+    done(null,profile)
+    // User.findOrCreate({ googleId: profile.id }, function (err, user) {
+    //   return done(err, user);
+    // });
   }
 ));
 

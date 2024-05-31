@@ -35,16 +35,16 @@
     .profile-image-box {
         width: 250px;
         height: 250px;
-        border-radius: 50%;
+        /* border-radius: 50%; */
         overflow: hidden;
-        background-color: #ffffff;
+        /* background-color: #ffffff; */
 
     }
 
     .profile-image-box img {
         width: 250px;
         height: 250px;
-        object-fit: cover;
+        object-fit: contain;
     }
 
     .right-profile-box {
@@ -112,6 +112,24 @@
         gap: 4rem;
         padding: 3rem 0;
     }
+
+    #update-profile-form {
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2rem;
+    }
+
+    #update-profile-form input {
+        width: 90%;
+        height: 2rem;
+    }
+
+    .validateUserForm {
+        color: red;
+    }
 </style>
 
 <%- include('navbar') %>
@@ -120,9 +138,10 @@
         <div class="profile-box">
             <div class="left-profile-box">
                 <div class="profile-image-box">
-                    <img src="../../image/user.png" alt="">
+                    <img src="../../image/football.png" alt="">
                 </div>
-                <button class="btn btn-warning">Update Profile</button>
+                <button type="button" class="btn btn-warning" data-toggle="modal"
+                    data-target=".bd-example-modal-lg">Update Profile</button>
 
             </div>
             <div class="right-profile-box">
@@ -135,9 +154,47 @@
                 <h6><i class="fa-solid fa-phone"></i>
                     <%= userDetail.phone %>
                 </h6>
-                <h6><i class="fa-solid fa-location-dot"></i> location</h6>
+                <!-- <h6><i class="fa-solid fa-location-dot"></i> location</h6> -->
             </div>
         </div>
+
+        <!-- modal for profile update -->
+        <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <form class="row g-2 needs-validation d-flex flex-column align-items-center"
+                        id="update-profile-form" action="/user/update-profile" method="post">
+                        <h2 class="text-center">Update Profile</h2>
+                        <!-- <div class="profile-image-box">
+                            <img src="../../image/user.png" alt="Profile Image" id="profile-image-preview-img">
+                        </div> -->
+                        <div class="col-md-10">
+                            <label for="profileName" class="form-label">Name</label>
+                            <input type="text" class="form-control" name="name" id="profileName"
+                                value="<%= userDetail.name %>">
+                            <small class="validateUserForm"></small>
+                        </div>
+                        <div class="col-md-10">
+                            <label for="profileEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="profileEmail" value="<%= userDetail.email %>"
+                                disabled>
+                        </div>
+                        <div class="col-md-10">
+                            <label for="profilePhone" class="form-label">Phone</label>
+                            <input type="text" class="form-control" name="phone" id="profilePhone"
+                                value="<%= userDetail.phone %>">
+                            <small class="validateUserForm"></small>
+                        </div>
+                        <div class="col-12 text-center">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button class="btn btn-primary" type="submit">Update Profile</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
 
         <!-- second row of profile page with user address -->
         <div class="profile-add-address-container">
@@ -192,9 +249,11 @@
                             </div>
                             <div class="address-actions">
                                 <!-- edit the address -->
-                                
-                                <a href="/user/edit-address/?addressNumber=<%= index %>" class="btn btn-warning"><i class="fa-solid fa-pen"></i></a>
-                                <a href="/user/delete-address/<%= index %>" class="btn btn-danger delete-address-button"><i class="fa-solid fa-trash"></i></a>
+
+                                <a href="/user/edit-address/?addressNumber=<%= index %>" class="btn btn-warning"><i
+                                        class="fa-solid fa-pen"></i></a>
+                                <a href="/user/delete-address/<%= index %>"
+                                    class="btn btn-danger delete-address-button"><i class="fa-solid fa-trash"></i></a>
                             </div>
                         </div>
                         <% }) %>
@@ -350,20 +409,63 @@
 
 
             // delete address confirmation message
-            const deleteAddressButton=document.querySelectorAll('.delete-address-button')
-            deleteAddressButton.forEach((button)=>{
-                button.addEventListener('click',(e)=>{
+            const deleteAddressButton = document.querySelectorAll('.delete-address-button')
+            deleteAddressButton.forEach((button) => {
+                button.addEventListener('click', (e) => {
                     e.preventDefault();
                     Swal.fire({
-                        icon:"question",
-                        title:"Delete Address",
-                        text:"Are you sure want to delete the address ?",
-                        showCancelButton:true,
-                    }).then((result)=>{
-                        if(result.isConfirmed){
-                            window.location.href=e.target.href;
+                        icon: "question",
+                        title: "Delete Address",
+                        text: "Are you sure want to delete the address ?",
+                        showCancelButton: true,
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = e.target.href;
                         }
                     })
                 })
             })
+
+
+
+            // function to display the selected image on the profile container
+            function showImagePreview(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        document.getElementById('profile-image-preview-img').src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+
+
+            // validate the user profile update
+            const updatedUserForm = document.getElementById('update-profile-form')
+            const updateUserName = document.getElementById('profileName')
+            const updateUserPhone = document.getElementById('profilePhone')
+
+            updatedUserForm.addEventListener('submit', (e) => {
+                e.preventDefault()
+                document.getElementsByClassName('validateUserForm')[0].innerHTML = ""
+                document.getElementsByClassName('validateUserForm')[1].innerHTML = ""
+
+                let validForm = true
+
+                const userNameRegex = /^[a-zA-Z\s]+$/;
+                if (updateUserName.value.trim() === '' || updateUserName.value.length > 50 || !userNameRegex.test(updateUserName.value)) {
+                    validForm = false;
+                    document.getElementsByClassName('validateUserForm')[0].innerHTML = "Please enter a valid username that contains only letters and is not empty.";
+                }
+                if (updateUserPhone.value.length != 10 || isNaN(updateUserPhone.value)) {
+                    validForm = false
+                    document.getElementsByClassName('validateUserForm')[1].innerHTML = "Please enter a valid phone number"
+                }
+                if (validForm) {
+                    updatedUserForm.submit()
+                }
+            })
+
+
         </script>

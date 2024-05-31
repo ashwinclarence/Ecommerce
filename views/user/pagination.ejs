@@ -23,6 +23,27 @@
     </form>
 </div>
 
+<nav aria-label="Page navigation example">
+    <form action="" method="get" id="pagination-form">
+    <ul class="pagination justify-content-center">
+        <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1">Previous</a>
+        </li>
+        <li class="page-item"><a class="page-link" href="#">1</a></li>
+        <li class="page-item"><a class="page-link" href="#">2</a></li>
+        <li class="page-item"><a class="page-link" href="#">3</a></li>
+        <li class="page-item"><a class="page-link" href="#">3</a></li>
+        <li class="page-item"><a class="page-link" href="#">3</a></li>
+        <li class="page-item"><a class="page-link" href="#">3</a></li>
+        <li class="page-item"><a class="page-link" href="#">3</a></li>
+        <li class="page-item"><a class="page-link" href="#">3</a></li>
+        <li class="page-item">
+            <a class="page-link" href="#">Next</a>
+        </li>
+    </ul>
+</form>
+</nav>
+
 
 
 
@@ -39,14 +60,14 @@
     const paginationForm = document.getElementById('pagination-form');
     const previousButton = document.getElementsByName('page')[0];
     const nextButton = document.getElementsByName('page')[1];
-    const productsCount=document.getElementById('pagination-page-number').value
+    const productsCount = document.getElementById('pagination-page-number').value
 
     console.log(productsCount)
 
-    
+
     // if product count reaches o then the next button is set as disabled
-    if(Number(productsCount)===0){
-        nextButton.disabled="true"
+    if (Number(productsCount) === 0) {
+        nextButton.disabled = "true"
     }
 
     // Add action for next button for incrementing the page number

@@ -34,14 +34,10 @@
     }
 
     .order-item-details {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        gap: 2rem;
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: 20% 50% 30%;
 
     }
-
     .order-item-details-inner {
         display: flex;
         flex-direction: column;
@@ -63,6 +59,11 @@
     .no-order-prompt{
         color: #b0b0b0;
         font-family: monospace;
+    }
+    .product-name-inorder{
+        text-decoration: none;
+        font-size: 1rem;
+        color: #000000;
     }
 </style>
 
@@ -109,8 +110,8 @@
                     	</div>
                 	</div>
                 	<div class="order-item-details-inner">
-                    	<h6><%= ele.products.productBrand %></h6>
-                    	<h6><%= ele.products.productName %></h6>
+                    	<h6><%= ele.products.brand %></h6>
+                    	<a href="/user/product-view/<%= ele.products.productID %>" class="product-name-inorder" ><%= ele.products.productName %></a>
                 	</div>
                 	<div class="order-item-details-inner">
                     	<button class="btn btn-warning">Add Product Review</button>
@@ -141,8 +142,8 @@
 
             Swal.fire({
                 icon:"question",
-                title:"Return product",
-                text:"Are you sure want to return this product"
+                title:"Cancel Order",
+                text:"Are you sure want to cancel this order"
             }).then((result)=>{
                 if(result.isConfirmed){
 

@@ -4,8 +4,10 @@ const sendOtpMail = require('../../services/emailSender')
 const generateOTP = require('../../services/generateOTP');
 const productSchema = require('../../model/productSchema');
 const categorySchema = require('../../model/categorySchema');
-const passport=require('passport-google-oauth2')
-// const googlePassport=require('../../services/auth')
+const passport = require('passport')
+require('../../services/auth')
+
+
 // user router if session 
 const user = (req, res) => {
     try {
@@ -21,7 +23,7 @@ const signup = (req, res) => {
         if (req.session.user) {
             res.redirect('/user/home')
         } else {
-            res.render('user/register', { title: "Signup", alertMessage: req.flash('errorMessage'),user:req.session.user })
+            res.render('user/register', { title: "Signup", alertMessage: req.flash('errorMessage'), user: req.session.user })
         }
     } catch (err) {
         console.log(`Error during signup page render`);
@@ -32,6 +34,7 @@ const signup = (req, res) => {
 // user register with username, email, password and phone number
 const signupPost = async (req, res) => {
     try {
+
         // getting data from input box of the register form
         const registerDetails = {
             username: req.body.name,
@@ -86,7 +89,7 @@ const login = (req, res) => {
     if (req.session.user) {
         res.redirect('/user/home')
     } else {
-        res.render('user/login', { title: 'Login', alertMessage: req.flash('errorMessage'),user:req.session.user })
+        res.render('user/login', { title: 'Login', alertMessage: req.flash('errorMessage'), user: req.session.user })
     }
 }
 
@@ -135,7 +138,7 @@ const loginPost = async (req, res) => {
 // OTP generator page rendering
 const otp = (req, res) => {
     try {
-        res.render('user/OTP', { title: "OTP verification", emailAddress: req.session.email, alertMessage: req.flash('errorMessage'), otpExpireTime: req.session.otpExpireTime,user:req.session.user })
+        res.render('user/OTP', { title: "OTP verification", emailAddress: req.session.email, alertMessage: req.flash('errorMessage'), otpExpireTime: req.session.otpExpireTime, user: req.session.user })
 
     } catch (err) {
         console.log(`Error occurred during otp verification ${err}`)
@@ -216,57 +219,61 @@ const otpResend = (req, res) => {
 
 
 
-
-
-
-
-
-
 const wishlist = (req, res) => {
 
-    res.render('user/wishlist', { title: "Wishlist", alertMessage: req.flash('errorMessage'),user:req.session.user })
+    res.render('user/wishlist', { title: "Wishlist", alertMessage: req.flash('errorMessage'), user: req.session.user })
 
 }
 
-
+// logout the user
 const logout = (req, res) => {
-    req.session.destroy((err) => {
-        if (err) {
-            console.log(err);
-        } else {
-            res.redirect('/user/login')
-        }
-    })
+    try {
+        req.session.destroy((err) => {
+            if (err) {
+                console.log(err);
+            } else {
+                res.redirect('/user/login')
+            }
+        })
+    } catch (err) {
+        console.log(`Error during logout the user`);
+    }
 }
 
-const googleAuth=(req,res)=>{
-    try {
 
-        passport.authenticate('google', { scope:
-            [ 'email', 'profile' ] 
+// google auth 
+const googleAuth = (req, res) => {
+    try {
+        passport.authenticate('google', {
+            scope:
+                ['email', 'profile']
         })
-        
     } catch (err) {
         console.log(`Error on google authentication ${err}`)
     }
 }
 
-const googleAuthCallback=(req,res)=>{
+
+// callback from the user google auth
+const googleAuthCallback = (req, res) => {
     try {
 
-        passport.authenticate( 'google', {
+        passport.authenticate('google', {
             successRedirect: '/user/home',
-            failureRedirect: '/auth/google/failure'
-    })
-        
+            failureRedirect: '/user/login'
+        })
+
     } catch (err) {
         console.log(`Error on google auth callback ${err}`)
     }
 }
 
-const facebookAuth=(req,res)=>{
+
+
+// 
+const facebookAuth = (req, res) => {
     try {
-        
+
     } catch (err) {
         console.log(`Error on facebook authentication ${err}`)
     }
