@@ -26,6 +26,7 @@ const home = async (req, res) => {
         const maxPrice = parseInt(req.query.maxPrice) || 100000
         const productRating = parseInt(req.query.productRating) || 0
         const productDiscount = parseInt(req.query.productDiscount) || -1
+        const productPriceSort=parseInt(req.query.productPriceSort) || 0
         const userSearch=req.query.userSearch || ""
 
         // pagination values
@@ -33,12 +34,19 @@ const home = async (req, res) => {
         const currentPage = req.query.page || 0
 
         // get all product from product collection and with the query strings
-        const products = await productSchema.find({
+        let products = await productSchema.find({
             productName:{$regex:userSearch,$options:"i"},
             productCategory: { $in: selectedCategory },
             isActive: true,
             productPrice: { $lte: maxPrice, $gte: minPrice }
-        }).skip(currentPage * productsPerPage).limit(productsPerPage).sort({ productDiscount: productDiscount })
+        }).skip(currentPage * productsPerPage).limit(productsPerPage).sort({ productDiscount: productDiscount})
+
+        if(productPriceSort===1){
+            products.sort((a,b)=>b.productPrice-a.productPrice)
+        }
+        // else{
+        //     products.sort((a,b)=>b.productPrice-a.productPrice)
+        // }
 
 
         // count the number of document satisfied the filter
