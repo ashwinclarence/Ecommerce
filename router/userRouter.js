@@ -83,6 +83,9 @@ user.delete('/remove-cart-product/:id',checkUserSession,cartController.removeCar
 // checkout
 user.get('/checkout',checkUserSession,checkoutController.checkout)
 user.post('/place-order/:address/:payment',checkUserSession,checkoutController.placeOrder)
+user.delete('/delete-address/:id',checkUserSession,checkoutController.deleteAddressFetch)
+user.post('/add-address-checkout',checkUserSession,checkoutController.addAddressCheckout)
+user.post('/edit-address-checkout/:id',checkUserSession,checkoutController.editAddressCheckout)
 // logout
 user.get('/logout',userController.logout)
 

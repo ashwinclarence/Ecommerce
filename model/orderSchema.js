@@ -27,7 +27,7 @@ const schema = new mongoose.Schema({
     orderDate: {
         type: Date
     }
-})
+},{timestamps:true})
 
 
 module.exports = mongoose.model("Order", schema);

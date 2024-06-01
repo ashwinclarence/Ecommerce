@@ -1,6 +1,6 @@
 const productSchema = require('../../model/productSchema')
 const categorySchema = require('../../model/categorySchema')
-const cartSchema=require('../../model/cartSchema')
+const cartSchema = require('../../model/cartSchema')
 
 
 
@@ -26,32 +26,51 @@ const home = async (req, res) => {
         const maxPrice = parseInt(req.query.maxPrice) || 100000
         const productRating = parseInt(req.query.productRating) || 0
         const productDiscount = parseInt(req.query.productDiscount) || -1
-        const productPriceSort=parseInt(req.query.productPriceSort) || 0
-        const userSearch=req.query.userSearch || ""
+        const productPriceSort = parseInt(req.query.productPriceSort) || 0
+        const userSearch = req.query.userSearch || ""
 
         // pagination values
-        const productsPerPage = 4;
+        const productsPerPage = 8;
         const currentPage = req.query.page || 0
 
         // get all product from product collection and with the query strings
         let products = await productSchema.find({
-            productName:{$regex:userSearch,$options:"i"},
+            productName: { $regex: userSearch, $options: "i" },
             productCategory: { $in: selectedCategory },
             isActive: true,
             productPrice: { $lte: maxPrice, $gte: minPrice }
-        }).skip(currentPage * productsPerPage).limit(productsPerPage).sort({ productDiscount: productDiscount})
+        }).sort({ addedOn: -1 })
+        // let products = await productSchema.find({
+        //     productName: { $regex: userSearch, $options: "i" },
+        //     productCategory: { $in: selectedCategory },
+        //     isActive: true,
+        //     productPrice: { $lte: maxPrice, $gte: minPrice }
+        // }).skip(currentPage * productsPerPage).limit(productsPerPage).sort({ addedOn: -1 })
 
-        if(productPriceSort===1){
-            products.sort((a,b)=>b.productPrice-a.productPrice)
+
+        // sort by products price 
+        if (productPriceSort === 1) {
+            products.sort((a, b) => b.productPrice - a.productPrice)
         }
-        // else{
-        //     products.sort((a,b)=>b.productPrice-a.productPrice)
-        // }
+        // sort based the product discount
+        else if (productDiscount === -1) {
+            products.sort((a, b) => b.productDiscount - a.productDiscount)
+        }
+        else if (productDiscount === 1) {
+            products.sort((a, b) => a.productDiscount - b.productDiscount)
+        }
+        // sort based on the product added date
+        else {
+            products.sort((a, b) => b.addedOn - a.addedOn)
+        }
 
+        // added limit products on a page 
+        const startIndex = currentPage * productsPerPage;
+        const paginatedProducts = products.slice(startIndex, startIndex + productsPerPage);
 
         // count the number of document satisfied the filter
         const productsCount = await productSchema.find({
-            productName:{$regex:userSearch,$options:"i"},
+            productName: { $regex: userSearch, $options: "i" },
             productCategory: { $in: selectedCategory },
             isActive: true,
             productPrice: { $lte: maxPrice, $gte: minPrice }
@@ -59,7 +78,7 @@ const home = async (req, res) => {
 
 
         // render the home page
-        res.render('user/home', { title: 'User Home', products, category, alertMessage: req.flash('errorMessage'), user: req.session.user })
+        res.render('user/home', { title: 'User Home', products:paginatedProducts, category, alertMessage: req.flash('errorMessage'), user: req.session.user })
 
     } catch (err) {
         console.log(`Error rendering home page ${err}`);

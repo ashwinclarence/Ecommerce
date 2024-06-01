@@ -56,6 +56,7 @@
         color: #ffffff;
         background-color: red;
         border-radius: 5px 0;
+        z-index: 10;
     }
 
     .product-new-arrival-box {
@@ -87,7 +88,7 @@
 
     .product-availability {
         position: absolute;
-        top: 50%;
+        top: 40%;
         left: 0;
         width: 100%;
         background-color: rgba(255, 255, 255, 0.499);
@@ -167,10 +168,10 @@
                                     </h5>
                                 </a>
                                 <div>
-                                    <hr>
-                                    <div class="d-flex justify-content-between">
-                                        <button class="btn btn-secondary btn-sm w-75">Add to Cart</button>
-                                        <button class="btn btn-white "> <i class="fa-solid fa-heart like-btn"></i></button>
+                                    <!-- <hr> -->
+                                    <div class="d-flex flex-row-reverse gap-3">
+                                        <button class="btn btn-sm"><i class="fa-solid fa-heart"></i></button>
+                                        <button onclick="addToCart('<%= product.id %>','<%= product.productPrice %>')" class="btn btn-sm "><i class="fa-solid fa-cart-shopping"></i></button>
                                     </div>
 
                                     <!-- product availability -->
@@ -189,3 +190,21 @@
     </div>
     <%- include("pagination")%>
 </div>
+
+
+<script>
+
+    
+    function addToCart(productsId,price){
+        
+        const URL=`/user/add-to-cart/${productsId}/?price=${price}`
+
+        fetch(URL,{
+            method:"POST"
+        }).then((Response)=>{
+            
+        })
+    }
+
+    
+</script>

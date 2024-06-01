@@ -274,27 +274,33 @@
                                 <div class="add-address-box">
                                     <label for="contact-name">Contact user name</label>
                                     <input type="text" name="name" id="contact-name">
+                                    <label for="contact-name" class="validate-user-address"></label>
                                 </div>
                                 <div class="add-address-box">
                                     <label for="address-pincode">Pincode</label>
                                     <input type="text" name="pincode" id="address-pincode" placeholder="XXXXXX">
+                                    <label for="address-pincode" class="validate-user-address"></label>
                                 </div>
                                 <div class="add-address-box">
                                     <label for="address-house">Flat, House no., Building, Company, Apartment</label>
                                     <input type="text" name="addressHome" id="address-house" maxlength="100">
+                                    <label for="address-house" class="validate-user-address"></label>
                                 </div>
                                 <div class="add-address-box">
                                     <label for="address-area">Area, Street, Sector, Village</label>
                                     <input type="text" name="addressArea" id="address-area" maxlength="100">
+                                    <label for="address-area" class="validate-user-address"></label>
                                 </div>
 
                                 <div class="add-address-box">
                                     <label for="address-landmark">Landmark</label>
                                     <input type="text" name="addressLandmark" id="address-landmark" maxlength="100"
                                         placeholder="near international airport">
+                                    <label for="address-landmark" class="validate-user-address"></label>
                                 </div>
                                 <div class="text-center">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                    <button type="button" class="btn btn-secondary"
+                                        data-dismiss="modal">Cancel</button>
 
                                     <button class="btn btn-success" type="submit">Add Address</button>
                                 </div>
@@ -313,6 +319,7 @@
     <%- include('footer') %>
 
         <script>
+            // validation for adding address 
             const addressForm = document.getElementById('add-address-form')
             const contactName = document.getElementsByName('name')[0]
             const pincode = document.getElementsByName('pincode')[0]
@@ -320,51 +327,52 @@
             const areaAddress = document.getElementsByName('addressArea')[0]
             const landmark = document.getElementsByName('addressLandmark')[0]
 
-
             // validation for adding new address
             addressForm.addEventListener('submit', (e) => {
                 e.preventDefault();
 
+                document.getElementsByClassName('validate-user-address')[0].innerHTML=""
+                document.getElementsByClassName('validate-user-address')[1].innerHTML=""
+                document.getElementsByClassName('validate-user-address')[2].innerHTML=""
+                document.getElementsByClassName('validate-user-address')[3].innerHTML=""
+                document.getElementsByClassName('validate-user-address')[4].innerHTML=""
+
                 let isvalid = true;
                 let validateMessage = ""
+                const userNameRegex = /^[a-zA-Z\s]+$/;
 
                 // check name is empty and it's only having number
-                if (contactName.value.trim() === "" || !isNaN(contactName.value)) {
-                    validateMessage = "Enter a valid name"
+                if (contactName.value.trim() === "" || !userNameRegex.test(contactName.value)) {
                     isvalid = false
+                    document.getElementsByClassName('validate-user-address')[0].innerHTML = "Enter a valid name"
                 }
                 // check pincode
-                else if (pincode.value.length > 6 || isNaN(pincode.value) || pincode.value.length <= 0) {
-                    validateMessage = "Enter a valid Pincode with six digits"
+                 if (pincode.value.length > 6 || isNaN(pincode.value) || pincode.value.length <= 0) {
                     isvalid = false
+                    document.getElementsByClassName('validate-user-address')[1].innerHTML = "Enter a valid Pincode with six digits"
                 }
                 // validate home address
-                else if (homeAddress.value.length > 100 || homeAddress.value.length < 20 || !isNaN(homeAddress.value)) {
-                    validateMessage = "Enter a valid home address between 20 and 100 characters"
+                 if (homeAddress.value.length > 100 || homeAddress.value.length < 20 || !isNaN(homeAddress.value)) {
                     isvalid = false
+                    document.getElementsByClassName('validate-user-address')[2].innerHTML = "Enter a valid home address between 20 and 100 characters"
                 }
                 // validate area address
-                else if (areaAddress.value.length > 100 || areaAddress.value.length < 10 || !isNaN(areaAddress.value)) {
-                    validateMessage = "Enter a valid area address between 10 and 100 characters"
+                 if (areaAddress.value.length > 100 || areaAddress.value.length < 10 || !isNaN(areaAddress.value)) {
                     isvalid = false
+                    document.getElementsByClassName('validate-user-address')[3].innerHTML = "Enter a valid area address between 10 and 100 characters"
                 }
                 // validate landmark
-                else if (landmark.value.length > 50 || !isNaN(landmark.value)) {
-                    validateMessage = "Enter a valid landmark with maximum 50 characters"
+                 if (landmark.value.length > 50 || !isNaN(landmark.value)) {
                     isvalid = false
+                    document.getElementsByClassName('validate-user-address')[4].innerHTML = "Enter a valid landmark with maximum 50 characters"
                 }
 
-                // if anything of the above is invalid then an alert message is fired
-                if (isvalid === false) {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Invalid Information",
-                        text: validateMessage
-                    })
-                } else {
+                // if form is valid then the form is submitted
+                if (isvalid) {
                     addressForm.submit()
                 }
             })
+
 
 
             // confirmation for resetting password

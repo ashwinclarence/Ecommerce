@@ -38,19 +38,14 @@ const schema = new mongoose.Schema({
     productDiscount:{
         type:Number,
     },
-    addedOn: {
-        type: Date,
-        default: Date.now,
-    },
-    updatedOn: {
-        type: Date,
-        default: Date.now,
+    productDiscountedPrice:{
+        type:Number,
     },
     isActive:{
         type:Boolean,
         default:true,
     }
-});
+},{timestamps:true});
 
 
 module.exports =mongoose.model('product', schema)
