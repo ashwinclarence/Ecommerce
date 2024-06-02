@@ -4,11 +4,24 @@ const wishlistSchema = require('../../model/wishlistSchema')
 
 
 
-const wishlist = (req, res) => {
+const wishlist =async  (req, res) => {
 
     try {
 
-        res.render('user/wishlist', { title: "Wishlist", alertMessage: req.flash('errorMessage'), user: req.session.user })
+        // find the wishlist items
+        const wishlist=await wishlistSchema.findOne({userID:req.session.user}).populate('products.productID')
+
+        if(wishlist){
+            // sort the wishlist based on date of added
+        wishlist.products.sort((a,b)=>b.createdAt-a.createdAt)
+        res.render('user/wishlist', { title: "Wishlist",products:wishlist.products, alertMessage: req.flash('errorMessage'), user: req.session.user })
+    }else{
+            res.render('user/wishlist', { title: "Wishlist",products:[], alertMessage: req.flash('errorMessage'), user: req.session.user })
+
+        }
+
+        
+
 
     } catch (err) {
         console.log(`Error on rendering the wishlist ${err}`)
@@ -39,7 +52,7 @@ const addWishlist = async (req, res) => {
             let productExist = false
 
             wishlist.products.forEach((ele) => {
-                if (ele.productID.toString() === productID) {
+                if (ele.productID.id === productID) {
                     productExist = true
                 }
             })

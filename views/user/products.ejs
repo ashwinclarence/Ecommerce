@@ -23,21 +23,21 @@
         width: 300px;
         padding: 1rem;
         margin-top: 2rem;
-        overflow: hidden;
+        /* overflow: hidden; */
         text-overflow: ellipsis;
         position: relative;
     }
 
     .product-image-box {
-        height: 290px;
-        width: 290px;
+        height: 250px;
+        width: 250px;
         position: relative;
     }
 
     .product-image-box img {
         margin: auto;
         width: 250px;
-        height: 290px;
+        height: 250px;
         object-fit: scale-down;
     }
 
@@ -59,14 +59,17 @@
         z-index: 10;
     }
 
-    .product-new-arrival-box {
+    .product-new-arrival-box{
         position: absolute;
-        top: 0;
-        left: 0;
-        padding: 0 2rem;
-        color: #ffffff;
-        background-color: rgb(50, 195, 50);
-        border-radius: 5px 0;
+        top: -10px;
+        right: 10px;
+        width: 20px;
+    }
+    .product-new-arrival-box img{
+        width: 50px;
+        height: 50px;
+        object-fit: contain;
+
     }
 
     .product-price {
@@ -79,7 +82,7 @@
     .product-star-rating {
         position: absolute;
         bottom: 0;
-        right: 1rem;
+        right: -1rem;
     }
 
     .product-star-icon {
@@ -137,10 +140,10 @@
                         </div>
 
                         <!-- if the product is added which one day then new arrival banner is shown on top of the product box -->
-                        <% }else if (new Date(product.addedOn).getTime()> (Date.now() - (1 * 24 *
-                            60 * 60 * 1000))){ %>
+                        <% } %>
+                        <% if (new Date(product.createdAt).getTime() > (Date.now() - (3 * 24 * 60 * 60 * 1000))) { %>
                             <div class="product-new-arrival-box">
-                                <h6>New Arrival</h6>
+                                <img src="../../image/newbanner.png" alt="">
                             </div>
                             <% } %>
 
