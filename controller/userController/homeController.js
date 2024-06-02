@@ -25,7 +25,7 @@ const home = async (req, res) => {
         const minPrice = parseInt(req.query.minPrice) || 0
         const maxPrice = parseInt(req.query.maxPrice) || 100000
         const productRating = parseInt(req.query.productRating) || 0
-        const productDiscount = parseInt(req.query.productDiscount) || -1
+        const productDiscount = parseInt(req.query.productDiscount) || 0
         const productPriceSort = parseInt(req.query.productPriceSort) || 0
         const userSearch = req.query.userSearch || ""
 
@@ -39,7 +39,7 @@ const home = async (req, res) => {
             productCategory: { $in: selectedCategory },
             isActive: true,
             productPrice: { $lte: maxPrice, $gte: minPrice }
-        }).sort({ addedOn: -1 })
+        }).sort({ createdAt: -1 })
         // let products = await productSchema.find({
         //     productName: { $regex: userSearch, $options: "i" },
         //     productCategory: { $in: selectedCategory },
@@ -61,7 +61,7 @@ const home = async (req, res) => {
         }
         // sort based on the product added date
         else {
-            products.sort((a, b) => b.addedOn - a.addedOn)
+            products.sort((a, b) => a.createdAt - b.createdAt)
         }
 
         // added limit products on a page 

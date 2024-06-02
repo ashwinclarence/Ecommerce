@@ -12,7 +12,7 @@ const order = async (req, res) => {
 
 
         // get the order details from order collection separate each products from the order using unwind and sort based on the order of purchase
-        let orderDetails = await orderSchema.aggregate([{ $match: { userID: req.session.user } }, { $unwind: "$products" }, { $sort: { orderDate: -1 } }])
+        let orderDetails = await orderSchema.aggregate([{ $match: { userID: req.session.user } }, { $unwind: "$products" }, { $sort: { createdAt: -1 } }])
 
 
         // search for specific order
