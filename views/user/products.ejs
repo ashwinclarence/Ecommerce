@@ -198,16 +198,44 @@
 <script>
 
     
-    function addToCart(productsId,price){
+        // fetch to add products to cart from wish list 
+        function addToCart(productsId,price){
         
         const URL=`/user/add-to-cart/${productsId}/?price=${price}`
 
         fetch(URL,{
             method:"POST"
         }).then((Response)=>{
-            
+            if(Response.ok){
+                Swal.fire({
+                    icon:"success",
+                    title:"Product added to cart",
+                    showConfirmButton:false,
+                    timer:700,
+                }).then(()=>{
+                    // window.location.reload()
+                })
+            }
+            return Response.json(); // Return JSON data
+        }).then((data)=>{
+
+            console.log(data);
+            if(data.error){
+                Swal.fire({
+                    icon:"error",
+                    title:`Cannot add product on cart`,
+                    text:data.error
+                })
+            }
+        }).catch((err)=>{
+                Swal.fire({
+                    icon:"error",
+                    title:`Cannot add product on cart`,
+                    text:err
+                })
         })
     }
+
 
     function addToWishlist(productID){
         const URL=`/user/add-wishlist/${productID}`

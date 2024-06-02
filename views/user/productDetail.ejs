@@ -105,20 +105,9 @@
         text-align: center;
     }
 
-    #product-add-to-cart-form {
-        display: flex;
-        gap: 1rem;
-        flex-wrap: wrap;
-        /* justify-content: space-evenly; */
-    }
 
-    #product-add-to-cart-form select {
-        /* width: 50px; */
-        border-radius: 10px;
-        padding: 0 10px;
-    }
 
-    #product-add-to-cart-form .btn {
+    #add-to-cart-btn {
         width: 200px;
         font-weight: 600;
     }
@@ -234,13 +223,9 @@
                         <a href="/user/cart" class="btn btn-warning go-to-cart">Go to Cart <i
                                 class="fa-solid fa-cart-shopping"></i></a>
                         <% }else{ %>
-                            <!-- form for add to cart with product id as path params and price as query params -->
-                            <form action="/user/add-to-cart/<%= product.id %>/?price=<%= product.productPrice %>"
-                                method="post" id="product-add-to-cart-form">
-                                <button type="submit" class="btn btn-warning" id="add-to-cart-btn">Add to Cart</button>
+                                <button onclick="addToCart('<%= product.id %>','<%= product.productPrice %>')" class="btn btn-warning" id="add-to-cart-btn">Add to Cart <i class="fa-solid fa-cart-shopping"></i></button>
                                 <!-- <a href="/user/buy-now/<%= product.id %>" class="btn btn-danger" id="buy-now-btn">Buy
                                     Now</a> -->
-                            </form>
                             <% } %>
 
                                 <% }else{ %>
@@ -358,6 +343,45 @@
                         }, 1000)
 
                     })
+
+                    // fetch to add products to cart from wish list 
+                    function addToCart(productsId, price) {
+
+                        const URL = `/user/add-to-cart/${productsId}/?price=${price}`
+
+                        fetch(URL, {
+                            method: "POST"
+                        }).then((Response) => {
+                            if (Response.ok) {
+                                Swal.fire({
+                                    icon: "success",
+                                    title: "Product added to cart",
+                                    showConfirmButton: false,
+                                    timer: 700,
+                                }).then(() => {
+                                    window.location.reload()
+                                })
+                            }
+                            return Response.json(); // Return JSON data
+                        }).then((data) => {
+
+                            console.log(data);
+                            if (data.error) {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: `Cannot add product on cart`,
+                                    text: data.error
+                                })
+                            }
+                        }).catch((err) => {
+                            Swal.fire({
+                                icon: "error",
+                                title: `Cannot add product on cart`,
+                                text: err
+                            })
+                        })
+                    }
+
 
 
 

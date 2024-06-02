@@ -65,6 +65,10 @@ const addToCartPost = async (req, res) => {
         // find the product from collection
         const actualProductDetails = await productSchema.findById(productID)
 
+        if(actualProductDetails.productQuantity===0){
+            return res.status(404).json({error:"Product is out of stock"})
+        }
+
         // check the user have cart already
         const checkUserCart = await cartSchema.findOne({ userID: req.session.user }).populate('items.productID')
 
@@ -103,10 +107,12 @@ const addToCartPost = async (req, res) => {
 
         }
 
-        res.redirect(`/user/product-view/${productID}`)
+        return res.status(200).json({message:"Product added to cart"})
+        // res.redirect(`/user/product-view/${productID}`)
 
     } catch (err) {
         console.log(`Error during adding product to cart post  ${err}`);
+        return res.status(404).json({error:`Cannot add product to cart ${err}`})
     }
 
 

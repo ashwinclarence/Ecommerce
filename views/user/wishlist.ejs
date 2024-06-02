@@ -209,7 +209,7 @@
 
 <script>
 
-    
+    // fetch to add products to cart from wish list 
     function addToCart(productsId,price){
         
         const URL=`/user/add-to-cart/${productsId}/?price=${price}`
@@ -217,10 +217,39 @@
         fetch(URL,{
             method:"POST"
         }).then((Response)=>{
-            
+            if(Response.ok){
+                Swal.fire({
+                    icon:"success",
+                    title:"Product added to cart",
+                    showConfirmButton:false,
+                    timer:700,
+                }).then(()=>{
+                    // window.location.reload()
+                })
+            }
+            return Response.json(); // Return JSON data
+        }).then((data)=>{
+
+            console.log(data);
+            if(data.error){
+                Swal.fire({
+                    icon:"error",
+                    title:`Cannot add product on cart`,
+                    text:data.error
+                })
+            }
+        }).catch((err)=>{
+                Swal.fire({
+                    icon:"error",
+                    title:`Cannot add product on cart`,
+                    text:err
+                })
         })
     }
 
+
+
+    // fetch to remove elements from wishlist 
     function removeWishlist(productID){
         const URL=`/user/remove-wishlist/${productID}`
         fetch(URL,{
@@ -235,8 +264,8 @@
                 }).then(()=>{
                     window.location.reload()
                 })
-                return Response.json(); // Return JSON data
             }
+            return Response.json(); // Return JSON data
         }).then((data)=>{
             if(data.error){
                 Swal.fire({
