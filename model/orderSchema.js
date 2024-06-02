@@ -24,9 +24,6 @@ const schema = new mongoose.Schema({
     paymentMethod: {
         type: String
     },
-    orderDate: {
-        type: Date
-    }
 },{timestamps:true})
 
 

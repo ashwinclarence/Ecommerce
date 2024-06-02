@@ -1,7 +1,8 @@
 const cartSchema = require("../../model/cartSchema")
 const userSchema = require("../../model/userSchema")
 const orderSchema = require('../../model/orderSchema')
-
+const productSchema = require("../../model/productSchema")
+const mongoose=require('mongoose')
 
 
 const checkout = async (req, res) => {
@@ -53,6 +54,7 @@ const placeOrder = async (req, res) => {
                 return res.redirect('/user/cart')
             }
 
+
             // add each products details in the cart to an array called products
             products.push({
                 productID: ele.productID._id,
@@ -73,7 +75,7 @@ const placeOrder = async (req, res) => {
         const userDetails = await userSchema.findById(req.session.user)
 
         // add a new order 
-        const newOder = new orderSchema({
+        const newOrder = new orderSchema({
             userID: req.session.user,
             products: products,
             totalQuantity: totalQuantity,
@@ -86,30 +88,62 @@ const placeOrder = async (req, res) => {
                 landmark: userDetails.address[addressIndex].landmark
             },
             paymentMethod: paymentDetails[paymentMode],
-            orderDate: Date.now()
         })
 
-        // save the updated data to collection
-        newOder.save().then(async () => {
-            await cartItems.deleteOne({ userID: req.session.user })
+        // Start a session for transaction
+        const session = await mongoose.startSession();
+        session.startTransaction();
 
-            // reduce the number of products purchased from the product stock
-            cartItems.items.forEach((ele) => {
-                ele.productID.productQuantity -= ele.productCount
-            })
-
-            req.flash('errorMessage', 'Thank you for your purchase! Your order has been successfully placed.')
-            res.redirect('/user/orders')
-        }).catch((err) => {
-            req.flash('errorMessage', `Error occurred while confirming the order ${err}`)
-            return res.redirect('/user/cart')
-        })
+       
 
 
+        // // save the updated data to collection
+        // newOder.save().then(async () => {
+        //     await cartItems.deleteOne({ userID: req.session.user })
+
+        //     // reduce the number of products purchased from the product stock
+        //     cartItems.items.forEach((ele) => {
+
+        //     })
+
+        //     // save the changes
+        //     await actualProductDetails.save()
+
+        //     req.flash('errorMessage', 'Thank you for your purchase! Your order has been successfully placed.')
+        //     res.redirect('/user/orders')
+
+        // }).catch((err) => {
+
+        //     req.flash('errorMessage', `Error occurred while confirming the order ${err}`)
+        //     return res.redirect('/user/cart')
+        // })
+
+       // Save the new order
+       await newOrder.save();
+
+       // Reduce the number of products purchased from the product stock
+       for (const ele of cartItems.items) {
+           const product = await productSchema.findById(ele.productID._id);
+           if (product) {
+               product.productQuantity -= ele.productCount;
+               if (product.productQuantity < 0) {
+                   product.productQuantity = 0; // Ensure product quantity doesn't go below zero
+               }
+               await product.save();
+           }
+       }
+
+       // Clear the cart for the user
+       await cartSchema.deleteOne({ userID: req.session.user });
+
+       req.flash('errorMessage', 'Thank you for your purchase! Your order has been successfully placed.');
+       res.redirect('/user/orders');
 
 
     } catch (err) {
         console.log(`Error on placing order in POST method ${err}`);
+        req.flash('errorMessage', `Error on placing order ${err}`);
+        return res.redirect('/user/cart');
     }
 }
 

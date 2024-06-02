@@ -84,7 +84,7 @@
             	<div class="order-placed-details">
                 	<div class="order-placed-details-inner">
                     	<small>Order Placed</small>
-                    	<b><%= ele.orderDate.toDateString() %></b>
+                    	<b><%= ele.createdAt %></b>
                 	</div>
                 	<div class="order-placed-details-inner">
                     	<small> Quantity</small>
@@ -147,8 +147,7 @@
             }).then((result)=>{
                 if(result.isConfirmed){
 
-                    console.log("🚀 ~ file: orders.ejs:141 ~ cancelOrder ~ productID:", productID)
-                    console.log("🚀 ~ file: orders.ejs:141 ~ cancelOrder ~ orderID:", orderID)
+
                 }
             })
 

@@ -52,7 +52,7 @@ const cart = async (req, res) => {
 
 }
 
-// add to cat post method 
+// add to cart post method 
 const addToCartPost = async (req, res) => {
     try {
 
@@ -96,6 +96,7 @@ const addToCartPost = async (req, res) => {
                 userID: userID,
                 items: [{ productID: actualProductDetails._id, productCount: 1, productPrice: productPrice }],
             })
+
 
             // save the changes in collection
             await newCart.save()
@@ -148,6 +149,7 @@ const cartCountFetch = async (req, res) => {
 
         // update the product count of the product in the collection with the selected count
         currentProduct[0].productCount = productCount
+
 
         // save the changes to the database
         await cartItem.save()
