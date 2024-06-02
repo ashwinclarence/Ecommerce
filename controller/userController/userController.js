@@ -219,11 +219,7 @@ const otpResend = (req, res) => {
 
 
 
-const wishlist = (req, res) => {
 
-    res.render('user/wishlist', { title: "Wishlist", alertMessage: req.flash('errorMessage'), user: req.session.user })
-
-}
 
 // logout the user
 const logout = (req, res) => {
@@ -290,7 +286,6 @@ module.exports = {
     otp,
     otpPost,
     otpResend,
-    wishlist,
     googleAuth,
     googleAuthCallback,
     facebookAuth,

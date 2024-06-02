@@ -170,7 +170,7 @@
                                 <div>
                                     <!-- <hr> -->
                                     <div class="d-flex flex-row-reverse gap-3">
-                                        <button class="btn btn-sm"><i class="fa-solid fa-heart"></i></button>
+                                        <button onclick="addToWishlist('<%= product.id %>')" class="btn btn-sm" ><i class="fa-solid fa-heart"></i></button>
                                         <button onclick="addToCart('<%= product.id %>','<%= product.productPrice %>')" class="btn btn-sm "><i class="fa-solid fa-cart-shopping"></i></button>
                                     </div>
 
@@ -203,6 +203,29 @@
             method:"POST"
         }).then((Response)=>{
             
+        })
+    }
+
+    function addToWishlist(productID){
+        const URL=`/user/add-wishlist/${productID}`
+        fetch(URL,{
+            method:'get',
+        }).then((Response)=>{
+            if(Response.ok){
+                Swal.fire({
+                    icon:"success",
+                    title:"Product added to wishlist",
+                    showConfirmButton:false,
+                    timer:700,
+                })
+            }else{
+                Swal.fire({
+                    icon:"success",
+                    title:"Product added to wishlist",
+                    showConfirmButton:false,
+                    timer:700,
+                })
+            }
         })
     }
 

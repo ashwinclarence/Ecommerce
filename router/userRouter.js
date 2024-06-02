@@ -10,7 +10,7 @@ const orderController=require('../controller/userController/orderController')
 const cartController=require('../controller/userController/cartController')
 const homeController=require('../controller/userController/homeController')
 const checkoutController=require('../controller/userController/checkoutController')
-
+const wishlistController=require('../controller/userController/wishlistController')
 
 // login routes
 user.get('/',userController.user)
@@ -69,7 +69,8 @@ user.get('/cancelled-orders',checkUserSession,orderController.cancelledOrder)
 
 
 // wishlist
-user.get('/wishlist',checkUserSession,userController.wishlist)
+user.get('/wishlist',checkUserSession,wishlistController.wishlist)
+user.get('/add-wishlist/:id',checkUserSession,wishlistController.addWishlist)
 
 
 // cart routes

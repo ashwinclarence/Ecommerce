@@ -43,7 +43,7 @@ const placeOrder = async (req, res) => {
         let totalQuantity = 0
         const paymentDetails = [
             "cash on delivery",
-            "UPI"
+            "Razor Pay"
         ]
 
         cartItems.items.forEach((ele) => {
@@ -94,29 +94,6 @@ const placeOrder = async (req, res) => {
         const session = await mongoose.startSession();
         session.startTransaction();
 
-       
-
-
-        // // save the updated data to collection
-        // newOder.save().then(async () => {
-        //     await cartItems.deleteOne({ userID: req.session.user })
-
-        //     // reduce the number of products purchased from the product stock
-        //     cartItems.items.forEach((ele) => {
-
-        //     })
-
-        //     // save the changes
-        //     await actualProductDetails.save()
-
-        //     req.flash('errorMessage', 'Thank you for your purchase! Your order has been successfully placed.')
-        //     res.redirect('/user/orders')
-
-        // }).catch((err) => {
-
-        //     req.flash('errorMessage', `Error occurred while confirming the order ${err}`)
-        //     return res.redirect('/user/cart')
-        // })
 
        // Save the new order
        await newOrder.save();
