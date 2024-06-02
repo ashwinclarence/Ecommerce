@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 
+const productDeliveryStatusEnum = ['Pending', 'Shipped', 'Delivered', 'Returned'];
+
 const schema = new mongoose.Schema({
     userID: { type: String },
     products: [{
@@ -8,7 +10,7 @@ const schema = new mongoose.Schema({
         brand: { type: String },
         quantity: { type: Number },
         price: { type: Number },
-        productStatus: { type: String },
+        productStatus: { type: String, enum: productDeliveryStatusEnum },
         discountPrice: { type: Number },
         productImage: { type: String }
     }],
@@ -28,4 +30,3 @@ const schema = new mongoose.Schema({
 
 
 module.exports = mongoose.model("Order", schema);
-

@@ -50,6 +50,7 @@ admin.delete('/delete-product/:id',checkAdminSession,productController.productDe
 
 // order management 
 admin.get('/orders',checkAdminSession, orderController.order);
+admin.post('/edit-order/:id/:proID',checkAdminSession,orderController.editOrder)
 
 
 admin.get('/coupons',checkAdminSession, adminController.coupons);

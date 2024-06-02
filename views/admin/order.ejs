@@ -14,7 +14,7 @@
     .admin-user-search-box {
         border: 1px solid #000000;
         border-radius: 10px;
-        padding: .2rem .3rem;
+        padding: 0.2rem 0.3rem;
         margin-top: 2rem;
     }
 
@@ -23,11 +23,6 @@
         outline: none;
         width: 30rem;
         height: 2.5rem;
-    }
-
-    table th,
-    td {
-        text-align: center;
     }
 
     .product-name-td {
@@ -41,11 +36,10 @@
         white-space: normal;
         overflow: visible;
         z-index: 3;
-
     }
 
     #view-order-modal-form {
-        padding: 3rem 1rem;
+        padding: 3rem 2rem;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -60,32 +54,32 @@
     }
 
     .product-overview-box {
-        width: 90%;
-        display: grid;
-        grid-template-columns: 30% 70%;
+        display: flex;
         align-items: center;
+        justify-content: center;
     }
 
     .order-product-container {
-        height: 150px;
-        width: 150px;
+        height: 200px;
+        width: 200px;
         overflow: hidden;
     }
 
     .order-product-container img {
-        height: 150px;
-        width: 150px;
+        height: 200px;
+        width: 200px;
         object-fit: contain;
     }
-    .table-view-order tr{
+
+    .table-view-order tr {
         display: grid;
         grid-template-columns: 20% 10% auto;
     }
 
+    .table-view-order td {
+        text-align: start;
+    }
 </style>
-
-
-
 
 <%- include('navbar') %>
 
@@ -93,7 +87,7 @@
         <div class="user-search-box">
             <h3>Orders</h3>
             <form action="" method="get" class="admin-user-search-box">
-                <input type="text" name="search" id="user-search" placeholder="Find Orders" required>
+                <input type="text" name="search" id="user-search" placeholder="Find Orders" required />
                 <button class="btn"><i class="fa-solid fa-magnifying-glass"></i></button>
             </form>
         </div>
@@ -111,7 +105,6 @@
                     </tr>
                 </thead>
                 <tbody>
-
                     <% orderDetails.forEach((ele,index)=>{ %>
                         <tr>
                             <th scope="row">
@@ -121,7 +114,7 @@
                                 <%= ele.products.productName %>
                             </td>
                             <td>
-                                <%= ele.orderDate.toDateString() %>
+                                <%= ele.createdAt.toDateString() %>
                             </td>
                             <td>
                                 <%= ele.paymentMethod %>
@@ -133,13 +126,28 @@
                             </td>
                             <td>
                                 <!-- <a href='/admin/view-order/<%=ele.products.productID%>/<%=ele._id%>' class="btn btn-warning" >View</a> -->
-                                <button onclick="viewOrder('<%=ele.products.productID%>','<%=ele._id%>')" type="button"
-                                    data-toggle="modal" data-target=".view-order-modal" 
-                                    class="btn btn-warning">View</button>
+                                <button type="button" id="view-order-button" data-toggle="modal"
+                                    data-target=".view-order-modal" 
+                                    data-name="<%= ele.products.productName %>"
+                                    data-productID="<%= ele.products.productID %>"
+                                    data-orderID="<%= ele._id %>"
+                                    data-brand="<%= ele.products.brand %>" data-quantity="<%= ele.products.quantity %>"
+                                    data-price="<%= ele.products.price %>"
+                                    data-productStatus="<%= ele.products.productStatus %>"
+                                    data-discountPrice="<%= ele.products.discountPrice %>"
+                                    data-productImage="<%= ele.products.productImage %>"
+                                    data-contactName="<%= ele.address.contactName %>"
+                                    data-pincode="<%= ele.address.pincode %>"
+                                    data-homeAddress="<%= ele.address.homeAddress %>"
+                                    data-areaAddress="<%= ele.address.areaAddress %>"
+                                    data-landmark="<%= ele.address.landmark %>"
+                                    data-paymentMethod="<%= ele.paymentMethod %>" data-createdAt="<%= ele.createdAt %>"
+                                    class="btn btn-warning">
+                                    View
+                                </button>
                             </td>
                         </tr>
                         <% }) %>
-
                 </tbody>
             </table>
         </div>
@@ -150,63 +158,140 @@
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <form action="/user/edit-order" method="post" id="view-order-modal-form">
-                        <h2>View Order </h2>
+                        <h2>View Order</h2>
                         <div class="product-overview-box">
                             <div class="order-product-container">
-                                <img src="../../image/a1.jpg" class="image-fluid">
+                                <img src="../../image/a1.jpg" class="image-fluid" id="view-order-image" />
                             </div>
-                            <h6>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Facilis quas, pariatur eaque
-                                sit hic aliquam iure, maxime quia officiis vel accusantium, eos ea in? Recusandae
-                                adipisci quam cumque necessitatibus enim?</h6>
-                            <h6 class="text-center">&#8377; 699</h6>
-                            <h6>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Excepturi odio assumenda
-                                voluptatum, officiis.</h6>
+
                         </div>
                         <table class="table table-view-order">
-                            <tr colspan="2">Address</tr>
+                            <tr>
+                                <td>Product Name</td>
+                                <td>:</td>
+                                <td id="view-order-product-name"></td>
+                            </tr>
+                            <tr>
+                                <td>Brand</td>
+                                <td>:</td>
+                                <td id="view-order-product-brand"></td>
+                            </tr>
+                            <tr>
+                                <td>Price</td>
+                                <td>:</td>
+                                <td>&#8377; <span id="view-order-product-price"></span></td>
+                            </tr>
+                            <tr>
+                                <td>Discount Price</td>
+                                <td>:</td>
+                                <td>&#8377; <span id="view-order-discount-price"></span></td>
+                            </tr>
+                            <tr>
+                                <td>Quantity</td>
+                                <td>:</td>
+                                <td id="view-order-quantity"></td>
+                            </tr>
                             <tr>
                                 <td>Contact Name</td>
                                 <td>:</td>
-                                <td>Contact Name</td>
+                                <td id="view-order-contact-name"></td>
                             </tr>
                             <tr>
                                 <td>Pincode</td>
                                 <td>:</td>
-                                <td>695007</td>
+                                <td id="view-order-pincode"></td>
                             </tr>
                             <tr>
                                 <td>Home Address</td>
                                 <td>:</td>
-                                <td>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Pariatur illo labore corrupti optio non cum nostrum reiciendis unde reprehenderit fugiat, consequuntur sit facere soluta corporis ab qui itaque libero praesentium?</td>
+                                <td id="view-order-home-address"></td>
                             </tr>
                             <tr>
                                 <td>Area Address</td>
                                 <td>:</td>
-                                <td>Lorem ipsum dolor sit amet consectetur adipisicing elit. Non magni et, praesentium tempora pariatur dolores repellat expedita eum minima saepe nemo doloribus deleniti id alias necessitatibus vel! Quaerat, asperiores obcaecati.</td>
+                                <td id="view-order-area-address"></td>
                             </tr>
-                           
+                            <tr>
+                                <td>Landmark</td>
+                                <td>:</td>
+                                <td id="view-order-landmark"></td>
+                            </tr>
+                            <tr>
+                                <td>Payment Method</td>
+                                <td>:</td>
+                                <td id="view-order-payment-method"></td>
+                            </tr>
+                            <tr>
+                                <td>Ordered placed</td>
+                                <td>:</td>
+                                <td id="view-order-placed"></td>
+                            </tr>
+                            <tr>
+                                <td>Order Status</td>
+                                <td>:</td>
+                                <td id="view-order-status"></td>
+                            </tr>
+                            
+                            
                         </table>
-
+                        <label for="productDeliveryStatus"></label>
+                        <select id="productDeliveryStatus" name="orderStatus">
+                            <option value="0">Pending</option>
+                            <option value="1">Shipped</option>
+                            <option value="2">Delivered</option>
+                            <option value="3">Returned</option>
+                        </select>
+                        <button type="submit" class="btn btn-success">Save the order status</button>
+                        
                     </form>
                 </div>
             </div>
         </div>
     </div>
 
-
     <%- include('footer') %>
 
-
         <script>
-
-            console.log("🚀 ~ file: order.ejs:171 ~ orderDetails:", orderDetail)
-            const orderDetail = orderDetails
+            // const orderDetail =
 
             // function for order detail view in modal
-            function viewOrder(productId, orderID) {
-                
-            }
+            const viewOrderBtn = document.querySelectorAll("#view-order-button");
+            viewOrderBtn.forEach((button) => {
+                button.addEventListener("click", () => {
+                    const orderID=button.getAttribute('data-orderID')
+                    const productID=button.getAttribute('data-productID')
+                    document.getElementById('view-order-modal-form').action=`/admin/edit-order/${orderID}/${productID}`
+                    document.getElementById('view-order-product-name').innerHTML = button.getAttribute("data-name");
+                    document.getElementById('view-order-product-brand').innerHTML = button.getAttribute("data-brand");
+                    document.getElementById('view-order-quantity').innerHTML = button.getAttribute("data-quantity");
+                    document.getElementById('view-order-product-price').innerHTML = button.getAttribute("data-price");
+                    document.getElementById('view-order-status').innerHTML = button.getAttribute("data-productStatus");
+                    document.getElementById('view-order-discount-price').innerHTML = button.getAttribute("data-discountPrice");
+                    document.getElementById('view-order-contact-name').innerHTML = button.getAttribute("data-contactName");
+                    document.getElementById('view-order-pincode').innerHTML = button.getAttribute("data-pincode");
+                    document.getElementById('view-order-home-address').innerHTML = button.getAttribute("data-homeAddress");
+                    document.getElementById('view-order-area-address').innerHTML = button.getAttribute("data-areaAddress");
+                    document.getElementById('view-order-landmark').innerHTML = button.getAttribute("data-landmark");
+                    document.getElementById('view-order-payment-method').innerHTML = button.getAttribute("data-paymentMethod");
+                    document.getElementById('view-order-placed').innerHTML = button.getAttribute("data-createdAt");
+                    const productImage = button.getAttribute("data-productImage");
+                    document.getElementById('view-order-image').src = `../${productImage}`
+                });
+            });
 
-            
 
+            const editOrderForm=document.getElementById('view-order-modal-form')
+            editOrderForm.addEventListener('submit',(e)=>{
+                e.preventDefault();
+
+                Swal.fire({
+                    icon:"question",
+                    title:"Change order status",
+                    text:"Are you sure to change the order status"
+                }).then((result)=>{
+                    if(result.isConfirmed){
+                        editOrderForm.submit();
+                    }
+                })
+            })
         </script>

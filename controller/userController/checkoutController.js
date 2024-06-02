@@ -38,13 +38,12 @@ const placeOrder = async (req, res) => {
         const addressIndex = req.params.address
         const paymentMode = req.params.payment
         const cartItems = await cartSchema.findOne({ userID: req.session.user }).populate('items.productID')
-
+        const paymentDetails=[
+            "Cash On Delivery",
+            "UPI"
+        ]
         const products = []
         let totalQuantity = 0
-        const paymentDetails = [
-            "cash on delivery",
-            "Razor Pay"
-        ]
 
         cartItems.items.forEach((ele) => {
 
@@ -62,7 +61,7 @@ const placeOrder = async (req, res) => {
                 brand: ele.productID.productBrand,
                 quantity: ele.productCount,
                 price: ele.productID.productPrice,
-                productStatus: "Order placed",
+                productStatus: "Pending",
                 discountPrice: ele.productID.productDiscount,
                 productImage: ele.productID.productImage[0]
             })
@@ -217,3 +216,4 @@ module.exports = {
     addAddressCheckout,
     editAddressCheckout,
 }
+
