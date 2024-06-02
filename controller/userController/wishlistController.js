@@ -90,7 +90,37 @@ const addWishlist = async (req, res) => {
     }
 }
 
+const removeWishlist=async (req,res)=>{
+    try {
+
+        const productID=req.params.id;
+
+        const wishlist=await wishlistSchema.findOne({userID:req.session.user}).populate('products.productID')
+
+        if(wishlist===null){
+            return res.status(404).json({error:"Product not found in wishlist"})
+        }
+
+        const newWishList=wishlist.products.filter((ele)=>{
+            if(ele.productID.id!=productID){
+                return ele
+            }
+        })
+
+        wishlist.products=newWishList
+
+        await wishlist.save()
+
+        return res.status(200).json({message:"Product removed from wishlist"})
+        
+    } catch (err) {
+        console.log(`Error on removing the products from wishlist ${err}`)
+        return res.status(404).json({error:"Error on removing the products from wishlist"})
+    }
+}
+
 module.exports = {
     wishlist,
     addWishlist,
+    removeWishlist,
 }

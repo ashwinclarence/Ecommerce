@@ -4,7 +4,7 @@
         margin-bottom: 5rem;
         display: flex;
         flex-direction: column;
-        gap: 5rem;
+        gap: 3rem;
     }
 
     .products-list-box {
@@ -120,12 +120,25 @@
         display: none;
         scale: 1.5;
     }
+    .wishlist-header{
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+        width: 100%;
+        
+    }
 </style>
 <%-include('navbar') %>
-<div class="products-container">
+<div class="products-container container">
+   <div class="wishlist-header">
+    <h3>WishList</h3>
+    <h3 class="btn btn-secondary rounded-circle"><%= products.length%></h3>
+   </div>
     <div class="products-list-box container">
         <!-- check if any product exist -->
         <% if(products.length!=0){ %>
+
+            
             <!-- this will render each product on the product collection which is not blocked -->
             <% products.forEach((product)=>{ %>
 
@@ -209,25 +222,35 @@
     }
 
     function removeWishlist(productID){
-        const URL=`/user/add-wishlist/${productID}`
+        const URL=`/user/remove-wishlist/${productID}`
         fetch(URL,{
             method:'get',
         }).then((Response)=>{
             if(Response.ok){
                 Swal.fire({
                     icon:"success",
-                    title:"Product added to wishlist",
+                    title:"Product remove from wishlist",
                     showConfirmButton:false,
                     timer:700,
+                }).then(()=>{
+                    window.location.reload()
                 })
-            }else{
+                return Response.json(); // Return JSON data
+            }
+        }).then((data)=>{
+            if(data.error){
                 Swal.fire({
-                    icon:"success",
-                    title:"Product added to wishlist",
-                    showConfirmButton:false,
-                    timer:700,
+                    icon:"error",
+                    title:`Removing product from wishlist`,
+                    text:data.error
                 })
             }
+        }).catch((err)=>{
+                Swal.fire({
+                    icon:"error",
+                    title:`Removing product from wishlist`,
+                    text:err
+                })
         })
     }
 

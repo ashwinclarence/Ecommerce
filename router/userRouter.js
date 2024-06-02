@@ -71,6 +71,7 @@ user.get('/cancelled-orders',checkUserSession,orderController.cancelledOrder)
 // wishlist
 user.get('/wishlist',checkUserSession,wishlistController.wishlist)
 user.get('/add-wishlist/:id',checkUserSession,wishlistController.addWishlist)
+user.get('/remove-wishlist/:id',checkUserSession,wishlistController.removeWishlist)
 
 
 // cart routes
