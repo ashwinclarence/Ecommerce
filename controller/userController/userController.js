@@ -242,38 +242,37 @@ const googleAuth = (req, res) => {
     try {
         passport.authenticate('google', {
             scope:
-                ['email', 'profile']
-        })
+            ['email', 'profile']
+        })(req,res)
     } catch (err) {
         console.log(`Error on google authentication ${err}`)
     }
 }
 
 
-// callback from the user google auth
-const googleAuthCallback = (req, res) => {
-    try {
+// google auth callback from the auth service
+const googleAuthCallback = (req, res, next) => {
+    passport.authenticate('google', (err, user, info) => {
+      if (err) {
+        console.log(`Error on google auth callback: ${err}`);
+        return next(err);
+      }
+      if (!user) {
+        return res.redirect('/user/login');
+      }
+      req.logIn(user, (err) => {
+        if (err) {
+          return next(err);
+        }
+        // Store the user ID in the session
+        req.session.user = user.id;
+        console.log("🚀 ~ file: userController.js:269 ~ req.logIn ~ user.id:", user.id);
+        return res.redirect('/user/home');
+      });
+    })(req, res, next);
+  }
 
-        passport.authenticate('google', {
-            successRedirect: '/user/home',
-            failureRedirect: '/user/login'
-        })
 
-    } catch (err) {
-        console.log(`Error on google auth callback ${err}`)
-    }
-}
-
-
-
-// 
-const facebookAuth = (req, res) => {
-    try {
-
-    } catch (err) {
-        console.log(`Error on facebook authentication ${err}`)
-    }
-}
 
 
 
@@ -288,6 +287,5 @@ module.exports = {
     otpResend,
     googleAuth,
     googleAuthCallback,
-    facebookAuth,
     logout
 }

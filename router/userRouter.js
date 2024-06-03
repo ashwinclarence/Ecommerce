@@ -19,8 +19,7 @@ user.post('/login',userController.loginPost)
 
 // login using google
 user.get('/auth/google',userController.googleAuth)
-user.get('/auth/')
-user.get('/auth/facebook',userController.facebookAuth)
+user.get('/auth/google/callback',userController.googleAuthCallback)
 
 
 // signup routes

@@ -161,7 +161,7 @@
                 </div>
                 <div class="product-image-array">
                     <% product.productImage.forEach((img)=>{ %>
-                        <div class="product-image-each">
+                        <div class="product-image-each" onclick="changeImage(`<%= img.replace(/\\/g,'\\\\') %>`)">
                             <img src="../../<%= img %>" alt="">
                         </div>
                         <% }) %>
@@ -384,6 +384,9 @@
 
 
 
-
+                    // 
+                    function changeImage(src){
+                        productImg.src=`../../${src}`
+                    }
 
                 </script>

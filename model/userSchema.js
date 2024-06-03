@@ -1,5 +1,4 @@
 const mongoose=require('mongoose');
-const { defaultMaxListeners } = require('nodemailer/lib/xoauth2');
 const addressSchema = require('./addressSchema');
 
 // defining the schema for user collection
@@ -10,7 +9,6 @@ const schema =new mongoose.Schema({
     },
     phone:{
         type:Number,
-        required:true
     },
     email:{
         type:String,
@@ -18,7 +16,6 @@ const schema =new mongoose.Schema({
     },
     password:{
         type:String,
-        required:true
     },
     address:{
         type:[addressSchema],
@@ -26,6 +23,9 @@ const schema =new mongoose.Schema({
     isBlocked:{
         type:Boolean,
         default:false
+    },
+    googleID:{
+        type:String
     }
 },{timestamps:true})
 
