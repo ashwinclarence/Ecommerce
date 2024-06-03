@@ -7,6 +7,8 @@ const orderSchema = require("../../model/orderSchema");
 const order = async (req, res) => {
     try {
 
+        const orderSearch=req.query.search;
+
         // get the order details from order collection 
         const orderDetails = await orderSchema.aggregate([{ $unwind: "$products" }])
 
