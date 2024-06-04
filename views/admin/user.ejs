@@ -2,32 +2,23 @@
     .admin-customers-container {
         min-height: 100vh;
     }
+    .user-heading-box h3{
+        font-family: "Proza Libre", sans-serif;
 
-    .user-search-box {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        margin: 3rem 0;
     }
 
-    .admin-user-search-box {
-        border: 1px solid #000000;
-        border-radius: 10px;
-        padding: .2rem .3rem;
-        margin-top: 2rem;
+    .admin-action .btn {
+        width: 100px;
     }
 
-    #user-search {
-        border: none;
-        outline: none;
-        width: 30rem;
-        height: 2.5rem;
+    .unblock-user-btn {
+        color: red;
+        cursor: pointer;
     }
-
-    table th,
-    td {
-        text-align: center;
+    
+    .block-user-btn {
+        color: green;
+        cursor: pointer;
     }
 </style>
 
@@ -37,30 +28,28 @@
 <%- include('navbar') %>
 
 
-    <div class="admin-customers-container container">
-        <div class="user-search-box">
+    <div class="admin-customers-container container pt-5">
+        <div class="user-heading-box">
             <h3>Customers</h3>
-            <form action="/admin/user" method="get" class="admin-user-search-box">
-                <input type="text" name="userSearch" id="user-search" placeholder="Find users">
-                <button class="btn"><i class="fa-solid fa-magnifying-glass"></i></button>
-            </form>
         </div>
-        <div class="user-list-box">
-            <table class="table table-hover">
-                <thead>
+        <div class="mt-5 table-responsive">
+            <table class="table ">
+                <thead class="table-primary">
+                    <!-- <tr>
+                        <th colspan="5" class="text-center p-4">sl.no</th>
+                    </tr> -->
                     <tr>
-                        <th scope="col">sl.no</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Email Address</th>
-                        <th scope="col">Phone Number</th>
-                        <th scope="col">Address</th>
-                        <th scope="col">Actions</th>
+                        <th scope="col" class="text-center py-3">sl.no</th>
+                        <th scope="col" class="py-3">Name</th>
+                        <th scope="col" class="py-3">Email Address</th>
+                        <th scope="col" class="py-3">Phone Number</th>
+                        <th scope="col" class="text-center py-3">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <% users.forEach((user,index)=>{%>
-                        <tr>
-                            <th scope="row">
+                        <tr >
+                            <th scope="row" class="text-center">
                                 <%= index+1 %>
                             </th>
                             <td>
@@ -72,19 +61,23 @@
                             <td>
                                 <%= user.phone %>
                             </td>
-                            <td>
-                                <%= user.address?"user.address":"--- no address --- " %>
-                            </td>
-                            <td>
+
+                            <td class="text-center"> 
+
+                                <button class="btn" data-userID="<%= user.id %>">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
                                 <% if(user.isBlocked){%>
 
-                                    <a class=" btn btn-warning unblock-user-btn"
-                                    href="/admin/unblock-user/<%= user.id%>">Unblock</a>
+                                    <button class="btn unblock-user-btn" data-userID="<%= user.id %>">
+                                        <i class="fa-solid fa-user-large-slash"></i>
+                                    </button>
 
                                     <% } else { %>
 
-                                        <a class="btn btn-danger block-user-btn"
-                                            href="/admin/block-user/<%= user.id %>">Block</a>
+                                        <button class="btn block-user-btn" data-userID="<%= user.id %>" >
+                                      <i class="fa-solid fa-user-large"></i>
+                                        </button>
 
                                         <% } %>
 
@@ -96,6 +89,7 @@
         </div>
     </div>
 
+    
 
     <%- include('footer') %>
 
@@ -106,6 +100,7 @@
             const unBlockUser = document.querySelectorAll('.unblock-user-btn');
             unBlockUser.forEach((button) => {
                 button.addEventListener("click", (e) => {
+                    const URL = button.getAttribute("data-userID")
                     e.preventDefault();
                     Swal.fire({
                         title: 'Unblock the user',
@@ -118,7 +113,7 @@
                     }).then((result) => {
                         if (result.isConfirmed) {
                             // If the user confirms the unblocking, navigate to the unblock link
-                            window.location.href = e.target.href;
+                            window.location.href = `/admin/unblock-user/${URL}`
                         }
                     });
                 });
@@ -127,6 +122,8 @@
             const blockUser = document.querySelectorAll('.block-user-btn');
             blockUser.forEach((button) => {
                 button.addEventListener("click", (e) => {
+                    const URL = button.getAttribute("data-userID")
+                    console.log("🚀 ~ file: user.ejs:110 ~ button.addEventListener ~ URL:", URL);
                     e.preventDefault();
                     Swal.fire({
                         title: 'Block the user',
@@ -139,7 +136,7 @@
                     }).then((result) => {
                         if (result.isConfirmed) {
                             // If the user confirms the blocking, navigate to the block link
-                            window.location.href = e.target.href;
+                            window.location.href = `/admin/block-user/${URL}`
                         }
                     });
                 });

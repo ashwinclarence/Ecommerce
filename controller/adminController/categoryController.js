@@ -131,7 +131,6 @@ const hideCategory = async (req, res) => {
 
         // category id of the category
         const categoryID = req.params.id
-
         // blocking the category with specific id
         const blockedCategory = await categorySchema.findByIdAndUpdate(categoryID, { isActive: false })
 
@@ -150,10 +149,8 @@ const unHideCategory = async (req, res) => {
 
         // category id of the category
         const categoryID = req.params.id
-
         // blocking the category with specific id
         const unBlockedCategory = await categorySchema.findByIdAndUpdate(categoryID, { isActive: true })
-
         // redirect to category page
         res.redirect('/admin/category')
 

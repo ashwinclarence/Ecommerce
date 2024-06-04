@@ -42,8 +42,12 @@
         <!-- side bar body -->
         <div class="offcanvas-body px-3">
             <form action="" method="get" id="filter-form-home">
+                <div class="filer-action-btn mt-2 text-center" >
+                    <button class="btn btn-primary" type="submit">Apply Filter</button>
+                    <button class="btn btn-secondary" type="reset">Clear Filter</button>
+                </div>
                 <!-- filter by range -->
-                <div class="form-check">
+                <div class="form-check mt-4">
                     <b>Filter by price range</b>
                 </div>
                 <div class="input-group mb-3 p-2">
@@ -143,10 +147,7 @@
                         </label>
                     </div>
                     <% }) %>
-                        <div class="filer-action-btn mt-4">
-                            <button class="btn btn-primary" type="submit">Apply Filter</button>
-                            <!-- <button class="btn btn-secondary">Clear Filter</button> -->
-                        </div>
+                     
 
             </form>
 

@@ -266,7 +266,6 @@ const googleAuthCallback = (req, res, next) => {
         }
         // Store the user ID in the session
         req.session.user = user.id;
-        console.log("🚀 ~ file: userController.js:269 ~ req.logIn ~ user.id:", user.id);
         return res.redirect('/user/home');
       });
     })(req, res, next);
