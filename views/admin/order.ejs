@@ -5,9 +5,7 @@
 
     .user-search-box {
         display: flex;
-        flex-direction: column;
         align-items: center;
-        justify-content: center;
         margin: 3rem 0;
     }
 
@@ -86,28 +84,24 @@
     <div class="admin-customers-container container">
         <div class="user-search-box">
             <h3>Orders</h3>
-            <form action="" method="get" class="admin-user-search-box">
-                <input type="text" name="search" id="user-search" placeholder="Find Orders" required />
-                <button class="btn"><i class="fa-solid fa-magnifying-glass"></i></button>
-            </form>
         </div>
-        <div class="user-list-box">
-            <table class="table table-hover">
-                <thead>
+        <div class="mt-5 table-responsive">
+            <table class="table">
+                <thead class="table-primary">
                     <tr>
-                        <th scope="col">sl.no</th>
-                        <th scope="col">Product Name</th>
-                        <th scope="col">Ordered Date</th>
-                        <th scope="col">Payment Method</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Price</th>
-                        <th scope="col">Actions</th>
+                        <th scope="col" class="text-center py-3">sl.no</th>
+                        <th scope="col" class="py-3">Product Name</th>
+                        <th scope="col" class="py-3">Ordered Date</th>
+                        <th scope="col" class="py-3">Payment Method</th>
+                        <th scope="col" class="py-3">Status</th>
+                        <th scope="col" class="py-3">Price</th>
+                        <th scope="col" class="text-center py-3">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <% orderDetails.forEach((ele,index)=>{ %>
                         <tr>
-                            <th scope="row">
+                            <th scope="row" class="text-center">
                                 <%= index+1 %>
                             </th>
                             <td class="product-name-td">
@@ -124,7 +118,7 @@
                             </td>
                             <td>&#8377;<%= ele.products.price.toLocaleString() %>
                             </td>
-                            <td>
+                            <td class="text-center">
                                 <!-- <a href='/admin/view-order/<%=ele.products.productID%>/<%=ele._id%>' class="btn btn-warning" >View</a> -->
                                 <button type="button" id="view-order-button" data-toggle="modal"
                                     data-target=".view-order-modal" 
@@ -142,9 +136,10 @@
                                     data-areaAddress="<%= ele.address.areaAddress %>"
                                     data-landmark="<%= ele.address.landmark %>"
                                     data-paymentMethod="<%= ele.paymentMethod %>" data-createdAt="<%= ele.createdAt %>"
-                                    class="btn btn-warning">
-                                    View
-                                </button>
+                                    class="btn">
+                                    <i class="fa-solid fa-pen-to-square"></i>                               
+                                 </button>
+
                             </td>
                         </tr>
                         <% }) %>
