@@ -1,13 +1,14 @@
 <style>
     .admin-customers-container {
         min-height: 100vh;
+        margin-bottom: 5rem;
     }
 
-    .user-search-box {
+    .user-header-box {
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         align-items: center;
-        justify-content: center;
+        justify-content: space-between;
         margin: 3rem 0;
     }
 
@@ -37,9 +38,7 @@
         margin: 1rem 0 2rem 0;
     }
 
-    .btn {
-        min-width: 90px;
-    }
+   
 
     .product-name-td {
         max-width: 250px;
@@ -61,27 +60,21 @@
 
 <%- include('navbar') %>
 
-    <div class="admin-customers-container container">
-        <div class="user-search-box">
+    <div class="admin-customers-container container pt-3">
+        <div class="user-header-box">
             <h3>Products</h3>
-            <form action="" method="post" class="admin-user-search-box">
-                <input type="text" name="search" id="user-search" placeholder="Find items" required>
-                <button class="btn"><i class="fa-solid fa-magnifying-glass"></i></button>
-            </form>
-        </div>
-        <div class="add-new-product">
             <a href="/admin/add-product" class="btn btn-success">Add Product <i class="fa-solid fa-plus"></i></a>
         </div>
-        <div class="user-list-box">
-            <table class="table table-hover">
-                <thead>
+        <div class="mt-5 table-responsive">
+            <table class="table">
+                <thead class="table-primary">
                     <tr>
-                        <th scope="col">sl.no</th>
-                        <th scope="col">Product</th>
-                        <th scope="col">Price</th>
-                        <th scope="col">Stock</th>
-                        <th scope="col">Category</th>
-                        <th scope="col">Actions</th>
+                        <th scope="col" class="text-center py-3">sl.no</th>
+                        <th scope="col" class="py-3">Product</th>
+                        <th scope="col" class="py-3">Price</th>
+                        <th scope="col" class="py-3">Stock</th>
+                        <th scope="col" class="py-3">Category</th>
+                        <th scope="col" class="text-center py-3">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -89,7 +82,7 @@
                     <% products.forEach((product,index)=>{ %>
 
                         <tr>
-                            <th scope="row">
+                            <th scope="row" class="text-center">
                                 <%= index+1 %>
                             </th>
                             <td class="product-name-td">
@@ -104,19 +97,23 @@
                             <td>
                                 <%= product.productCategory %>
                             </td>
-                            <td>
-                                <a class="btn btn-warning edit-product-btn"
-                                    href="/admin/edit-product/<%= product.id %>">Edit</a>
-                                <!-- <a class="btn btn-outline-danger" id="inactive-product-btn" href="">Inactive</a> -->
+                            <td class="text-center">
+                                <a class="edit-product-btn btn"
+                                    href="/admin/edit-product/<%= product.id %>">
+                                    <i class="fa-solid fa-pen-to-square"></i></a>
+
                                 <% if(product.isActive){ %>
-                                    <a class="btn btn-outline-danger inactive-product-btn"
-                                        href="/admin/product-inactive/<%= product.id %>">Inactive</a>
+                                    <button class="btn inactive-product-btn " data-productID="<%= product.id %>">
+                                        <i class="fa-solid fa-lock-open"></i>
+                                    </button>
                                     <% }else{ %>
-                                        <a class="btn btn-outline-success active-product-btn"
-                                            href="/admin/product-active/<%= product.id %>">Active</a>
+                                        <button class="btn active-product-btn text-danger" data-productID="<%= product.id %>">
+                                            <i class="fa-solid fa-lock"></i>
+                                        </button>
                                         <% } %>
-                                            <button class="btn btn-danger remove-product-btn"
-                                                value="<%= product.id %>">Remove</button>
+                                            <button class="btn text-danger remove-product-btn" value="<%= product.id %>">
+                                                <i class="fa-regular fa-trash-can"></i>
+                                            </button>
                             </td>
                         </tr>
 
@@ -128,6 +125,7 @@
         </div>
     </div>
 
+    
 
     <%- include('footer') %>
 
@@ -140,7 +138,7 @@
                 deactivateProduct.forEach((button) => {
                     button.addEventListener("click", function (event) {
                         event.preventDefault(); // Prevent default link behavior
-
+                        const productID=button.getAttribute('data-productID')
                         Swal.fire({
                             title: 'Deactivate the Product',
                             text: "Are you sure you want to deactivate this Product?",
@@ -151,7 +149,7 @@
                             confirmButtonText: 'Yes, Deactivate it!'
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                window.location.href = event.target.href;
+                                window.location.href =`/admin/product-inactive/${productID}`
                             }
                         });
                     });
@@ -165,7 +163,7 @@
                 activateProduct.forEach((button) => {
                     button.addEventListener("click", function (event) {
                         event.preventDefault(); // Prevent default link behavior
-
+                        const productID=button.getAttribute('data-productID')
                         Swal.fire({
                             title: 'Activate the Product',
                             text: "Are you sure you want to activate this Product?",
@@ -176,7 +174,7 @@
                             confirmButtonText: 'Yes, activate it!'
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                window.location.href = event.target.href;
+                                window.location.href =`/admin/product-active/${productID}`
                             }
                         });
                     });

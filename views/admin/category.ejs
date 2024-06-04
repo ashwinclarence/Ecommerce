@@ -218,8 +218,8 @@
 
                                         <% } %>
 
-                                            <button class="btn category-delete" data-categoryID="<%= category.id %>"><i
-                                                    class="fa-regular fa-trash-can"></i></button>
+                                            <button class="btn category-delete" data-categoryID="<%= category.id %>">
+                                                <i class="fa-regular fa-trash-can"></i></button>
 
                             </td>
                         </tr>
@@ -360,12 +360,12 @@
                 button.addEventListener('click', (e) => {
                     const categoryID = button.getAttribute('data-categoryID')
                     editModal.value = button.getAttribute('data-category')
-                    document.getElementsByClassName('admin-edit-category-form')[0].action=`/admin/edit-category/${categoryID}`
+                    document.getElementsByClassName('admin-edit-category-form')[0].action = `/admin/edit-category/${categoryID}`
 
                 })
             })
 
-          // validating the new category field to check whether the field containing only white space , if it contain special characters
+            // validating the new category field to check whether the field containing only white space , if it contain special characters
             const editCategorySubmitBtn = document.getElementById('edit-category-btn')
 
             editCategorySubmitBtn.disabled = true
@@ -396,7 +396,7 @@
             })
 
 
-          
+
 
 
 
