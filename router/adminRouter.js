@@ -5,6 +5,7 @@ const adminCategoryController = require('../controller/adminController/categoryC
 const userManagement=require('../controller/adminController/userManagement')
 const productController=require('../controller/adminController/productController')
 const orderController=require('../controller/adminController/orderController')
+const couponController=require('../controller/adminController/couponController')
 // checkAdminSession is a middleware that checks session of the admin
 const checkAdminSession=require('../middleware/adminSession')
 
@@ -53,7 +54,13 @@ admin.get('/orders',checkAdminSession, orderController.order);
 admin.post('/edit-order/:id/:proID',checkAdminSession,orderController.editOrder)
 
 
-admin.get('/coupons',checkAdminSession, adminController.coupons);
+admin.get('/coupons',checkAdminSession, couponController.coupons);
+admin.post('/add-coupon',checkAdminSession, couponController.addCoupon);
+admin.post('/edit-coupon/:id',checkAdminSession, couponController.editCoupon);
+admin.put('/block-coupon/:id',checkAdminSession, couponController.blockCoupon);
+admin.put('/unblock-coupon/:id',checkAdminSession, couponController.unBlockCoupon);
+admin.delete('/delete-coupon/:id',checkAdminSession, couponController.deleteCoupon);
+
 
 
 // logout

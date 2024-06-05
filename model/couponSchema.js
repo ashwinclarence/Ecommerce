@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 
 const schema = new mongoose.Schema({
+    couponName: {
+        type: String,
+    },
     couponCode: {
         type: String,
     },
@@ -12,12 +15,11 @@ const schema = new mongoose.Schema({
     },
     minAmount: {
         type: Number,
-       
     },
-    maxAmount: {
-        type: Number,
-     
-    },
-});
+    isActive:{
+        type:Boolean,
+        default:true
+    }
+}, { timestamps: true });
 
- module.exports= mongoose.model("coupon", schema);
+module.exports = mongoose.model("coupon", schema);

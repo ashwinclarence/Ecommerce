@@ -82,12 +82,7 @@ const dashboard = async (req, res) => {
 
 
 
-// render the coupons page 
-const coupons = (req, res) => {
 
-    res.render('admin/coupons', { title: "Coupons", alertMessage: req.flash('errorMessage') })
-
-}
 
 
 
@@ -113,7 +108,6 @@ module.exports = {
     login,
     admin,
     dashboard,
-    coupons,
     loginPost,
     logout,
 
