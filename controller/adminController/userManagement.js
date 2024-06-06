@@ -8,7 +8,7 @@ const users = async (req, res) => {
     try {
         // because of http get request req.query is used instead of req.body because in get request the data is passed through the url with name of the inputBox
         const userSearch = req.query.userSearch || '';
-        const users = await userSchema.find({ name: { $regex: userSearch, $options: 'i' } })
+        const users = await userSchema.find({ name: { $regex: userSearch, $options: 'i' } }).sort({createdAt:-1})
         res.render('admin/user', { title: "users list", users, alertMessage: req.flash('errorMessage') })
 
     } catch (err) {

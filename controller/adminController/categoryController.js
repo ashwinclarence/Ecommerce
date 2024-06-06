@@ -12,7 +12,7 @@ const category = async (req, res) => {
 
             const categorySearch = req.query.categorySearch || '';
 
-            const category = await categorySchema.find({ categoryName: { $regex: categorySearch, $options: 'i' } })
+            const category = await categorySchema.find({ categoryName: { $regex: categorySearch, $options: 'i' } }).sort({createdAt:-1})
 
             res.render('admin/category', { title: "Category list", category ,alertMessage:req.flash('errorMessage')})
 

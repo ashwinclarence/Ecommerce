@@ -7,10 +7,14 @@ const fs = require('fs')
 
 // render the product page
 const products = async (req, res) => {
+    try {
+        const products = await productSchema.find().sort({createdAt:-1})
 
-    const products = await productSchema.find()
+        res.render('admin/products', { title: "Product list", products, alertMessage: req.flash('errorMessage') })
+    } catch (err) {
+        console.log(`Error on rendering product page ${err}`);
+    }
 
-    res.render('admin/products', { title: "Product list", products, alertMessage: req.flash('errorMessage') })
 
 }
 
@@ -54,10 +58,10 @@ const addProductPost = async (req, res) => {
 
         // find the productDiscount Price
         let discountPrice
-        if(req.body.productDiscount!=0){
-            discountPrice=req.body.productPrice*(1-(req.body.productDiscount)/100)
-        }else{
-            discountPrice=req.body.productPrice
+        if (req.body.productDiscount != 0) {
+            discountPrice = req.body.productPrice * (1 - (req.body.productDiscount) / 100)
+        } else {
+            discountPrice = req.body.productPrice
         }
 
 
@@ -71,7 +75,7 @@ const addProductPost = async (req, res) => {
             productCategory: req.body.productCategory,
             productImage: imageArray,
             productDiscount: req.body.productDiscount,
-            productDiscountedPrice:discountPrice,
+            productDiscountedPrice: discountPrice,
         };
 
 
@@ -119,14 +123,14 @@ const editProductPost = (req, res) => {
         // get the id of the product
         const productID = req.params.id;
 
-         // find the productDiscount Price if the product discount is changed
-         let discountPrice
-         if(req.body.productDiscount!=0){
-             discountPrice=req.body.productPrice*(1-(req.body.productDiscount)/100)
-         }else{
-             discountPrice=req.body.productPrice
-         }
- 
+        // find the productDiscount Price if the product discount is changed
+        let discountPrice
+        if (req.body.productDiscount != 0) {
+            discountPrice = req.body.productPrice * (1 - (req.body.productDiscount) / 100)
+        } else {
+            discountPrice = req.body.productPrice
+        }
+
 
         // get the image array from the file upload
         // const imageArray = []
@@ -136,15 +140,15 @@ const editProductPost = (req, res) => {
         // })
 
         // update the product using the values from form
-        productSchema.findByIdAndUpdate(productID, { productPrice: req.body.productPrice, productDescription: req.body.productDescription, productQuantity: req.body.productQuantity, productDiscount: req.body.productDiscount,productDiscountedPrice:discountPrice })
-        .then((elem) => {
-            req.flash('errorMessage', 'Product Updated successfully');
-            res.redirect('/admin/products')
-        }).catch((err) => {
-            console.log(`Error while updating the product ${err}`);
-            req.flash('errorMessage', 'Product is not updated')
-            res.redirect('/admin/products')
-        })
+        productSchema.findByIdAndUpdate(productID, { productPrice: req.body.productPrice, productDescription: req.body.productDescription, productQuantity: req.body.productQuantity, productDiscount: req.body.productDiscount, productDiscountedPrice: discountPrice })
+            .then((elem) => {
+                req.flash('errorMessage', 'Product Updated successfully');
+                res.redirect('/admin/products')
+            }).catch((err) => {
+                console.log(`Error while updating the product ${err}`);
+                req.flash('errorMessage', 'Product is not updated')
+                res.redirect('/admin/products')
+            })
     } catch (err) {
         console.log(`Error during updating the product on database ${err}`);
         req.flash('errorMessage', 'Oops the action is not completed')

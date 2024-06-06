@@ -65,6 +65,7 @@
     .table-view-order td {
         text-align: start;
     }
+  
 </style>
 
 <%- include('navbar') %>
@@ -217,13 +218,16 @@
                             
                             
                         </table>
-                        <label for="productDeliveryStatus"></label>
-                        <select id="productDeliveryStatus" name="orderStatus">
-                            <option value="0">Pending</option>
-                            <option value="1">Shipped</option>
-                            <option value="2">Delivered</option>
-                            <option value="3">Returned</option>
-                        </select>
+                        <div class="form-group">
+                            <label for="productDeliveryStatus">Change the order status</label>
+                            <select id="productDeliveryStatus" name="orderStatus" class="custom-select">
+                                <option value="0">Pending</option>
+                                <option value="1">Shipped</option>
+                                <option value="2">Delivered</option>
+                                <option value="3">Returned</option>
+                            </select>
+                        </div>
+                       
                         <button type="submit" class="btn btn-success">Save the order status</button>
                         
                     </form>

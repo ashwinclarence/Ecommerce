@@ -242,8 +242,8 @@ const googleAuth = (req, res) => {
     try {
         passport.authenticate('google', {
             scope:
-            ['email', 'profile']
-        })(req,res)
+                ['email', 'profile']
+        })(req, res)
     } catch (err) {
         console.log(`Error on google authentication ${err}`)
     }
@@ -252,24 +252,28 @@ const googleAuth = (req, res) => {
 
 // google auth callback from the auth service
 const googleAuthCallback = (req, res, next) => {
-    passport.authenticate('google', (err, user, info) => {
-      if (err) {
-        console.log(`Error on google auth callback: ${err}`);
-        return next(err);
-      }
-      if (!user) {
-        return res.redirect('/user/login');
-      }
-      req.logIn(user, (err) => {
-        if (err) {
-          return next(err);
-        }
-        // Store the user ID in the session
-        req.session.user = user.id;
-        return res.redirect('/user/home');
-      });
-    })(req, res, next);
-  }
+    try {
+        passport.authenticate('google', (err, user, info) => {
+            if (err) {
+                console.log(`Error on google auth callback: ${err}`);
+                return next(err);
+            }
+            if (!user) {
+                return res.redirect('/user/login');
+            }
+            req.logIn(user, (err) => {
+                if (err) {
+                    return next(err);
+                }
+                // Store the user ID in the session
+                req.session.user = user.id;
+                return res.redirect('/user/home');
+            });
+        })(req, res, next);
+    } catch (err) {
+        console.log(`Error on google callback ${err}`);
+    }
+}
 
 
 
