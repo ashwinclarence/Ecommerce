@@ -52,7 +52,7 @@ const cart = async (req, res) => {
 
 }
 
-// add to cart post method 
+// add to cart fetch 
 const addToCartPost = async (req, res) => {
     try {
 

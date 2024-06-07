@@ -1,4 +1,4 @@
-
+<!-- 
     <style>
         .banner-bottom-container {
             background: linear-gradient(120deg,#faf5014e,#ffd00085);
@@ -28,9 +28,9 @@
             color: #ffffff;
             font-size: 1.5rem;
         }
-    </style>
+    </style> -->
 
-<div class="container">
+<!-- <div class="container">
     <div class="row banner-bottom-container">
         <div class="col-md-4 banner-inner-box">
             <div class="banner-content-box">
@@ -54,5 +54,124 @@
             <p>Refund within 14 days</p>
         </div>
     </div>
-</div>
+</div> -->
 
+
+<style>
+    #features {
+    display: flex;
+    justify-content: space-around;
+  }
+  #features .icon-container {
+    width: 200px;
+    height: 200px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+  }
+  #features .img-wrapper {
+    cursor: pointer;
+    padding: 15px;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background-color: #009688;
+    animation: animate 3s linear infinite;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  #features .img-wrapper img {
+    width: 40px;
+    height: 38px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  #features .icon-container h4 {
+    font-size: 1rem;
+    color: rgb(27, 25, 25);
+    position: absolute;
+    top: 80%;
+  }
+  @keyframes animate {
+    0% {
+      box-shadow: 0 0 0 0 rgba(0, 150, 136, 0.7), 0 0 0 0 rgba(0, 150, 136, 0.7);
+    }
+    40% {
+      box-shadow: 0 0 0 50px rgba(0, 150, 136, 0), 0 0 0 0 rgba(0, 150, 136, 0.7);
+    }
+    80% {
+      box-shadow: 0 0 0 50px rgba(0, 150, 136, 0), 0 0 0 30px rgba(0, 150, 136, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(0, 150, 136, 0), 0 0 0 30px rgba(0, 150, 136, 0);
+    }
+  }
+  @media screen and (max-width: 425px) {
+    #features {
+      flex-wrap: wrap;
+    }
+    #features .img-wrapper {
+      cursor: pointer;
+      padding: 15px;
+      width: 60px;
+      height: 60px;
+    }
+    #features .img-wrapper img {
+      width: 35px;
+      height: 33px;
+    }
+    #features .icon-container {
+      width: 50%;
+    }
+    #features .icon-container h4 {
+      font-size: 13px;
+    }
+    @keyframes animate {
+      0% {
+        box-shadow: 0 0 0 0 rgba(0, 150, 136, 0.7), 0 0 0 0 rgba(0, 150, 136, 0.7);
+      }
+      40% {
+        box-shadow: 0 0 0 30px rgba(0, 150, 136, 0),
+          0 0 0 0 rgba(0, 150, 136, 0.7);
+      }
+      80% {
+        box-shadow: 0 0 0 30px rgba(0, 150, 136, 0),
+          0 0 0 15px rgba(0, 150, 136, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(0, 150, 136, 0), 0 0 0 15px rgba(0, 150, 136, 0);
+      }
+    }
+  }
+</style>
+
+<section id="features">
+    <div class="icon-container">
+      <div class="img-wrapper">
+        <img src="https://shoplane.netlify.app/img/icon1.png" alt="" />
+      </div>
+      <h4>Free Delivery</h4>
+    </div>
+    <div class="icon-container">
+      <div class="img-wrapper">
+        <img src="https://shoplane.netlify.app/img/icon2.png" alt="" />
+      </div>
+      <h4>Money Back Gurantee</h4>
+    </div>
+    <div class="icon-container">
+      <div class="img-wrapper">
+        <img src="https://shoplane.netlify.app/img/icon3.png" alt="" />
+      </div>
+      <h4>Always Support</h4>
+    </div>
+    <div class="icon-container">
+      <div class="img-wrapper">
+        <img src="https://shoplane.netlify.app/img/icon4.png" alt="" />
+      </div>
+      <h4>Secure Payment</h4>
+    </div>
+  </section>

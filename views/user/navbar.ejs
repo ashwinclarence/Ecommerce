@@ -17,6 +17,12 @@
         font-weight: 700;
         color: #000000;
     }
+    .logo:hover {
+        text-decoration: none;
+        font-size: 2rem;
+        font-weight: 700;
+        color: #000000;
+    }
 
     .admin-navlinks {
         display: flex;
@@ -30,6 +36,7 @@
         font-size: 1rem;
         color: #000000;
     }
+
 
     .navbar-search-box {
         border: 1px solid #d7d7d7;
@@ -113,6 +120,46 @@
         background-color: #707070;
         color: #ffffff;
     }
+    #wishlist-nav{
+        position: relative;
+    }
+    #wishlist-badge{
+        position: absolute;
+        right: -.5rem;
+        top: -.4rem;
+        background-color: red;
+        border-radius: 50%;
+        z-index: 15;
+        font-size: 12px;
+        height: 1rem;
+        width: 1rem;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+
+    }
+    #cart-nav{
+        position: relative;
+    }
+    #cart-badge{
+        position: absolute;
+        right: -.5rem;
+        top: -.4rem;
+        background-color: red;
+        border-radius: 50%;
+        z-index: 15;
+        font-size: 12px;
+        height: 1rem;
+        width: 1rem;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+
+    }
 </style>
 
 
@@ -123,9 +170,17 @@
         <button type="submit" class="btn"><i class="fa-solid fa-magnifying-glass"></i></button>
     </form>
     <nav class="admin-navlinks">
-        <a href="/user/wishlist" class="nav-link-items"><i class="fa-solid fa-heart"></i></a>
-        <a href="/user/cart" class="nav-link-items"><i class="fa-solid fa-cart-shopping"></i></a>
-
+        <!-- wishlist  -->
+        <a href="/user/wishlist" class="nav-link-items" id="wishlist-nav">
+            <i class="fa-solid fa-heart"></i>
+            <!-- <span id="wishlist-badge">0</span> -->
+        </a>
+        <!-- cart -->
+        <a href="/user/cart" class="nav-link-items" id="cart-nav">
+            <i class="fa-solid fa-cart-shopping" ></i>
+            <!-- <span id="cart-badge">0</span> -->
+        </a>
+       
         <!-- if user is logged in then show the profile and other options else show the login button -->
 
         <% if (user) { %>
@@ -173,3 +228,8 @@
 
 <!-- alert bar -->
 <%- include('alert')%>
+
+
+<script>
+   
+</script>

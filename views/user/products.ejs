@@ -208,9 +208,12 @@
         const URL=`/user/add-to-cart/${productsId}/?price=${price}`
 
         fetch(URL,{
-            method:"POST"
-        }).then((Response)=>{
-            if(Response.ok){
+            method:"POST",
+            headers:{
+                "content-Type":"application/JSON",
+            },
+        }).then((res)=>{
+            if(res.ok){
                 Swal.fire({
                     icon:"success",
                     title:"Product added to cart",
@@ -220,7 +223,7 @@
                     // window.location.reload()
                 })
             }
-            return Response.json(); // Return JSON data
+            return res.json(); // Return JSON data
         }).then((data)=>{
 
             console.log(data);
@@ -232,11 +235,7 @@
                 })
             }
         }).catch((err)=>{
-                Swal.fire({
-                    icon:"error",
-                    title:`Cannot add product on cart`,
-                    text:err
-                })
+              console.log(`Error on adding product to cart ${err}`);
         })
     }
 

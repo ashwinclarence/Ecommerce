@@ -2,9 +2,22 @@ const cartSchema = require("../../model/cartSchema")
 const userSchema = require("../../model/userSchema")
 const orderSchema = require('../../model/orderSchema')
 const productSchema = require("../../model/productSchema")
-const mongoose=require('mongoose')
+const mongoose = require('mongoose')
+const Razorpay = require('razorpay')
+const dotenv = require('dotenv').config()
 
 
+// confirm order page
+const orderConfirmPage = (req, res) => {
+    try {
+        res.render('user/confirmOrder', { title: "Order confirmed" })
+    } catch (err) {
+        console.log(`Error on rendering the confirm order tick page ${err}`);
+
+    }
+}
+
+// render the checkout page
 const checkout = async (req, res) => {
     try {
 
@@ -22,7 +35,7 @@ const checkout = async (req, res) => {
 
 
 
-        res.render('user/checkout', { title: "Checkout", addressData, cartItems, cartDetails, alertMessage: req.flash('errorMessage') })
+        res.render('user/checkout', { title: "Checkout", addressData, cartItems, cartDetails, user: userAddress, alertMessage: req.flash('errorMessage') })
 
     } catch (err) {
         console.log(`Error on rendering the checkout page ${err}`)
@@ -34,13 +47,32 @@ const checkout = async (req, res) => {
 const placeOrder = async (req, res) => {
     try {
 
+
         // address index and payment mode
         const addressIndex = req.params.address
         const paymentMode = req.params.payment
+
+        // check if selected payment method is razor pay or not
+        if (paymentMode === 1) {
+            // order details when razor pay is selected
+            const razorpay_payment_id = req.body.razorpay_payment_id
+            const razorpay_order_id = req.body.razorpay_order_id
+            const razorpay_signature = req.body.razorpay_signature
+
+
+            // verify the payment
+            // const instance = new Razorpay({ key_id: process.env.RAZORPAY_KEY_ID, key_secret: process.env.RAZORPAY_KEY_SECRET })
+
+            // let { validatePaymentVerification, validateWebhookSignature } = require('./dist/utils/razorpay-utils');
+            // validatePaymentVerification({ "order_id": razorpayOrderId, "payment_id": razorpayPaymentId }, signature, secret);
+        }
+
+
         const cartItems = await cartSchema.findOne({ userID: req.session.user }).populate('items.productID')
-        const paymentDetails=[
+        const paymentDetails = [
             "Cash On Delivery",
-            "UPI"
+            "Razor Pay",
+            "Wallet"
         ]
         const products = []
         let totalQuantity = 0
@@ -73,6 +105,10 @@ const placeOrder = async (req, res) => {
         // find the user details 
         const userDetails = await userSchema.findById(req.session.user)
 
+
+
+
+
         // add a new order 
         const newOrder = new orderSchema({
             userID: req.session.user,
@@ -87,33 +123,34 @@ const placeOrder = async (req, res) => {
                 landmark: userDetails.address[addressIndex].landmark
             },
             paymentMethod: paymentDetails[paymentMode],
+            // payment_id:paymentMode===1?razorpay_payment_id:"Cash On Delivery"
         })
 
         // Start a session for transaction
         const session = await mongoose.startSession();
         session.startTransaction();
 
+        // Save the new order
+        await newOrder.save();
 
-       // Save the new order
-       await newOrder.save();
+        // Reduce the number of products purchased from the product stock
+        for (const ele of cartItems.items) {
+            const product = await productSchema.findById(ele.productID._id);
+            if (product) {
+                product.productQuantity -= ele.productCount;
+                if (product.productQuantity < 0) {
+                    product.productQuantity = 0; // Ensure product quantity doesn't go below zero
+                }
+                await product.save();
+            }
+        }
 
-       // Reduce the number of products purchased from the product stock
-       for (const ele of cartItems.items) {
-           const product = await productSchema.findById(ele.productID._id);
-           if (product) {
-               product.productQuantity -= ele.productCount;
-               if (product.productQuantity < 0) {
-                   product.productQuantity = 0; // Ensure product quantity doesn't go below zero
-               }
-               await product.save();
-           }
-       }
+        // Clear the cart for the user
+        await cartSchema.deleteOne({ userID: req.session.user });
 
-       // Clear the cart for the user
-       await cartSchema.deleteOne({ userID: req.session.user });
-
-       req.flash('errorMessage', 'Thank you for your purchase! Your order has been successfully placed.');
-       res.redirect('/user/orders');
+        // req.flash('errorMessage', 'Thank you for your purchase! Your order has been successfully placed.');
+        // res.redirect('/user/orders');
+        res.redirect('/user/confirm-order')
 
 
     } catch (err) {
@@ -122,6 +159,7 @@ const placeOrder = async (req, res) => {
         return res.redirect('/user/cart');
     }
 }
+
 
 
 // delete address using fetch
@@ -209,11 +247,47 @@ const editAddressCheckout = async (req, res) => {
     }
 }
 
+// payment sessions order render
+const paymentRender = (req, res) => {
+    try {
+
+        // get the amount from the fetch request
+        const totalAmount = req.params.amount
+        if (!totalAmount) {
+            return res.status(404).json({ error: "Amount parameter is missing" })
+        }
+
+        const instance = new Razorpay({ key_id: "rzp_test_7sxqZBOSt6LOIS", key_secret: "culRJFIwYb7QxSNffP6mwqc1" })
+
+
+        // create an order instance 
+        instance.orders.create({
+            amount: totalAmount * 100,
+            currency: "INR",
+            receipt: "receipt#1",
+        }, (err, order) => {
+            if (err) {
+                console.error(`Failed to create order: ${err}`);
+                return res.status(500).json({ error: `Failed to create order: ${err.message}` });
+            }
+
+            // If there is no error then send back the order id
+            return res.status(200).json({ orderID: order.id });
+        })
+
+    } catch (err) {
+        console.error(`Error on orders in checkout: ${err}`);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
 module.exports = {
+    orderConfirmPage,
     checkout,
     placeOrder,
     deleteAddressFetch,
     addAddressCheckout,
     editAddressCheckout,
+    paymentRender,
 }
 

@@ -336,8 +336,9 @@
                         </div>
                     </div>
                 </div>
+                <!-- end of second accordion -->
 
-                <!-- second accordion -->
+                <!-- third accordion -->
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingTwo">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -349,7 +350,7 @@
                         data-bs-parent="#accordionExample">
                         <div class="accordion-body">
 
-                            <!-- Default radio -->
+                            <!-- first radio -->
                             <div class="form-check">
                                 <input class="form-check-input payment-method-cod" type="radio" name="paymentMethod"
                                     id="payment-method-cod" value="0" />
@@ -357,11 +358,20 @@
                                     Cash On Delivery
                                 </div>
                             </div>
+                            <!-- second radio -->
+                            <div class="form-check mt-3">
+                                <input class="form-check-input payment-method-cod" type="radio" name="paymentMethod"
+                                    id="payment-method-cod" value="1" />
+                                <div class="form-check-label" for="payment-method-cod">
+                                    Razorpay
+                                </div>
+                            </div>
 
                         </div>
                     </div>
                 </div>
             </div>
+            <!-- end of third accordion -->
 
             <!-- Right -->
             <div class="col-lg-3">
@@ -405,7 +415,10 @@
                         </div> -->
                                     <form action="" method="post" id="place-order-form">
 
-                                        <button type="submit" class="btn btn-success w-100 mt-2">Place
+                                        <button type="submit" class="btn btn-success w-100 mt-2"
+                                            data-amount="<%=cartDetails.payableAmount%>"
+                                            data-username="<%= user.name %>" data-mail="<%= user.email %>"
+                                            data-phone="<%= user.phone %>" id="place-order-btn">Place
                                             order</button>
                                     </form>
                                     <a href="/user/cart" class="btn btn-secondary w-100 mt-2">Go
@@ -415,8 +428,10 @@
             </div>
         </div>
     </div>
-    <%- include('footer') %>
 
+
+    <%- include('footer') %>
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
         <script>
 
             // find the selected address based on the index of stored address
@@ -441,9 +456,9 @@
 
 
             //order placement using fetch
-            // onclick event for place order function
-            const orderPlacementForm = document.getElementById('place-order-form')
-            orderPlacementForm.addEventListener('submit', (e) => {
+            // onclick event for place order button
+            const orderPlacementBtn = document.getElementById('place-order-btn')
+            orderPlacementBtn.addEventListener('click', (e) => {
                 e.preventDefault()
 
                 let validated = true
@@ -456,9 +471,10 @@
                         text: "Please selected a valid address",
                     })
                 }
+                console.log(paymentMode);
 
                 // validation for payment method
-                if (paymentMode != 0) {
+                if (paymentMode===undefined) {
                     validated = false
                     Swal.fire({
                         icon: "warning",
@@ -467,15 +483,82 @@
                     })
                 }
 
-                // if both are valid then proceed with order placement
-                if (validated) {
+
+                // data from the button
+                const totalAmount = orderPlacementBtn.getAttribute('data-amount')
+                const username = orderPlacementBtn.getAttribute('data-username')
+                const email = orderPlacementBtn.getAttribute('data-email')
+                const phone = orderPlacementBtn.getAttribute('data-phone')
+
+                // if the user select the payment as razor pay and a valid address
+                if (validated && paymentMode === 1) {
+                    const URL = `/user/payment-render/${totalAmount}`;
+
+                    // fetch for order placement 
+                    fetch(URL, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        }
+                    }).then((res) => {
+                        if (!res.ok) {
+                            throw new Error("Cannot render the payment page");
+                        }
+                        return res.json();
+                    }).then((data) => {
+                        if (data.orderID) {
+                            const options = {
+                                "key": "rzp_test_7sxqZBOSt6LOIS",
+                                "amount": totalAmount * 100,
+                                "currency": "INR",
+                                "name": "CLEAT CRAFT",
+                                "order_id": data.orderID,
+                                "callback_url": `http://localhost:4000/user/place-order/${addressIndex}/${paymentMode}`,
+                                "prefill": {
+                                    "name": username,
+                                    "email": email,
+                                    "contact": phone
+                                },
+                                "notes": {
+                                    "address": "Razorpay Corporate Office"
+                                },
+                                "theme": {
+                                    "color": "#6351CE"
+                                },
+
+                            };
+
+                            const rzp1 = new Razorpay(options);
+                            rzp1.open();
+                            e.preventDefault()
+
+
+                        } else {
+                            throw new Error("Order ID not received");
+                        }
+                    }).catch((error) => {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error on loading payment method",
+                            text: error
+                        })
+                        console.error("Error during payment initiation:", error);
+                    });
+                }
+                // end of place order through razor pay
+
+
+                const orderPlacementForm=document.getElementById('place-order-form')
+                // if the user select the payment as cash on delivery
+                if (validated && paymentMode === 0) {
                     const URL = `/user/place-order/${addressIndex}/${paymentMode}`
                     orderPlacementForm.action = URL
                     orderPlacementForm.submit()
                 }
+                // end of fetch for order placing using cash on delivery
 
             })
-
+            // end of onclick event of order button
 
             // delete address
             function deleteAddress(index) {
@@ -611,7 +694,7 @@
                     addressIndexEdit.value = parseInt(addressIndex)
 
                     // change the edit address form action
-                    editAddressForm.setAttribute('action',`/user/edit-address-checkout/${parseInt(addressIndex)}`)
+                    editAddressForm.setAttribute('action', `/user/edit-address-checkout/${parseInt(addressIndex)}`)
                 });
             });
 
