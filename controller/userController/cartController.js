@@ -38,6 +38,10 @@ const cart = async (req, res) => {
             //   save the changes in the collection
             await cart.save()
 
+
+            // sort cart based on date of added
+            cart.items.sort((a,b)=>b.createdAt-a.createdAt)
+
             // render the cart
             res.render('user/cart', { title: "cart", cart: cart.items, totalPrice, totalPriceWithoutDiscount, alertMessage: req.flash('errorMessage'), user: req.session.user })
         } else {
@@ -210,10 +214,63 @@ const removeCartItem = async (req, res) => {
 }
 
 
+// increment the product quantity
+const incrementProduct=async (req,res)=>{
+    try {
+        const productID=req.params.productID
+        const productQuantity=req.body.quantity
+
+        if(!productQuantity){
+            return res.status(404).json({error:"Product quantity not found"})
+        }
+
+        const cart=await cartSchema.findOne({userID:req.session.user}).populate('items.productID')
+      
+        const productCart=cart.items.filter((ele)=>{
+            if(ele.productID.id===productID){
+                return ele
+            }
+        })
+        
+        productCart[0].productCount+=1;
+
+        await cart.save()
+
+        let totalPrice=0
+        let productTotal=0
+        let totalPriceWithoutDiscount=0
+        
+        cart.items.forEach((ele)=>{
+            totalPriceWithoutDiscount+=ele.productID.productPrice*ele.productCount
+            totalPrice+=ele.productID.productDiscountedPrice*ele.productCount
+            if(ele.productID.id===productID){
+                productTotal=ele.productID.productDiscountedPrice*ele.productCount
+            }
+            })
+
+        let savings=totalPriceWithoutDiscount-totalPrice
+
+        // return the product quantity
+        return res.status(200).json({
+            productCount:productCart[0].productCount,
+            productTotal:productTotal,
+            total:totalPrice,
+            subTotal:totalPriceWithoutDiscount,
+            savings:savings,
+
+        })
+        
+        } catch (err) {
+            console.log(`Error on incrementing the product quantity ${err}`);
+            return res.status(500).json({error:"Internal Server Error"})
+    }
+}
+
 
 module.exports = {
     cart,
     addToCartPost,
     cartCountFetch,
     removeCartItem,
+    incrementProduct,
 }
