@@ -14,34 +14,42 @@ const cart = async (req, res) => {
         // get the coupons
         const coupons = await couponSchema.find({ isActive: true, expiryDate: { $gte: new Date() } })
 
+        // // remove anything that exist in cart coupon discount
+        // if (cart.couponDiscount) {
+        //     cart.couponDiscount = null
+        //     await cart.save()
+        // }
 
-        // find the total price of cart items
-        cart.items.forEach((ele) => {
-            // if the product have discount then find the total price after making a discount from the actual price
-            if (ele.productID.productDiscount === 0) {
-                totalPrice += (ele.productID.productPrice * ele.productCount);
-                totalPriceWithoutDiscount += (ele.productID.productPrice * ele.productCount)
-            } else {
-                // get the product discount price from the product price
-                const discountPrice = (ele.productID.productPrice * ele.productCount) - ((ele.productID.productDiscount / 100) * (ele.productID.productPrice * ele.productCount))
-                totalPrice += discountPrice
-                totalPriceWithoutDiscount += (ele.productID.productPrice * ele.productCount)
+        if (cart) {
+            // find the total price of cart items
+            cart.items.forEach((ele) => {
+                // if the product have discount then find the total price after making a discount from the actual price
+                if (ele.productID.productDiscount === 0) {
+                    totalPrice += (ele.productID.productPrice * ele.productCount);
+                    totalPriceWithoutDiscount += (ele.productID.productPrice * ele.productCount)
+                } else {
+                    // get the product discount price from the product price
+                    const discountPrice = (ele.productID.productPrice * ele.productCount) - ((ele.productID.productDiscount / 100) * (ele.productID.productPrice * ele.productCount))
+                    totalPrice += discountPrice
+                    totalPriceWithoutDiscount += (ele.productID.productPrice * ele.productCount)
+                }
+            })
+
+            // if the totalPrice and payable amount in the cart and the calculated total price is different then update the collection with the new values
+            if (cart.payableAmount != totalPrice || cart.totalPrice != totalPriceWithoutDiscount) {
+                // update the price details
+                cart.payableAmount = Math.round(totalPrice);
+                cart.totalPrice = Math.round(totalPriceWithoutDiscount);
+                //   save the changes in the collection
+                await cart.save()
             }
-        })
-
-        // if the totalPrice and payable amount in the cart and the calculated total price is different then update the collection with the new values
-        if (cart.payableAmount != totalPrice || cart.totalPrice != totalPriceWithoutDiscount) {
-            // update the price details
-            cart.payableAmount = Math.round(totalPrice);
-            cart.totalPrice = Math.round(totalPriceWithoutDiscount);
-            //   save the changes in the collection
-            await cart.save()
+            // sort cart based on date of added
+            cart.items.sort((a, b) => b.createdAt - a.createdAt)
         }
 
 
 
-        // sort cart based on date of added
-        cart.items.sort((a, b) => b.createdAt - a.createdAt)
+
 
         // render the cart
         res.render('user/cart', { title: "cart", cart, coupons, alertMessage: req.flash('errorMessage'), user: req.session.user })
@@ -407,7 +415,7 @@ const removeCoupon = async (req, res) => {
 
         // remove anything that exist in cart coupon discount
         if (cart.couponDiscount) {
-            cart.couponDiscount=null
+            cart.couponDiscount = null
             await cart.save()
         }
 
@@ -422,6 +430,23 @@ const removeCoupon = async (req, res) => {
     }
 }
 
+const proceedCheckout = async (req, res) => {
+    try {
+        const cart = await cartSchema.findOne({ userID: req.session.user }).populate('couponDiscount')
+
+        if (cart.couponDiscount) {
+            cart.payableAmount -= cart.couponDiscount.discount
+            await cart.save()
+        }
+
+        res.redirect('/user/checkout')
+
+
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 module.exports = {
     cart,
     addToCartPost,
@@ -432,4 +457,5 @@ module.exports = {
     getCoupon,
     applyCoupon,
     removeCoupon,
+    proceedCheckout
 }

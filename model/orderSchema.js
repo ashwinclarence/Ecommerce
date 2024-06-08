@@ -24,8 +24,9 @@ const schema = new mongoose.Schema({
         landmark: String
     },
     couponDiscount:{
-        type:Number,
-        default:0
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'coupon',
+        default:null
     },
     paymentMethod: {
         type: String
