@@ -38,6 +38,7 @@
         grid-template-columns: 20% 50% 30%;
 
     }
+
     .order-item-details-inner {
         display: flex;
         flex-direction: column;
@@ -56,100 +57,214 @@
         height: 150px;
         object-fit: contain;
     }
-    .no-order-prompt{
+
+    .no-order-prompt {
         color: #b0b0b0;
         font-family: monospace;
     }
-    .product-name-inorder{
+
+    .product-name-inorder {
         text-decoration: none;
         font-size: 1rem;
         color: #000000;
     }
 </style>
 
+<style>
+    .avatar-lg {
+        height: 5rem;
+        width: 5rem;
+    }
 
+    .font-size-18 {
+        font-size: 18px !important;
+    }
 
+    .text-truncate {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
 
+    a {
+        text-decoration: none !important;
+    }
+
+    .w-xl {
+        min-width: 160px;
+    }
+
+    .card {
+        margin-bottom: 24px;
+        -webkit-box-shadow: 0 2px 3px #e4e8f0;
+        box-shadow: 0 2px 3px #e4e8f0;
+    }
+
+    .card {
+        position: relative;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        min-width: 0;
+        word-wrap: break-word;
+        background-color: #fff;
+        background-clip: border-box;
+        border: 1px solid #eff0f2;
+        border-radius: 1rem;
+    }
+</style>
 
 <%- include('navbar') %>
-    <div class="order-container container">
-        <div class="order-header row">
-            <h2>Your Orders</h2>
-        </div>
 
-        <% if(orderDetails.length!=0){ %>
-        <% orderDetails.forEach((ele,index) => { %>
-             <!-- each orders -->
-        	<div class="order-box">
-            	<div class="order-placed-details">
-                	<div class="order-placed-details-inner">
-                    	<small>Order Placed</small>
-                    	<b><%= ele.createdAt.toDateString() %></b>
-                	</div>
-                	<div class="order-placed-details-inner">
-                    	<small> Quantity</small>
-                    	<b><%= ele.products.quantity %></b>
-                	</div>
-                	<div class="order-placed-details-inner">
-                    	<small> Total</small>
-                    	<b>&#8377; <%= parseInt(ele.products.price*ele.products.quantity-(ele.products.discountPrice/100)*ele.products.price*ele.products.quantity).toLocaleString() %></b>
-                	</div>
-                	<div class="order-placed-details-inner">
-                    	<small>Ship To</small>
-                    	<b><%= ele.address.contactName %></b>
-                	</div>
-                	<div class="order-placed-details-inner">
-                    	<small>Order Status</small>
-                    	<b><%= ele.products.productStatus %></b>
-                	</div>
-            	</div>
-            	<div class="order-item-details">
-                	<div class="order-item-details-inner">
-                    	<div class="ordered-product-image-box">
-                        	<img src="../../<%= ele.products.productImage %>">
-                    	</div>
-                	</div>
-                	<div class="order-item-details-inner">
-                    	<h6><%= ele.products.brand %></h6>
-                    	<a href="/user/product-view/<%= ele.products.productID %>" class="product-name-inorder" ><%= ele.products.productName %></a>
-                	</div>
-                	<div class="order-item-details-inner">
-                    	<button class="btn btn-warning">Add Product Review</button>
-                    	<button class="btn btn-danger mt-2" onclick="cancelOrder('<%= ele.id %>','<%= ele.products.id %>')">Cancel Order</button>
-                	</div>
-            	</div>
-        	</div>
-        	<!-- each order end -->
-       	<% }) %>
-       <% } else { %>
-        <div class="row text-center">
-            <h2 class="no-order-prompt">No orders available yet </h2>
-        </div>
-       <% }  %>
-       
+    <div class="container mt-5">
+        <div class="row">
 
+
+            <div class="col-xl-3">
+                <div class="mt-5 mt-lg-0">
+                    <div class="card border shadow-none px-2">
+                        <img class="card-img-top image-fluid" src="../../image/4.png">
+                        <ul class="list-group list-group-flush">
+                            <a href="#" class="list-group-item list-group-item-action px-3 border-0 "
+                                aria-current="true">
+                                Home</a>
+                            <a href="#" class="list-group-item list-group-item-action px-3 border-0 ">
+                                Profile</a>
+                            <a href="/user/orders"
+                                class="list-group-item list-group-item-action px-3 border-0 active">Orders</a>
+                            <a href="/user/cancelled-orders"
+                                class="list-group-item list-group-item-action px-3 border-0">Cancelled Orders</a>
+                            <a href="/user/reset-password"
+                                class="list-group-item list-group-item-action px-3 border-0">Forget Password</a>
+                            <a href="/user/logout"
+                                class="list-group-item list-group-item-action px-3 border-0">Logout</a>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-9">
+                <% if(orderDetails.length!=0){ %>
+                    <% orderDetails.forEach((ele,index)=> { %>
+                        <div class="card border shadow-none">
+                            <div class="card-body">
+
+                                <div class="d-flex align-items-start border-bottom pb-3">
+                                    <div class="me-4">
+                                        <img src="../../<%= ele.products.productImage %>" 
+                                            class="avatar-lg rounded">
+                                    </div>
+                                    <div class="flex-grow-1 align-self-center overflow-hidden">
+                                        <div>
+                                            <h5 class="text-truncate font-size-18">  <%= ele.products.brand %></h5>
+                                            <h5 class="text-truncate font-size-18"><a href="/user/product-view/<%= ele.products.productID %>"
+                                                    class="text-dark">   <%= ele.products.productName %></a></h5>
+                                            <p class="text-muted mb-0">
+                                                <i class="bx bxs-star text-warning"></i>
+                                                <i class="bx bxs-star text-warning"></i>
+                                                <i class="bx bxs-star text-warning"></i>
+                                                <i class="bx bxs-star text-warning"></i>
+                                                <i class="bx bxs-star-half text-warning"></i>
+                                            </p>
+                                            <p class="mb-0 mt-1">Color : <span class="fw-medium">Gray</span></p>
+                                        </div>
+                                    </div>
+                                    <div class="flex-shrink-0 ms-2">
+                                        <ul class="list-inline mb-0 font-size-16">
+                                            <li class="list-inline-item">
+                                                <a href="#" class="text-muted px-1">
+                                                    <i class="mdi mdi-trash-can-outline"></i>
+                                                </a>
+                                            </li>
+                                            <li class="list-inline-item">
+                                                <a href="#" class="text-muted px-1">
+                                                    <i class="mdi mdi-heart-outline"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="mt-3 text-center">
+                                                <p class="text-muted mb-2">Order Placed</p>
+                                                <h6 class="mb-0 mt-2"><span class="text-muted ">
+                                                        <%= ele.createdAt.toDateString() %>
+                                                </h5>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="mt-3 text-center">
+                                                <p class="text-muted mb-2">Quantity</p>
+                                                <h6 class="mb-0 mt-2"><span class="text-muted ">
+                                                    <%= ele.products.quantity %>
+                                                </h5>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="mt-3 text-center">
+                                                <p class="text-muted mb-2">Ship To</p>
+                                                <h6 class="mb-0 mt-2"><span class="text-muted ">
+                                                    <%= ele.address.contactName %>
+                                                </h5>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="mt-3 text-center">
+                                                <p class="text-muted mb-2">Order Status</p>
+                                                <h6 class="mb-0 mt-2"><span class="text-muted ">
+                                                    <%= ele.products.productStatus %>
+                                                </h5>
+                                            </div>
+                                        </div>
+                                       
+                                     
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <% }) %>
+                            <% } else { %>
+                                <div class="row text-center">
+                                    <h2 class="no-order-prompt">No orders available yet </h2>
+                                </div>
+                                <% } %>
+                                    <!-- end card -->
+
+            </div>
+        </div>
+        <!-- end row -->
+
+    </div>
 
 
     </div>
+
     <%- include('footer') %>
 
 
-    <script>
+        <script>
 
 
-        // write the product review
-        function cancelOrder(orderID,productID){
+            // write the product review
+            function cancelOrder(orderID, productID) {
 
-            Swal.fire({
-                icon:"question",
-                title:"Cancel Order",
-                text:"Are you sure want to cancel this order"
-            }).then((result)=>{
-                if(result.isConfirmed){
+                Swal.fire({
+                    icon: "question",
+                    title: "Cancel Order",
+                    text: "Are you sure want to cancel this order"
+                }).then((result) => {
+                    if (result.isConfirmed) {
 
 
-                }
-            })
+                    }
+                })
 
-        }
-    </script>
+            }
+        </script>
