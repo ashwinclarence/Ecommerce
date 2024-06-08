@@ -308,7 +308,8 @@
                                 </div>
                                 <div class=" form-group text-center d-flex flex-column align-items-center gap-1">
                                     <button class="btn btn-dark" onclick="applyCoupon()">Apply Coupon</button>
-                                    <button class="btn text-white btn-sm" onclick="removeCoupon()">Remove Coupon</button>
+                                    <button class="btn text-white btn-sm" onclick="removeCoupon()">Remove
+                                        Coupon</button>
                                 </div>
                             </div>
                         </div>
@@ -628,14 +629,29 @@
 
             })
 
-            
+
             // remove coupon from cart
-            function removeCoupon(){
-                couponOffer.innerHTML = "Discount"
-                minAmount.innerHTML="Choose the best deal for your needs and apply your favorite coupon!"
-                couponDiscountSavings.innerHTML = "00"
-                const totalRefund=totalAmount.innerHTML
-                totalAmount.innerHTML = Number(totalRefund)+offerAmount
+            function removeCoupon() {
+
+                const URL = "/user/remove-coupon"
+                fetch(URL, {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }).then((res) => {
+                    return res.json()
+                }).then((data) => {
+                    if (data.newPrice) {
+                        couponOffer.innerHTML = "Discount"
+                        minAmount.innerHTML = "Choose the best deal for your needs and apply your favorite coupon!"
+                        couponDiscountSavings.innerHTML = "00"
+                        totalAmount.innerHTML = data.newPrice
+                    }
+                }).catch((err)=>{
+                    console.log(`Error on removing coupon ${err}`);
+                })
+
             }
 
             const couponDiscountSavings = document.getElementById('count=discount-savings-price')
