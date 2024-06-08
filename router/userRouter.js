@@ -79,6 +79,7 @@ user.post('/add-to-cart/:id',checkUserSession,cartController.addToCartPost)
 user.post('/cart-count/:id',checkUserSession,cartController.cartCountFetch)
 user.delete('/remove-cart-product/:id',checkUserSession,cartController.removeCartItem)
 user.put('/increment-product/:productID',checkUserSession,cartController.incrementProduct)
+user.put('/decrement-product/:productID',checkUserSession,cartController.decrementProduct)
 
 
 // checkout

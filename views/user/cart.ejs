@@ -170,7 +170,7 @@
                                                 <p class="text-muted mb-2">Quantity</p>
                                                 <div class="d-inline-flex">
                                                     <div class="quantity">
-                                                        <button class="btn minus1">-</button>
+                                                        <button class="btn minus1" onclick="decreaseQuantity('<%= items.productID.id %>','<%= index %>')">-</button>
                                                         <input id="quantity-count" name="quantityCount"
                                                             value="<%= items.productCount %>" type="number" disabled>
                                                         <button class="btn add1"
@@ -348,6 +348,47 @@
                     })
                 }
 
+            }
+
+
+
+            // decrease the product quantity
+            function decreaseQuantity(productID,index){
+
+                // unblock the minus button
+                document.getElementsByClassName('minus1')[0].disabled=false
+
+                // if product quantity reached to 1 then disable the button
+                if(productQualityInput[index].value<=1){
+                  document.getElementsByClassName('minus1')[0].disabled=true
+                }
+
+                if(productQualityInput[index].value>1){
+                    const URL=`/user/decrement-product/${productID}`
+
+                    fetch(URL,{
+                        method:"PUT",
+                        headers:{
+                            "Content-Type":"application/json"
+                        },
+                        body:JSON.stringify({quantity:productQualityInput[index].value})
+                    }).then((res)=>{
+                        if(res.ok){
+                            return res.json()
+                        }else{
+                            throw new Error("Cannot reduce the product quantity")
+                        }
+                    }).then((data)=>{
+                        // if the product quantity changed in backend then change the quantity and prices at the cart 
+                        if(data.productCount){
+                            productQualityInput[index].value = data.productCount
+                            productTotal[index].innerHTML = data.productTotal
+                            subTotalPrice.innerHTML = data.subTotal
+                            savingsAmount.innerHTML = data.savings
+                            totalAmount.innerHTML = data.total
+                        }
+                    })
+                }
             }
 
             // product quantity and productID on onChange function
