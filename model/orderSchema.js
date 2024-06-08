@@ -23,6 +23,10 @@ const schema = new mongoose.Schema({
         areaAddress: String,
         landmark: String
     },
+    couponDiscount:{
+        type:Number,
+        default:0
+    },
     paymentMethod: {
         type: String
     },
