@@ -19,6 +19,11 @@ const schema = new mongoose.Schema({
     isActive:{
         type:Boolean,
         default:true
+    },
+    appliedUsers:{
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: 'User', 
+        default: [], 
     }
 }, { timestamps: true });
 

@@ -81,6 +81,10 @@ user.delete('/remove-cart-product/:id',checkUserSession,cartController.removeCar
 user.put('/increment-product/:productID',checkUserSession,cartController.incrementProduct)
 user.put('/decrement-product/:productID',checkUserSession,cartController.decrementProduct)
 
+// coupon in cart
+user.get('/get-coupon/:couponID',checkUserSession,cartController.getCoupon)
+user.post('/apply-coupon/:couponID',checkUserSession,cartController.applyCoupon)
+
 
 // checkout
 user.get('/checkout',checkUserSession,checkoutController.checkout)

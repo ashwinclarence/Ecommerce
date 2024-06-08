@@ -1,6 +1,4 @@
 <style>
-
-
     .empty-cart-container {
         height: 80vh;
         background: url("../../image/emptyCart.png");
@@ -9,7 +7,7 @@
         background-repeat: no-repeat;
     }
 
-   
+
 
     .avatar-lg {
         height: 5rem;
@@ -89,16 +87,73 @@
     }
 </style>
 
+<style>
+    .coupon-card {
+        position: relative;
+        background-color: #7B1FA2;
+        padding: 10px;
+        border: none;
+        border-radius: 10px;
+    }
+
+    .coupon-content {
+        position: relative;
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        gap: 1.3rem;
+    }
+
+    .coupon-logo {
+        margin-bottom: 50px;
+    }
+
+    .coupon-off {
+        line-height: 0px;
+    }
+
+    .coupon-off h1 {
+        font-size: 80px;
+    }
+
+    .coupon-off span {
+        margin-right: 111px;
+    }
+
+    .coupon-plus {
+        font-size: 23px;
+    }
+
+    .coupon-code {
+        text-transform: uppercase;
+        color: red;
+        text-align: center;
+        font-weight: 700;
+    }
+
+    .coupon-cross-bg {
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        background-color: #9C27B0;
+        left: 0px;
+        top: 0px;
+        opacity: 0.4;
+        clip-path: polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%);
+        z-index: 1;
+    }
+</style>
+
 <%- include('navbar') %>
 
-   
+
 
     <div class="container mt-5">
         <div class="row">
             <div class="col-xl-8">
                 <!-- check the cart is empty or not -->
-                <% if(cart.length!=0){ %>
-                    <% cart.forEach((items,index)=>{ %>
+                <% if(cart.items.length!=0){ %>
+                    <% cart.items.forEach((items,index)=>{ %>
                         <div class="card border shadow-none">
                             <div class="card-body">
 
@@ -170,7 +225,8 @@
                                                 <p class="text-muted mb-2">Quantity</p>
                                                 <div class="d-inline-flex">
                                                     <div class="quantity">
-                                                        <button class="btn minus1" onclick="decreaseQuantity('<%= items.productID.id %>','<%= index %>')">-</button>
+                                                        <button class="btn minus1"
+                                                            onclick="decreaseQuantity('<%= items.productID.id %>','<%= index %>')">-</button>
                                                         <input id="quantity-count" name="quantityCount"
                                                             value="<%= items.productCount %>" type="number" disabled>
                                                         <button class="btn add1"
@@ -221,6 +277,46 @@
 
             <div class="col-xl-4">
                 <div class="mt-5 mt-lg-0">
+                    <!-- coupon management -->
+                    <div class="card border shadow-none">
+                        <div class="coupon-card">
+                            <div class="coupon-cross-bg"></div>
+
+                            <div class="coupon-content">
+                                <div class="text-center text-uppercase text-white off">
+                                    <span>Flat</span>
+                                    <h1 class="mt-0" id="coupon-offer">Discount</h1>
+                                </div>
+
+                                <div class="text-center text-uppercase text-white">
+                                    <h6 class="m-0" id="min-coupon-amount">
+                                        Choose the best deal for your needs and apply your favorite
+                                        coupon!</h6>
+                                </div>
+
+
+
+                                <div class="px-5 mb-3 form-group ">
+                                    <select name="couponCode" class="form-control coupon-code ">
+                                        <option value="" disabled selected>Select a coupon</option>
+                                        <% coupons.forEach((coupon)=>{ %>
+                                            <option value="<%= coupon.id %>">
+                                                <%= coupon.couponName %>
+                                            </option>
+                                            <% }) %>
+                                    </select>
+                                </div>
+                                <div class=" form-group text-center d-flex flex-column align-items-center gap-1">
+                                    <button class="btn btn-dark" onclick="applyCoupon()">Apply Coupon</button>
+                                    <button class="btn text-white btn-sm" onclick="removeCoupon()">Remove Coupon</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <!-- payment summary -->
                     <div class="card border shadow-none">
                         <div class="card-header bg-transparent border-bottom py-3 px-4">
                             <h5 class="font-size-16 ">Order Summary</h5>
@@ -235,16 +331,26 @@
                                             <td>:</td>
                                             <td class="text-end">&#8377;
                                                 <span id="sub-total-price">
-                                                    <%= parseInt(totalPriceWithoutDiscount).toLocaleString() %>
+                                                    <%= parseInt(cart.totalPrice).toLocaleString() %>
                                                 </span>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>Discount</td>
                                             <td>:</td>
-                                            <td class="text-end text-success"> &#8377;
+                                            <td class="text-end text-success">&#8377;
                                                 <span id="savings-price">
-                                                    <%= Math.round(totalPriceWithoutDiscount-totalPrice).toLocaleString() %>
+                                                    <%= Math.round(cart.totalPrice-cart.payableAmount).toLocaleString()
+                                                        %>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Coupon Discount</td>
+                                            <td>:</td>
+                                            <td class="text-end text-success">&#8377;
+                                                <span id="count=discount-savings-price">
+                                                    00
                                                 </span>
                                             </td>
                                         </tr>
@@ -252,19 +358,18 @@
                                             <td>Shipping Charge</td>
                                             <td>:</td>
                                             <td class="text-end">&#8377;
-                                                <%= totalPriceWithoutDiscount>500?"FREE":500 %>
+                                                <%= cart.payableAmount>500?"FREE":500 %>
                                             </td>
                                         </tr>
-                                        <!-- <tr>
-                                                    <td>Estimated Tax : </td>
-                                                    <td class="text-end">&#8377; 18.20</td>
-                                                    </tr> -->
+
                                         <tr class="bg-light">
                                             <th>Total </th>
                                             <td>:</td>
                                             <td class="text-end">
-                                                <span class="fw-bold ">&#8377; 
-                                                    <span id="total-price-box"><%= parseInt(totalPrice).toLocaleString() %></span>
+                                                <span class="fw-bold ">&#8377;
+                                                    <span id="total-price-box">
+                                                        <%= parseInt(cart.payableAmount).toLocaleString() %>
+                                                    </span>
                                                 </span>
                                             </td>
                                         </tr>
@@ -296,7 +401,7 @@
 
 
 
-    
+
 
     <%- include('footer') %>
 
@@ -339,9 +444,9 @@
                         if (data.productCount) {
                             productQualityInput[index].value = data.productCount
                             productTotal[index].innerHTML = data.productTotal
-                            subTotalPrice.innerHTML = data.subTotal
-                            savingsAmount.innerHTML = data.savings
-                            totalAmount.innerHTML = data.total
+                            subTotalPrice.innerHTML = data.subTotal.toLocaleString()
+                            savingsAmount.innerHTML = data.savings.toLocaleString()
+                            totalAmount.innerHTML = data.total.toLocaleString()
 
 
                         }
@@ -353,39 +458,39 @@
 
 
             // decrease the product quantity
-            function decreaseQuantity(productID,index){
+            function decreaseQuantity(productID, index) {
 
                 // unblock the minus button
-                document.getElementsByClassName('minus1')[0].disabled=false
+                document.getElementsByClassName('minus1')[0].disabled = false
 
                 // if product quantity reached to 1 then disable the button
-                if(productQualityInput[index].value<=1){
-                  document.getElementsByClassName('minus1')[0].disabled=true
+                if (productQualityInput[index].value <= 1) {
+                    document.getElementsByClassName('minus1')[0].disabled = true
                 }
 
-                if(productQualityInput[index].value>1){
-                    const URL=`/user/decrement-product/${productID}`
+                if (productQualityInput[index].value > 1) {
+                    const URL = `/user/decrement-product/${productID}`
 
-                    fetch(URL,{
-                        method:"PUT",
-                        headers:{
-                            "Content-Type":"application/json"
+                    fetch(URL, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json"
                         },
-                        body:JSON.stringify({quantity:productQualityInput[index].value})
-                    }).then((res)=>{
-                        if(res.ok){
+                        body: JSON.stringify({ quantity: productQualityInput[index].value })
+                    }).then((res) => {
+                        if (res.ok) {
                             return res.json()
-                        }else{
+                        } else {
                             throw new Error("Cannot reduce the product quantity")
                         }
-                    }).then((data)=>{
+                    }).then((data) => {
                         // if the product quantity changed in backend then change the quantity and prices at the cart 
-                        if(data.productCount){
+                        if (data.productCount) {
                             productQualityInput[index].value = data.productCount
                             productTotal[index].innerHTML = data.productTotal
-                            subTotalPrice.innerHTML = data.subTotal
-                            savingsAmount.innerHTML = data.savings
-                            totalAmount.innerHTML = data.total
+                            subTotalPrice.innerHTML = data.subTotal.toLocaleString()
+                            savingsAmount.innerHTML = data.savings.toLocaleString()
+                            totalAmount.innerHTML = data.total.toLocaleString()
                         }
                     })
                 }
@@ -478,4 +583,118 @@
 
 
             }
+
+
+
+            // select coupon using fetch
+            const couponSelect = document.querySelector('.coupon-code')
+            const couponOffer = document.getElementById("coupon-offer")
+            const minAmount = document.getElementById('min-coupon-amount')
+
+
+
+            let offerAmount = 0
+            let minAmountNeeded = 0
+
+
+            couponSelect.addEventListener('change', (e) => {
+                e.preventDefault()
+
+                if (couponSelect.value) {
+                    const URL = `/user/get-coupon/${couponSelect.value}`
+                    fetch(URL, {
+                        method: "GET",
+                        headers: {
+                            'Content-Type': "application/json"
+                        },
+                    }).then((res) => {
+                        if (res.ok) {
+                            return res.json()
+                        } else {
+                            throw new Error("Cannot get the coupon details")
+                        }
+                    }).then((data) => {
+                        if (data.discount) {
+                            couponOffer.innerHTML = "&#8377; " + data.discount
+                            minAmount.innerHTML = "Min Purchase &#8377; " + data.minAmount
+                            offerAmount = data.discount
+                            minAmountNeeded = data.minAmount
+
+                        }
+                    }).catch((err) => {
+                        console.log(`Error on getting the coupon details ${err}`);
+                    })
+                }
+
+            })
+
+            
+            // remove coupon from cart
+            function removeCoupon(){
+                couponOffer.innerHTML = "Discount"
+                minAmount.innerHTML="Choose the best deal for your needs and apply your favorite coupon!"
+                couponDiscountSavings.innerHTML = "00"
+                const totalRefund=totalAmount.innerHTML
+                totalAmount.innerHTML = Number(totalRefund)+offerAmount
+            }
+
+            const couponDiscountSavings = document.getElementById('count=discount-savings-price')
+
+            // apply coupon function
+            function applyCoupon() {
+                // if no coupon selected then fire an alert message
+                if (!couponSelect.value) {
+                    Swal.fire({
+                        icon: "info",
+                        title: "No coupon selected",
+                        text: "Please select a coupon",
+                        showConfirmButton: false,
+                        timer: 1200
+                    })
+                }
+
+                const URL = `/user/apply-coupon/${couponSelect.value}`
+                fetch(URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                }).then((res) => {
+                    // if(!res.ok){
+                    //     throw new Error('Cannot apply coupon')
+                    // }
+                    return res.json()
+                }).then((data) => {
+                    console.log(data);
+                    if (data) {
+                        if (data.newPrice) {
+                            couponDiscountSavings.innerHTML = data.couponPrice
+                            totalAmount.innerHTML = data.newPrice
+                        }
+                        if (data.invalidAmount) {
+                            console.log(data.invalidAmount.trim() != 0);
+                            Swal.fire({
+                                icon: "error",
+                                title: "Add more Products",
+                                text: "Minimum purchase limit not reached. Please add more items to your cart."
+                            })
+                        }
+                        if (data.error) {
+                            Swal.fire({
+                                icon: "error",
+                                text: data.error,
+                            })
+                        }
+                    }
+
+                }).catch((err) => {
+                    console.log(`Error on applying the coupon ${err}`);
+
+                })
+            }
+
+
+
+
         </script>
