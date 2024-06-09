@@ -27,7 +27,7 @@ const editOrder = async (req, res) => {
         const orderID = req.params.id
         const productID = req.params.proID
         const orderStatus = parseInt(req.body.orderStatus)
-        const productDeliveryStatusEnum = ['Pending', 'Shipped', 'Delivered', 'Returned'];
+        const productDeliveryStatusEnum = ['Confirmed', 'Pending', 'Delivered', 'Returned', 'Cancelled']
 
         const order = await orderSchema.findById(orderID)
 
