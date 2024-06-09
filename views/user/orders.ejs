@@ -1,76 +1,11 @@
 <style>
-    .order-container {
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        padding: 5rem 0;
-        gap: 2rem;
-    }
-
-    /* each order box */
-    .order-box {
-        display: flex;
-        flex-direction: column;
-        border-radius: 10px;
-        border: 2px solid #b0b0b0;
-        padding: 1rem;
-    }
-
-    .order-placed-details {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 3px solid #dcdcdc;
-        padding: 1rem;
-        gap: 3rem;
-        flex-wrap: wrap;
-    }
-
-    .order-placed-details-inner {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .order-item-details {
-        display: grid;
-        grid-template-columns: 20% 50% 30%;
-
-    }
-
-    .order-item-details-inner {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-
-    }
-
-    .ordered-product-image-box {
-        width: 150px;
-        height: 150px;
-        overflow: hidden;
-    }
-
-    .ordered-product-image-box img {
-        width: 150px;
-        height: 150px;
-        object-fit: contain;
-    }
-
     .no-order-prompt {
         color: #b0b0b0;
         font-family: monospace;
     }
 
-    .product-name-inorder {
-        text-decoration: none;
-        font-size: 1rem;
-        color: #000000;
-    }
-</style>
 
-<style>
+
     .avatar-lg {
         height: 5rem;
         width: 5rem;
@@ -116,130 +51,250 @@
         border: 1px solid #eff0f2;
         border-radius: 1rem;
     }
+
+    /* counter */
+    .card-counter {
+        box-shadow: 2px 2px 10px #DADADA;
+        margin: 5px;
+        padding: 20px 10px;
+        background-color: #fff;
+        height: 100px;
+        border-radius: 5px;
+        transition: .3s linear all;
+    }
+
+    .card-counter:hover {
+        box-shadow: 4px 4px 20px #DADADA;
+        transition: .3s linear all;
+    }
+
+    .card-counter.primary {
+        background-color: #007bff;
+        color: #FFF;
+    }
+
+    .card-counter.danger {
+        background-color: #ef5350;
+        color: #FFF;
+    }
+
+    .card-counter.success {
+        background-color: #66bb6a;
+        color: #FFF;
+    }
+
+    .card-counter.info {
+        background-color: #26c6da;
+        color: #FFF;
+    }
+
+    .card-counter i {
+        font-size: 5em;
+        opacity: 0.2;
+    }
+
+    .card-counter .count-numbers {
+        position: absolute;
+        right: 35px;
+        top: 20px;
+        font-size: 32px;
+        display: block;
+    }
+
+    .card-counter .count-name {
+        position: absolute;
+        right: 35px;
+        top: 65px;
+        font-style: italic;
+        text-transform: capitalize;
+        opacity: 0.5;
+        display: block;
+        font-size: 18px;
+    }
+
+    .nav-borders .nav-link.active {
+        color: #0061f2;
+        border-bottom-color: #0061f2;
+    }
+
+    .nav-borders .nav-link {
+        color: #69707a;
+        border-bottom-width: 0.125rem;
+        border-bottom-style: solid;
+        border-bottom-color: transparent;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+        padding-left: 0;
+        padding-right: 0;
+        margin-left: 1rem;
+        margin-right: 1rem;
+    }
 </style>
+
+
 
 <%- include('navbar') %>
 
     <div class="container mt-5">
+        <nav class="nav nav-borders mb-5">
+
+            <a href="/user/home" class="nav-link  ms-0 "><i class="fa-solid fa-house"></i>
+                Home</a>
+            <a href="/user/profile" class="nav-link  ms-4 "><i class="fa-solid fa-user"></i>
+                Profile</a>
+            <a href="/user/orders" class="nav-link ms-4 active"><i class="fa-solid fa-truck-moving"></i> Orders</a>
+            <a href="/user/cancelled-orders" class="nav-link ms-4"><i class="fa-solid fa-ban"></i> Cancelled Orders</a>
+
+        </nav>
         <div class="row">
 
 
             <div class="col-xl-3">
-                <div class="mt-5 mt-lg-0">
-                    <div class="card border shadow-none px-2">
-                        <img class="card-img-top image-fluid" src="../../image/4.png">
-                        <ul class="list-group list-group-flush">
-                            <a href="#" class="list-group-item list-group-item-action px-3 border-0 "
-                                aria-current="true">
-                                Home</a>
-                            <a href="#" class="list-group-item list-group-item-action px-3 border-0 ">
-                                Profile</a>
-                            <a href="/user/orders"
-                                class="list-group-item list-group-item-action px-3 border-0 active">Orders</a>
-                            <a href="/user/cancelled-orders"
-                                class="list-group-item list-group-item-action px-3 border-0">Cancelled Orders</a>
-                            <a href="/user/reset-password"
-                                class="list-group-item list-group-item-action px-3 border-0">Forget Password</a>
-                            <a href="/user/logout"
-                                class="list-group-item list-group-item-action px-3 border-0">Logout</a>
-                        </ul>
+                <div class="col-md-12">
+                    <div class="card-counter primary">
+                        <i class="fa-solid fa-truck"></i>
+                        <span class="count-numbers">0</span>
+                        <span class="count-name">Pending orders</span>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="card-counter success">
+                        <i class="fa-solid fa-star"></i>
+                        <span class="count-numbers">0</span>
+                        <span class="count-name">Review</span>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="card-counter info">
+                        <i class="fa-solid fa-box-open"></i>
+                        <span class="count-numbers"><%= orderDetails.length %></span>
+                        <span class="count-name">Orders</span>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="card-counter danger">
+                        <i class="fa-solid fa-ban"></i>
+                        <span class="count-numbers">0</span>
+                        <span class="count-name">Cancelled Orders</span>
                     </div>
                 </div>
             </div>
-            <div class="col-xl-9">
-                <% if(orderDetails.length!=0){ %>
-                    <% orderDetails.forEach((ele,index)=> { %>
-                        <div class="card border shadow-none">
-                            <div class="card-body">
+        <div class="col-xl-9">
+            <% if(orderDetails.length!=0){ %>
+                <% orderDetails.forEach((ele,index)=> { %>
+                    <div class="card border shadow-none">
+                        <div class="card-body">
 
-                                <div class="d-flex align-items-start border-bottom pb-3">
-                                    <div class="me-4">
-                                        <img src="../../<%= ele.products.productImage %>" 
-                                            class="avatar-lg rounded">
-                                    </div>
-                                    <div class="flex-grow-1 align-self-center overflow-hidden">
-                                        <div>
-                                            <h5 class="text-truncate font-size-18">  <%= ele.products.brand %></h5>
-                                            <h5 class="text-truncate font-size-18"><a href="/user/product-view/<%= ele.products.productID %>"
-                                                    class="text-dark">   <%= ele.products.productName %></a></h5>
-                                            <p class="text-muted mb-0">
-                                                <i class="bx bxs-star text-warning"></i>
-                                                <i class="bx bxs-star text-warning"></i>
-                                                <i class="bx bxs-star text-warning"></i>
-                                                <i class="bx bxs-star text-warning"></i>
-                                                <i class="bx bxs-star-half text-warning"></i>
-                                            </p>
-                                            <p class="mb-0 mt-1">Color : <span class="fw-medium">Gray</span></p>
-                                        </div>
-                                    </div>
-                                    <div class="flex-shrink-0 ms-2">
-                                        <ul class="list-inline mb-0 font-size-16">
-                                            <li class="list-inline-item">
-                                                <a href="#" class="text-muted px-1">
-                                                    <i class="mdi mdi-trash-can-outline"></i>
-                                                </a>
-                                            </li>
-                                            <li class="list-inline-item">
-                                                <a href="#" class="text-muted px-1">
-                                                    <i class="mdi mdi-heart-outline"></i>
-                                                </a>
-                                            </li>
-                                        </ul>
+                            <div class="d-flex align-items-start border-bottom pb-3">
+                                <div class="me-4">
+                                    <img src="../../<%= ele.products.productImage %>" class="avatar-lg rounded">
+                                </div>
+                                <div class="flex-grow-1 align-self-center overflow-hidden">
+                                    <div>
+                                        <h5 class="text-truncate font-size-18">
+                                            <%= ele.products.brand %>
+                                        </h5>
+                                        <h5 class="text-truncate font-size-18"><a
+                                                href="/user/product-view/<%= ele.products.productID %>"
+                                                class="text-dark">
+                                                <%= ele.products.productName %>
+                                            </a></h5>
+                                        <p class="text-muted mb-0">
+                                            <i class="bx bxs-star text-warning"></i>
+                                            <i class="bx bxs-star text-warning"></i>
+                                            <i class="bx bxs-star text-warning"></i>
+                                            <i class="bx bxs-star text-warning"></i>
+                                            <i class="bx bxs-star-half text-warning"></i>
+                                        </p>
+                                        <p class="mb-0 mt-1">Order ID : <%= ele._id %></p>
+                                        <p class="mb-0 mt-1">Payment Mode : <%= ele.paymentMethod %></p>
+                                        <p class="mb-0 mt-1">Price : <%= ele.totalPrice %></p>
                                     </div>
                                 </div>
-
-                                <div>
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <div class="mt-3 text-center">
-                                                <p class="text-muted mb-2">Order Placed</p>
-                                                <h6 class="mb-0 mt-2"><span class="text-muted ">
-                                                        <%= ele.createdAt.toDateString() %>
-                                                </h5>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="mt-3 text-center">
-                                                <p class="text-muted mb-2">Quantity</p>
-                                                <h6 class="mb-0 mt-2"><span class="text-muted ">
-                                                    <%= ele.products.quantity %>
-                                                </h5>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="mt-3 text-center">
-                                                <p class="text-muted mb-2">Ship To</p>
-                                                <h6 class="mb-0 mt-2"><span class="text-muted ">
-                                                    <%= ele.address.contactName %>
-                                                </h5>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="mt-3 text-center">
-                                                <p class="text-muted mb-2">Order Status</p>
-                                                <h6 class="mb-0 mt-2"><span class="text-muted ">
-                                                    <%= ele.products.productStatus %>
-                                                </h5>
-                                            </div>
-                                        </div>
-                                       
-                                     
-                                    </div>
+                                <div class="flex-shrink-0 ms-2">
+                                    <ul class="list-inline mb-0 ">
+                                        <% if(ele.products.productStatus==='Delivered' ){ %>
+                                            <li class="list-inline-item">
+                                                <button class="btn btn-danger btn-sm" title="Cancel Order">
+                                                    Cancel order
+                                                </button>
+                                            </li>
+                                            <li class="list-inline-item">
+                                                <button class="btn btn-warning btn-sm" title="Cancel Order">
+                                                    Add Review
+                                                </button>
+                                            </li>
+                                            <% }else if(ele.products.productStatus==='Pending' ||
+                                                ele.products.productStatus==='Shipped' ) {%>
+                                                <li class="list-inline-item">
+                                                    <button class="btn btn-danger btn-sm" title="Cancel Order">
+                                                        Return order
+                                                    </button>
+                                                </li>
+                                                <% }else{%>
+                                                    <li class="list-inline-item">
+                                                        <span class="badge" title="Cancel Order">
+                                                            Order Cancelled
+                                                        </span>
+                                                    </li>
+                                                    <% }%>
+                                    </ul>
                                 </div>
-
                             </div>
-                        </div>
-                        <% }) %>
-                            <% } else { %>
-                                <div class="row text-center">
-                                    <h2 class="no-order-prompt">No orders available yet </h2>
-                                </div>
-                                <% } %>
-                                    <!-- end card -->
 
-            </div>
+                            <div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="mt-3 text-center">
+                                            <p class="text-muted mb-2">Order Placed</p>
+                                            <h6 class="mb-0 mt-2"><span class="text-muted ">
+                                                    <%= ele.createdAt.toDateString() %>
+                                                        </h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="mt-3 text-center">
+                                            <p class="text-muted mb-2">Quantity</p>
+                                            <h6 class="mb-0 mt-2"><span class="text-muted ">
+                                                    <%= ele.products.quantity %>
+                                                        </h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="mt-3 text-center">
+                                            <p class="text-muted mb-2">Ship To</p>
+                                            <h6 class="mb-0 mt-2"><span class="text-muted ">
+                                                    <%= ele.address.contactName %>
+                                                        </h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="mt-3 text-center">
+                                            <p class="text-muted mb-2">Order Status</p>
+                                            <h6 class="mb-0 mt-2"><span class="text-muted ">
+                                                    <%= ele.products.productStatus %>
+                                                        </h5>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <% }) %>
+                        <% } else { %>
+                            <div class="row text-center">
+                                <h2 class="no-order-prompt">No orders available yet </h2>
+                            </div>
+                            <% } %>
+                                <!-- end card -->
+
         </div>
-        <!-- end row -->
+    </div>
+    <!-- end row -->
 
     </div>
 

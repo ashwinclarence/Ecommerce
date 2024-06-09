@@ -1,327 +1,299 @@
 <style>
-    .profile-container {
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        gap: 3rem;
-        padding: 5rem 0;
+    .img-account-profile {
+        height: 10rem;
     }
 
-    .profile-box {
-        width: 100%;
-        display: flex;
-        flex-direction: row;
-        border: 2px solid #e1e0e0;
-        background: url('../../image/profile-banner2.png');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        border-radius: 10px;
-        padding: 2rem;
-        gap: 3rem;
+    .rounded-circle {
+        border-radius: 50% !important;
     }
 
-    .left-profile-box {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 1rem;
-
+    .card {
+        box-shadow: 0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%);
     }
 
-    .profile-image-box {
-        width: 250px;
-        height: 250px;
-        /* border-radius: 50%; */
-        overflow: hidden;
-        /* background-color: #ffffff; */
-
+    .card .card-header {
+        font-weight: 500;
     }
 
-    .profile-image-box img {
-        width: 250px;
-        height: 250px;
-        object-fit: contain;
+    .card-header:first-child {
+        border-radius: 0.35rem 0.35rem 0 0;
     }
 
-    .right-profile-box {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        gap: 1rem;
-
-    }
-
-    /* add address modal */
-
-    #add-address-form {
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
-        padding: 2rem;
-    }
-
-    #add-address-form input {
-        padding: .5rem;
-        border: 1px solid #aaaaaa;
-        border-radius: 5px;
-    }
-
-    .add-address-box {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .added-address-details {
-        display: grid;
-        grid-template-columns: auto auto;
-        gap: 2rem;
-    }
-
-    .added-inner-address {
+    .card-header {
         display: flex;
         justify-content: space-between;
-        gap: 2rem;
-        border: 2px solid #aaaaaa;
-        padding: 10px;
-        border-radius: 10px;
-    }
-
-    .profile-add-address-container {
-        display: flex;
-        flex-direction: column;
         align-items: center;
-        justify-content: center;
-        gap: 3rem;
+        padding: 1rem 1.35rem;
+        margin-bottom: 0;
+        background-color: rgba(33, 40, 50, 0.03);
+        border-bottom: 1px solid rgba(33, 40, 50, 0.125);
     }
 
-    .address-actions {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        gap: 1rem;
-    }
-
-    .profile-actions {
-        display: flex;
-        justify-content: space-evenly;
+    .form-control,
+    .dataTable-input {
+        display: block;
         width: 100%;
-        gap: 4rem;
-        padding: 3rem 0;
+        padding: 0.875rem 1.125rem;
+        font-size: 0.875rem;
+        font-weight: 400;
+        line-height: 1;
+        color: #69707a;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #c5ccd6;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        border-radius: 0.35rem;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     }
 
-    #update-profile-form {
-        padding: 2rem;
+
+    .nav-borders .nav-link.active {
+        color: #0061f2;
+        border-bottom-color: #0061f2;
+    }
+
+    .nav-borders .nav-link {
+        color: #69707a;
+        border-bottom-width: 0.125rem;
+        border-bottom-style: solid;
+        border-bottom-color: transparent;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+        padding-left: 0;
+        padding-right: 0;
+        margin-left: 1rem;
+        margin-right: 1rem;
+    }
+    .added-inner-address{
         display: flex;
-        flex-direction: column;
         align-items: center;
-        justify-content: center;
-        gap: 2rem;
-    }
-
-    #update-profile-form input {
-        width: 90%;
-        height: 2rem;
-    }
-
-    .validateUserForm {
-        color: red;
+        justify-content: space-between;
     }
 </style>
 
 <%- include('navbar') %>
 
-    <div class="profile-container container">
-        <div class="profile-box">
-            <div class="left-profile-box">
-                <div class="profile-image-box">
-                    <img src="../../image/football.png" alt="">
-                </div>
-                <button type="button" class="btn btn-warning" data-toggle="modal"
-                    data-target=".bd-example-modal-lg">Update Profile</button>
 
-            </div>
-            <div class="right-profile-box">
-                <h1>
-                    <%= userDetail.name %>
-                </h1>
-                <h6><i class="fa-solid fa-envelope"></i>
-                    <%= userDetail.email %>
-                </h6>
-                <h6><i class="fa-solid fa-phone"></i>
-                    <%= userDetail.phone %>
-                </h6>
-                <!-- <h6><i class="fa-solid fa-location-dot"></i> location</h6> -->
-            </div>
-        </div>
-
-        <!-- modal for profile update -->
-        <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <form class="row g-2 needs-validation d-flex flex-column align-items-center"
-                        id="update-profile-form" action="/user/update-profile" method="post">
-                        <h2 class="text-center">Update Profile</h2>
-                        <!-- <div class="profile-image-box">
+    <!-- modal for profile update -->
+    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form class="row g-2 needs-validation d-flex flex-column align-items-center" id="update-profile-form"
+                    action="/user/update-profile" method="post">
+                    <h2 class="text-center">Update Profile</h2>
+                    <!-- <div class="profile-image-box">
                             <img src="../../image/user.png" alt="Profile Image" id="profile-image-preview-img">
                         </div> -->
-                        <div class="col-md-10">
-                            <label for="profileName" class="form-label">Name</label>
-                            <input type="text" class="form-control" name="name" id="profileName"
-                                value="<%= userDetail.name %>">
-                            <small class="validateUserForm"></small>
-                        </div>
-                        <div class="col-md-10">
-                            <label for="profileEmail" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="profileEmail" value="<%= userDetail.email %>"
-                                disabled>
-                        </div>
-                        <div class="col-md-10">
-                            <label for="profilePhone" class="form-label">Phone</label>
-                            <input type="text" class="form-control" name="phone" id="profilePhone"
-                                value="<%= userDetail.phone %>">
-                            <small class="validateUserForm"></small>
-                        </div>
-                        <div class="col-12 text-center">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button class="btn btn-primary" type="submit">Update Profile</button>
-                        </div>
-                    </form>
-                </div>
+                    <div class="col-md-10">
+                        <label for="profileName" class="form-label">Name</label>
+                        <input type="text" class="form-control" name="name" id="profileName"
+                            value="<%= userDetail.name %>">
+                        <small class="validateUserForm"></small>
+                    </div>
+                    <div class="col-md-10">
+                        <label for="profileEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="profileEmail" value="<%= userDetail.email %>"
+                            disabled>
+                    </div>
+                    <div class="col-md-10">
+                        <label for="profilePhone" class="form-label">Phone</label>
+                        <input type="text" class="form-control" name="phone" id="profilePhone"
+                            value="<%= userDetail.phone %>">
+                        <small class="validateUserForm"></small>
+                    </div>
+                    <div class="col-12 text-center">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button class="btn btn-primary" type="submit">Update Profile</button>
+                    </div>
+                </form>
             </div>
         </div>
+    </div>
 
 
-        <!-- second row of profile page with user address -->
-        <div class="profile-add-address-container">
-            <div class="profile-actions">
-                <!-- button for showing the modal of adding new address-->
-                <button class="btn btn-outline-secondary border-2" type="button" data-toggle="modal"
-                    data-target=".add-new-address-modal" id="add-address-button">Add
-                    address</button>
-                <a href="/user/orders" class="btn btn-outline-secondary border-2">View Orders</a>
-                <a href="/user/cancelled-orders" class="btn btn-outline-secondary border-2">Cancelled Orders</a>
-                <a href="/user/forget-password" class="btn btn-outline-secondary border-2" id="reset-password">Reset
-                    Password</a>
-            </div>
+    <!-- profile section -->
+    <div class="container-xl px-4 mt-5">
+        <nav class="nav nav-borders mb-5">
 
-            <!-- address section -->
-            <div class="added-address-details">
+            <a href="/user/home" class="nav-link  ms-0 "><i class="fa-solid fa-house"></i>
+                Home</a>
+            <a href="#" class="nav-link active ms-4 "><i class="fa-solid fa-user"></i>
+                Profile</a>
+            <a href="/user/orders" class="nav-link ms-4"><i class="fa-solid fa-truck-moving"></i> Orders</a>
+            <a href="/user/cancelled-orders" class="nav-link ms-4"><i class="fa-solid fa-ban"></i> Cancelled Orders</a>
+            <a href="/user/logout" class="nav-link ms-4"><i class="fa-solid fa-power-off"></i> Logout</a>
 
-                <% if(userDetail.address){ %>
-                    <input type="text" id="address-count-index" value="<%= userDetail.address.length %>" hidden>
-                    <% userDetail.address.forEach((address,index)=>{ %>
-                        <div class="added-inner-address">
-                            <div class="address-content">
-                                <h5>Address <%= index+1 %>
-                                </h5>
-                                <ul>
-                                    <li>Contact Name &nbsp;:
-                                        <b>
-                                            <%= address.contactName %>
-                                        </b>
-                                    </li>
-                                    <li>Pincode &nbsp;:
-                                        <b>
-                                            <%= address.pincode %>
-                                        </b>
-                                    </li>
-                                    <li>Home Address &nbsp;:
-                                        <b>
-                                            <%= address.homeAddress %>
-                                        </b>
-                                    </li>
-                                    <li>Area Address &nbsp;:
-                                        <b>
-                                            <%= address.areaAddress %>
-                                        </b>
-                                    </li>
-                                    <li>LandMark &nbsp;:
-                                        <b>
-                                            <%= address.landmark %>
-                                        </b>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="address-actions">
-                                <!-- edit the address -->
-
-                                <a href="/user/edit-address/?addressNumber=<%= index %>" class="btn btn-warning"><i
-                                        class="fa-solid fa-pen"></i></a>
-                                <a href="/user/delete-address/<%= index %>"
-                                    class="btn btn-danger delete-address-button"><i class="fa-solid fa-trash"></i></a>
-                            </div>
+        </nav>
+        <div class="row">
+            <div class="col-xl-4">
+                <!-- Profile picture card-->
+                <div class="card mb-4 mb-xl-0">
+                    <div class="card-header">Profile</div>
+                    <div class="card-body text-center">
+                        <!-- Profile picture image-->
+                        <img class="img-account-profile rounded-circle mb-2" src="../../image/football.png" alt="">
+                        <!-- Profile picture help block-->
+                        <!-- <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div> -->
+                        <!-- Profile picture upload button-->
+                        <div class="d-flex flex-column gap-3 mt-3">
+                            <h3 class="">
+                                <%= userDetail.name %>
+                            </h3>
+                            <h6 class="small"><i class="fa-solid fa-envelope"></i>
+                                <%= userDetail.email %>
+                            </h6>
+                            <h6 class="small"><i class="fa-solid fa-phone"></i>
+                                <%= userDetail.phone %>
+                            </h6>
+                            <button type="button" class="btn btn-warning" data-toggle="modal"
+                                data-target=".bd-example-modal-lg">Update Profile</button>
+                                <a href="/user/forget-password" class="btn btn-secondary"><i class="fa-solid fa-shield-halved"></i> Forget
+                                    Password</a>
+                                <a href="/user/logout" class="btn btn-danger"><i class="fa-solid fa-power-off"></i> Logout</a>
                         </div>
-                        <% }) %>
-                            <% } %>
+
+                    </div>
+                </div>
+
+
+                <!-- Wallet picture card-->
+                <div class="card mb-4 mb-xl-0 mt-5">
+                    <div class="card-header">Wallet</div>
+                    <div class="card-body text-center">
+                        <img class="img-account-profile rounded-circle mb-2" src="../../image/football.png" alt="">
+
+                    </div>
+                </div>
 
             </div>
-            <!-- end of address section -->
+            <div class="col-xl-8">
+                <!-- Account details card-->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        Address
 
+                        <button class="btn btn-sm" type="button" data-toggle="modal" title="add address"
+                            data-target=".add-new-address-modal" id="add-address-button"> <i
+                                class="fa-solid fa-plus"></i> </button>
+                    </div>
+                    <div class="card-body">
 
-            <!-- new address adding modal -->
-            <div class="modal fade add-new-address-modal" tabindex="-1" role="dialog"
-                aria-labelledby="myLargeModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content ">
-                        <div class="modal-body">
-                            <form action="/user/add-address" method="post" id="add-address-form">
-                                <h2 class="text-center">Add Address</h2>
-                                <div class="add-address-box">
-                                    <label for="contact-name">Contact user name</label>
-                                    <input type="text" name="name" id="contact-name">
-                                    <label for="contact-name" class="validate-user-address"></label>
+                        <% if(userDetail.address){ %>
+                            <input type="text" id="address-count-index" value="<%= userDetail.address.length %>" hidden>
+                            <% userDetail.address.forEach((address,index)=>{ %>
+                                <div class="added-inner-address">
+                                    <div class="address-content">
+                                        <h5>Address <%= index+1 %>
+                                        </h5>
+                                        <ul>
+                                            <li>Contact Name &nbsp;:
+                                                <b>
+                                                    <%= address.contactName %>
+                                                </b>
+                                            </li>
+                                            <li>Pincode &nbsp;:
+                                                <b>
+                                                    <%= address.pincode %>
+                                                </b>
+                                            </li>
+                                            <li>Home Address &nbsp;:
+                                                <b>
+                                                    <%= address.homeAddress %>
+                                                </b>
+                                            </li>
+                                            <li>Area Address &nbsp;:
+                                                <b>
+                                                    <%= address.areaAddress %>
+                                                </b>
+                                            </li>
+                                            <li>LandMark &nbsp;:
+                                                <b>
+                                                    <%= address.landmark %>
+                                                </b>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="address-actions">
+                                        <!-- edit the address -->
+            
+                                        <a href="/user/edit-address/?addressNumber=<%= index %>" class="btn btn-warning"><i
+                                                class="fa-solid fa-pen"></i></a>
+                                        <a href="/user/delete-address/<%= index %>" class="btn btn-danger delete-address-button"><i
+                                                class="fa-solid fa-trash"></i></a>
+                                    </div>
                                 </div>
-                                <div class="add-address-box">
-                                    <label for="address-pincode">Pincode</label>
-                                    <input type="text" name="pincode" id="address-pincode" placeholder="XXXXXX">
-                                    <label for="address-pincode" class="validate-user-address"></label>
-                                </div>
-                                <div class="add-address-box">
-                                    <label for="address-house">Flat, House no., Building, Company, Apartment</label>
-                                    <input type="text" name="addressHome" id="address-house" maxlength="100">
-                                    <label for="address-house" class="validate-user-address"></label>
-                                </div>
-                                <div class="add-address-box">
-                                    <label for="address-area">Area, Street, Sector, Village</label>
-                                    <input type="text" name="addressArea" id="address-area" maxlength="100">
-                                    <label for="address-area" class="validate-user-address"></label>
-                                </div>
-
-                                <div class="add-address-box">
-                                    <label for="address-landmark">Landmark</label>
-                                    <input type="text" name="addressLandmark" id="address-landmark" maxlength="100"
-                                        placeholder="near international airport">
-                                    <label for="address-landmark" class="validate-user-address"></label>
-                                </div>
-                                <div class="text-center">
-                                    <button type="button" class="btn btn-secondary"
-                                        data-dismiss="modal">Cancel</button>
-
-                                    <button class="btn btn-success" type="submit">Add Address</button>
-                                </div>
-
-
-                            </form>
-                        </div>
+                                <hr>
+                                <% }) %>
+                                    <% } %>
                     </div>
                 </div>
             </div>
-            <!-- end of modal for adding new address -->
-
         </div>
     </div>
+
+      
+
+
+
+        <!-- new address adding modal -->
+        <div class="modal fade add-new-address-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content ">
+                    <div class="modal-body p-5">
+                        <form action="/user/add-address" method="post" id="add-address-form" >
+                            <h2 class="text-center">Add Address</h2>
+                            <div>
+                                <label for="contact-name" class="form-label">Contact user name</label>
+                                <input type="text" name="username" id="contact-name" class="form-control">
+                                <label for="contact-name" class="validate-user-address text-danger"></label>
+                            </div>
+                            <div>
+                                <label for="address-pincode" class="form-label">Pincode</label>
+                                <input type="text" name="pincode" id="address-pincode" placeholder="XXXXXX" class="form-control">
+                                <label for="address-pincode" class="validate-user-address text-danger"></label>
+                            </div>
+                            <div>
+                                <label for="address-house" class="form-label">Flat, House no., Building, Company, Apartment</label>
+                                <input type="text" name="addressHome" id="address-house" maxlength="100" class="form-control">
+                                <label for="address-house" class="validate-user-address text-danger"></label>
+                            </div>
+                            <div>
+                                <label for="address-area" class="form-label">Area, Street, Sector, Village</label>
+                                <input type="text" name="addressArea" id="address-area" maxlength="100" class="form-control">
+                                <label for="address-area" class="validate-user-address text-danger"></label>
+                            </div>
+
+                            <div>
+                                <label for="address-landmark" class="form-label">Landmark</label>
+                                <input type="text" name="addressLandmark" id="address-landmark" maxlength="100"
+                                    placeholder="near international airport" class="form-control">
+                                <label for="address-landmark" class="validate-user-address text-danger"></label>
+                            </div>
+                            <div class="text-center">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+
+                                <button class="btn btn-success" type="submit">Add Address</button>
+                            </div>
+
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end of modal for adding new address -->
+
 
     <%- include('footer') %>
 
         <script>
             // validation for adding address 
             const addressForm = document.getElementById('add-address-form')
-            const contactName = document.getElementsByName('name')[0]
+            const contactName = document.getElementsByName('username')[0]
             const pincode = document.getElementsByName('pincode')[0]
             const homeAddress = document.getElementsByName('addressHome')[0]
             const areaAddress = document.getElementsByName('addressArea')[0]
@@ -331,11 +303,11 @@
             addressForm.addEventListener('submit', (e) => {
                 e.preventDefault();
 
-                document.getElementsByClassName('validate-user-address')[0].innerHTML=""
-                document.getElementsByClassName('validate-user-address')[1].innerHTML=""
-                document.getElementsByClassName('validate-user-address')[2].innerHTML=""
-                document.getElementsByClassName('validate-user-address')[3].innerHTML=""
-                document.getElementsByClassName('validate-user-address')[4].innerHTML=""
+                document.getElementsByClassName('validate-user-address')[0].innerHTML = ""
+                document.getElementsByClassName('validate-user-address')[1].innerHTML = ""
+                document.getElementsByClassName('validate-user-address')[2].innerHTML = ""
+                document.getElementsByClassName('validate-user-address')[3].innerHTML = ""
+                document.getElementsByClassName('validate-user-address')[4].innerHTML = ""
 
                 let isvalid = true;
                 let validateMessage = ""
@@ -346,23 +318,24 @@
                     isvalid = false
                     document.getElementsByClassName('validate-user-address')[0].innerHTML = "Enter a valid name"
                 }
+                console.log("🚀 ~ file: profile.ejs:320 ~ addressForm.addEventListener ~ contactName.value:", contactName.value);
                 // check pincode
-                 if (pincode.value.length > 6 || isNaN(pincode.value) || pincode.value.length <= 0) {
+                if (pincode.value.length > 6 || isNaN(pincode.value) || pincode.value.length <= 0) {
                     isvalid = false
                     document.getElementsByClassName('validate-user-address')[1].innerHTML = "Enter a valid Pincode with six digits"
                 }
                 // validate home address
-                 if (homeAddress.value.length > 100 || homeAddress.value.length < 20 || !isNaN(homeAddress.value)) {
+                if (homeAddress.value.length > 100 || homeAddress.value.length < 20 || !isNaN(homeAddress.value)) {
                     isvalid = false
                     document.getElementsByClassName('validate-user-address')[2].innerHTML = "Enter a valid home address between 20 and 100 characters"
                 }
                 // validate area address
-                 if (areaAddress.value.length > 100 || areaAddress.value.length < 10 || !isNaN(areaAddress.value)) {
+                if (areaAddress.value.length > 100 || areaAddress.value.length < 10 || !isNaN(areaAddress.value)) {
                     isvalid = false
                     document.getElementsByClassName('validate-user-address')[3].innerHTML = "Enter a valid area address between 10 and 100 characters"
                 }
                 // validate landmark
-                 if (landmark.value.length > 50 || !isNaN(landmark.value)) {
+                if (landmark.value.length > 50 || !isNaN(landmark.value)) {
                     isvalid = false
                     document.getElementsByClassName('validate-user-address')[4].innerHTML = "Enter a valid landmark with maximum 50 characters"
                 }

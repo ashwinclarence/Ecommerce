@@ -17,6 +17,7 @@
         font-weight: 700;
         color: #000000;
     }
+
     .logo:hover {
         text-decoration: none;
         font-size: 2rem;
@@ -120,10 +121,12 @@
         background-color: #707070;
         color: #ffffff;
     }
-    #wishlist-nav{
+
+    #wishlist-nav {
         position: relative;
     }
-    #wishlist-badge{
+
+    #wishlist-badge {
         position: absolute;
         right: -.5rem;
         top: -.4rem;
@@ -140,10 +143,12 @@
         font-weight: 700;
 
     }
-    #cart-nav{
+
+    #cart-nav {
         position: relative;
     }
-    #cart-badge{
+
+    #cart-badge {
         position: absolute;
         right: -.5rem;
         top: -.4rem;
@@ -166,7 +171,7 @@
 <header class="admin-navbar-container">
     <a href="/user" class="logo">Cleat Craft</a>
     <form action="" method="get" class="navbar-search-box">
-        <input type="text" name="userSearch" id="user-search" placeholder="What are you looking for?" >
+        <input type="text" name="userSearch" id="user-search" placeholder="What are you looking for?">
         <button type="submit" class="btn"><i class="fa-solid fa-magnifying-glass"></i></button>
     </form>
     <nav class="admin-navlinks">
@@ -174,23 +179,23 @@
         <a href="/user/wishlist" class="nav-link-items" id="wishlist-nav">
             <i class="fa-solid fa-heart"></i>
             <!-- <span id="wishlist-badge">0</span> -->
-        </a>
-        <!-- cart -->
-        <a href="/user/cart" class="nav-link-items" id="cart-nav">
-            <i class="fa-solid fa-cart-shopping" ></i>
-            <!-- <span id="cart-badge">0</span> -->
-        </a>
-       
+            </a>
+            <!-- cart -->
+            <a href="/user/cart" class="nav-link-items"><i class="fa-solid fa-cart-shopping"></i></a>
+            <% if (user) { %>
+                <a href="/user/profile" class="nav-link-items"><i class="fa-solid fa-user"></i></a>
+                    <% } else { %>
+                        <a href="/user/login" class="btn btn-outline-secondary">Login</a>
+                        <% } %>
         <!-- if user is logged in then show the profile and other options else show the login button -->
 
-        <% if (user) { %>
 
             <!-- button for side bar toggle with user icon -->
-            <span data-bs-toggle="offcanvas" data-bs-target="#side-bar-home-right" aria-controls="offcanvasRight"><i
-                    class="fa-solid fa-user"></i></span>
+            <!-- <span data-bs-toggle="offcanvas" data-bs-target="#side-bar-home-right" aria-controls="offcanvasRight"><i
+                    class="fa-solid fa-user"></i></span> -->
 
             <!-- side bar right -->
-            <div class="offcanvas offcanvas-end" tabindex="-1" id="side-bar-home-right"
+            <!-- <div class="offcanvas offcanvas-end" tabindex="-1" id="side-bar-home-right"
                 aria-labelledby="offcanvasRightLabel">
                 <div class="offcanvas-header">
                     <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
@@ -216,9 +221,7 @@
                     </div>
                 </div>
             </div>
-            <% } else { %>
-                <a href="/user/login" class="btn btn-outline-secondary">Login</a>
-                <% } %>
+                <a href="/user/login" class="btn btn-outline-secondary">Login</a> -->
 
 
 
@@ -230,6 +233,6 @@
 <%- include('alert')%>
 
 
-<script>
-   
-</script>
+    <script>
+
+    </script>

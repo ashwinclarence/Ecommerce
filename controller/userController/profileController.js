@@ -52,7 +52,7 @@ const addAddress = async (req, res) => {
 
         // user address details added
         const userAddress = {
-            contactName: req.body.name,
+            contactName: req.body.username,
             pincode: req.body.pincode,
             homeAddress: req.body.addressHome,
             areaAddress: req.body.addressArea,
