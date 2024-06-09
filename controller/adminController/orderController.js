@@ -9,10 +9,10 @@ const order = async (req, res) => {
 
         const orderSearch=req.query.search;
 
-        // get the order details from order collection 
-        const orderDetails = await orderSchema.aggregate([{ $unwind: "$products" }])
+        // get the order details from order collection (
+        const orderDetails = await orderSchema.find().populate('products.productID')
 
-
+     
         res.render('admin/order', { title: "Order list", orderDetails, alertMessage: req.flash('errorMessage') })
     } catch (err) {
         console.log(`Error on rendering the admin order page ${err}`);
@@ -21,21 +21,32 @@ const order = async (req, res) => {
 
 }
 
+// render order page
+const viewOrder=async(req,res)=>{
+    try {
+        const orderID=req.params.orderID;
+
+        const orderDetails=await orderSchema.findById(orderID).populate('products.productID')
+
+        res.render('admin/orderStatus',{title:"Order status",orderDetails,alertMessage:req.flash('errorMessage')})
+
+        
+    } catch (err) {
+        console.log(`Error on rendering the view order page in admin ${err}`);
+    }
+}
+
 // edit the order status
 const editOrder = async (req, res) => {
     try {
-        const orderID = req.params.id
-        const productID = req.params.proID
+        const orderID = req.params.orderID
         const orderStatus = parseInt(req.body.orderStatus)
         const productDeliveryStatusEnum = ['Confirmed', 'Pending', 'Delivered', 'Returned', 'Cancelled']
 
         const order = await orderSchema.findById(orderID)
 
-        order.products.forEach((ele) => {
-            if (ele.productID.toString() === productID) {
-                ele.productStatus = productDeliveryStatusEnum[orderStatus]
-            }
-        })
+       
+        order.orderStatus= productDeliveryStatusEnum[orderStatus]
 
         await order.save()
 
@@ -52,5 +63,7 @@ const editOrder = async (req, res) => {
 
 module.exports = {
     order,
+    viewOrder,
     editOrder,
+
 }

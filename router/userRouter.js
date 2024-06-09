@@ -63,6 +63,7 @@ user.post('/update-profile',checkUserSession,profileController.updateProfile)
 // order route
 user.get('/orders',checkUserSession,orderController.order)
 user.get('/cancelled-orders',checkUserSession,orderController.cancelledOrder)
+user.post('/cancel-order/:orderID',checkUserSession,orderController.cancelledOrderPost)
 
 
 // wishlist

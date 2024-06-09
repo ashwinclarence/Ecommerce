@@ -5,7 +5,8 @@ const schema = new mongoose.Schema({
     userID: { type: String },
     products: [{
         productID: { 
-            type: mongoose.Schema.Types.ObjectId 
+            type: mongoose.Schema.Types.ObjectId ,
+            ref:"product"
         },
         productName: { 
             type: String 
@@ -19,11 +20,7 @@ const schema = new mongoose.Schema({
         price: { 
             type: Number 
         },
-        productStatus: { 
-            type: String, 
-            enum:['Confirmed', 'Pending', 'Delivered', 'Returned', 'Cancelled']
-        },
-        discountPrice: { 
+        discount: { 
             type: Number 
         },
         productImage: { 
@@ -60,6 +57,10 @@ const schema = new mongoose.Schema({
     paymentId: {
         type: String,
         required: false
+    }, 
+    orderStatus: { 
+        type: String, 
+        enum:['Confirmed', 'Pending', 'Delivered', 'Returned', 'Cancelled']
     }
 },{timestamps:true})
 

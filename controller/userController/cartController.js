@@ -14,11 +14,7 @@ const cart = async (req, res) => {
         // get the coupons
         const coupons = await couponSchema.find({ isActive: true, expiryDate: { $gte: new Date() } })
 
-        // // remove anything that exist in cart coupon discount
-        // if (cart.couponDiscount) {
-        //     cart.couponDiscount = null
-        //     await cart.save()
-        // }
+
 
         if (cart) {
             // find the total price of cart items
@@ -34,6 +30,11 @@ const cart = async (req, res) => {
                     totalPriceWithoutDiscount += (ele.productID.productPrice * ele.productCount)
                 }
             })
+            // // remove anything that exist in cart coupon discount
+            if (cart.couponDiscount) {
+                cart.couponDiscount = null
+                await cart.save()
+            }
 
             // if the totalPrice and payable amount in the cart and the calculated total price is different then update the collection with the new values
             if (cart.payableAmount != totalPrice || cart.totalPrice != totalPriceWithoutDiscount) {

@@ -53,14 +53,14 @@ const placeOrder = async (req, res) => {
         // address index and payment mode
         const addressIndex = req.params.address
         const paymentMode = req.params.payment
-
+        let paymentId = ''
         // check if selected payment method is razor pay or not
         if (paymentMode === 1) {
             // order details when razor pay is selected
             const razorpay_payment_id = req.body.razorpay_payment_id
             const razorpay_order_id = req.body.razorpay_order_id
             const razorpay_signature = req.body.razorpay_signature
-
+             paymentId=req.body.razorpay_payment_id
 
             // verify the payment
             // const instance = new Razorpay({ key_id: process.env.RAZORPAY_KEY_ID, key_secret: process.env.RAZORPAY_KEY_SECRET })
@@ -72,11 +72,11 @@ const placeOrder = async (req, res) => {
 
         const cartItems = await cartSchema.findOne({ userID: req.session.user }).populate('items.productID')
         const paymentDetails = [
-            "Razor pay",
             "Cash on delivery",
+            "Razor pay",
             "Wallet"
         ]
-        
+
         const products = []
         let totalQuantity = 0
 
@@ -96,11 +96,9 @@ const placeOrder = async (req, res) => {
                 brand: ele.productID.productBrand,
                 quantity: ele.productCount,
                 price: ele.productID.productPrice,
-                productStatus: "Confirmed",
-                discountPrice: ele.productID.productDiscount,
+                discount: ele.productID.productDiscount,
                 productImage: ele.productID.productImage[0]
             })
-
             // increment the product total quantity
             totalQuantity += ele.productCount
         })
@@ -126,7 +124,8 @@ const placeOrder = async (req, res) => {
                 landmark: userDetails.address[addressIndex].landmark
             },
             paymentMethod: paymentDetails[paymentMode],
-            // payment_id:paymentMode===1?razorpay_payment_id:"Cash On Delivery"
+            orderStatus: "Confirmed",
+            paymentId: paymentId
         })
 
         // Start a session for transaction

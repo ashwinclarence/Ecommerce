@@ -129,6 +129,17 @@
         margin-left: 1rem;
         margin-right: 1rem;
     }
+
+    .order-container {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .order-actions-top {
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
 </style>
 
 
@@ -147,10 +158,9 @@
 
         </nav>
         <div class="row">
-
-
+            <!-- left side overall stats-->
             <div class="col-xl-3">
-                <div class="col-md-12">
+                <!-- <div class="col-md-12">
                     <div class="card-counter primary">
                         <i class="fa-solid fa-truck"></i>
                         <span class="count-numbers">0</span>
@@ -163,142 +173,158 @@
                         <span class="count-numbers">0</span>
                         <span class="count-name">Review</span>
                     </div>
-                </div>
+                </div> -->
 
                 <div class="col-md-12">
                     <div class="card-counter info">
                         <i class="fa-solid fa-box-open"></i>
-                        <span class="count-numbers"><%= orderDetails.length %></span>
+                        <span class="count-numbers">
+                            <%= orderDetails.length %>
+                        </span>
                         <span class="count-name">Orders</span>
                     </div>
                 </div>
-                <div class="col-md-12">
+                <!-- <div class="col-md-12">
                     <div class="card-counter danger">
                         <i class="fa-solid fa-ban"></i>
                         <span class="count-numbers">0</span>
                         <span class="count-name">Cancelled Orders</span>
                     </div>
-                </div>
+                </div> -->
             </div>
-        <div class="col-xl-9">
-            <% if(orderDetails.length!=0){ %>
-                <% orderDetails.forEach((ele,index)=> { %>
-                    <div class="card border shadow-none">
-                        <div class="card-body">
 
-                            <div class="d-flex align-items-start border-bottom pb-3">
-                                <div class="me-4">
-                                    <img src="../../<%= ele.products.productImage %>" class="avatar-lg rounded">
-                                </div>
-                                <div class="flex-grow-1 align-self-center overflow-hidden">
-                                    <div>
-                                        <h5 class="text-truncate font-size-18">
-                                            <%= ele.products.brand %>
-                                        </h5>
-                                        <h5 class="text-truncate font-size-18"><a
-                                                href="/user/product-view/<%= ele.products.productID %>"
-                                                class="text-dark">
-                                                <%= ele.products.productName %>
-                                            </a></h5>
-                                        <p class="text-muted mb-0">
-                                            <i class="bx bxs-star text-warning"></i>
-                                            <i class="bx bxs-star text-warning"></i>
-                                            <i class="bx bxs-star text-warning"></i>
-                                            <i class="bx bxs-star text-warning"></i>
-                                            <i class="bx bxs-star-half text-warning"></i>
-                                        </p>
-                                        <p class="mb-0 mt-1">Order ID : <%= ele._id %></p>
-                                        <p class="mb-0 mt-1">Payment Mode : <%= ele.paymentMethod %></p>
-                                        <p class="mb-0 mt-1">Price : <%= ele.totalPrice %></p>
+            <!-- right side orders list  -->
+            <div class="col-xl-9">
+                <% if(orderDetails.length!=0){ %>
+                    <% orderDetails.forEach((ele,index)=> { %>
+                        <div class="card border shadow-none order-container">
+                            <div class="card-body">
+
+                                <% ele.products.forEach((product,index)=> { %>
+
+                                    <div class="d-flex align-items-start ">
+                                        <div class="me-4">
+                                            <img src="../../<%= product.productImage %>" class="avatar-lg rounded">
+                                        </div>
+                                        <div class="flex-grow-1 align-self-center overflow-hidden">
+                                            <div>
+                                                <h5 class="text-truncate font-size-18">
+                                                    <%= product.brand %>
+                                                </h5>
+                                                <h5 class="text-truncate font-size-18"><a
+                                                        href="/user/product-view/<%= product.productID %>"
+                                                        class="text-dark">
+                                                        <%= product.productName %>
+                                                    </a></h5>
+
+
+                                                <p class="mb-0 mt-1">Quantity : <b>
+                                                        <%= product.quantity %>
+                                                    </b>
+                                                <p class="mb-0 mt-1">Price : <b>
+                                                        <%= product.price %>
+                                                    </b>
+                                                </p>
+                                            </div>
+                                        </div>
+
                                     </div>
-                                </div>
-                                <div class="flex-shrink-0 ms-2">
-                                    <ul class="list-inline mb-0 ">
-                                        <% if(ele.products.productStatus==='Delivered' ){ %>
-                                            <li class="list-inline-item">
-                                                <button class="btn btn-danger btn-sm" title="Cancel Order">
-                                                    Cancel order
-                                                </button>
-                                            </li>
-                                            <li class="list-inline-item">
-                                                <button class="btn btn-warning btn-sm" title="Cancel Order">
-                                                    Add Review
-                                                </button>
-                                            </li>
-                                            <% }else if(ele.products.productStatus==='Pending' ||
-                                                ele.products.productStatus==='Shipped' ) {%>
-                                                <li class="list-inline-item">
-                                                    <button class="btn btn-danger btn-sm" title="Cancel Order">
+                                    <hr>
+                                    <% }) %>
+                                        <div>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <div class="mt-3 text-center">
+                                                        <p class="text-muted mb-2">Order Placed</p>
+                                                        <h6 class="mb-0 mt-2"><span class="text-muted ">
+                                                                <%= ele.createdAt.toDateString() %>
+                                                                    </h5>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="mt-3 text-center">
+                                                        <p class="text-muted mb-2">Order ID</p>
+                                                        <h6 class="mb-0 mt-2"><span class="text-muted ">
+                                                                <%= ele._id %>
+                                                                    </h5>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="mt-3 text-center">
+                                                        <p class="text-muted mb-2">Shipping Address</p>
+                                                        <h6 class="mb-0 mt-2"><span class="text-muted ">
+                                                                <%= ele.address.contactName %>
+                                                                    </h5>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="mt-3 text-center">
+                                                        <p class="text-muted mb-2">Order Status</p>
+                                                        <h6 class="mb-0 mt-2"><span class="text-muted ">
+                                                                <%= ele.orderStatus %>
+                                                                    </h5>
+                                                    </div>
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+
+                                        <!-- order action button on the top of the orders container -->
+                                        <div class="order-actions-top">
+                                            <h6>
+                                                <% if(ele.orderStatus==='Delivered' ){ %>
+                                                    <button class="btn btn-danger btn-sm">
                                                         Return order
                                                     </button>
-                                                </li>
-                                                <% }else{%>
-                                                    <li class="list-inline-item">
-                                                        <span class="badge" title="Cancel Order">
-                                                            Order Cancelled
-                                                        </span>
-                                                    </li>
-                                                    <% }%>
-                                    </ul>
-                                </div>
+                                                    <button class="btn btn-warning btn-sm">
+                                                        Add Review
+                                                    </button>
+                                                    <% }else if(ele.orderStatus==='Pending' ||
+                                                        ele.orderStatus==='Confirmed' ) {%>
+                                                        <button class="btn btn-danger btn-sm"
+                                                            onclick="cancelOrder('<%= ele._id %>')">
+                                                            Cancel order
+                                                        </button>
+                                                        <% }%>
+                                            </h6>
+                                        </div>
+
+
                             </div>
-
-                            <div>
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <div class="mt-3 text-center">
-                                            <p class="text-muted mb-2">Order Placed</p>
-                                            <h6 class="mb-0 mt-2"><span class="text-muted ">
-                                                    <%= ele.createdAt.toDateString() %>
-                                                        </h5>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="mt-3 text-center">
-                                            <p class="text-muted mb-2">Quantity</p>
-                                            <h6 class="mb-0 mt-2"><span class="text-muted ">
-                                                    <%= ele.products.quantity %>
-                                                        </h5>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="mt-3 text-center">
-                                            <p class="text-muted mb-2">Ship To</p>
-                                            <h6 class="mb-0 mt-2"><span class="text-muted ">
-                                                    <%= ele.address.contactName %>
-                                                        </h5>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="mt-3 text-center">
-                                            <p class="text-muted mb-2">Order Status</p>
-                                            <h6 class="mb-0 mt-2"><span class="text-muted ">
-                                                    <%= ele.products.productStatus %>
-                                                        </h5>
-                                        </div>
-                                    </div>
-
-
-                                </div>
-                            </div>
-
                         </div>
-                    </div>
-                    <% }) %>
-                        <% } else { %>
-                            <div class="row text-center">
-                                <h2 class="no-order-prompt">No orders available yet </h2>
-                            </div>
-                            <% } %>
-                                <!-- end card -->
+                        <% }) %>
+                            <% } else { %>
+                                <div class="row text-center">
+                                    <h2 class="no-order-prompt">No orders available yet </h2>
+                                </div>
+                                <% } %>
+                                    <!-- end card -->
 
+            </div>
         </div>
-    </div>
-    <!-- end row -->
-
+        <!-- end row -->
     </div>
 
-
+    <div class="modal fade" id="cancelOrderModal" tabindex="-1" aria-labelledby="cancelOrderModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-body p-5">
+                    <h2 class="text-center mb-5">Reason for cancelling</h2>
+                    <form action="/user/cancel-order/" method="post" id="cancel-order-form">
+                        <div class="form-group">
+                            <textarea class="form-control" id="reason-for-cancel" rows="5"
+                                name="cancelReason" placeholder="please provide the reason for cancelling the order"></textarea>
+                            <label for="reason-for-cancel" class="cancel-form-validate text-danger" ></label>
+                        </div>
+                        <div class="form-group text-center">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-success">Confirm Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 
     <%- include('footer') %>
@@ -306,20 +332,42 @@
 
         <script>
 
-
-            // write the product review
-            function cancelOrder(orderID, productID) {
+            // function for cancelling the order
+            const cancelOrderForm = document.getElementById('cancel-order-form')
+            function cancelOrder(orderID) {
 
                 Swal.fire({
                     icon: "question",
-                    title: "Cancel Order",
-                    text: "Are you sure want to cancel this order"
+                    title: "Cancel the order",
+                    text: "Are you sure want to cancel the order?",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes, cancel it !",
+                    cancelButtonText: "No"
                 }).then((result) => {
                     if (result.isConfirmed) {
+
+                        // open the modal for cancel order
+                        const myModal = new bootstrap.Modal(document.getElementById('cancelOrderModal'));
+                        myModal.show();
+
+                        cancelOrderForm.action = `/user/cancel-order/${orderID}`
 
 
                     }
                 })
-
             }
+
+            const reasonForCancel = document.getElementById('reason-for-cancel')
+            cancelOrderForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                document.getElementsByClassName('cancel-form-validate')[0].innerHTML = ""
+
+                if (reasonForCancel.value.trim() === 0 || reasonForCancel.value.length > 100 || reasonForCancel.value.length < 10) {
+
+                    document.getElementsByClassName('cancel-form-validate')[0].innerHTML = "Please provide a reason between 10 and 100 characters"
+                } else {
+                    cancelOrderForm.submit()
+                }
+            })
+
         </script>
