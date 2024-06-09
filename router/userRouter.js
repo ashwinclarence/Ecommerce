@@ -57,9 +57,7 @@ user.get('/product-view/:id',checkUserBlocked,productController.productView)
 // if user is blocked in and the session is not there then user is redirect to login page
 user.get('/profile',checkUserSession,profileController.profileView)
 user.post('/add-address',checkUserSession,profileController.addAddress)
-user.get('/edit-address',checkUserSession,profileController.editAddress)
-user.post('/edit-address/:id',checkUserSession,profileController.editAddressPost)
-user.get('/delete-address/:id',checkUserSession,profileController.deleteAddress)
+user.post('/edit-address-profile/:id',checkUserSession,profileController.editAddressPost)
 user.post('/update-profile',checkUserSession,profileController.updateProfile)
 
 // order route

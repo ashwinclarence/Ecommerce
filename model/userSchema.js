@@ -19,6 +19,7 @@ const schema =new mongoose.Schema({
     },
     address:{
         type:[addressSchema],
+        default:[]
     },
     isBlocked:{
         type:Boolean,
