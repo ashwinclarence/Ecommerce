@@ -1,158 +1,137 @@
 <style>
-    .admin-dashboard {
+    .dashboard-container {
         min-height: 100vh;
+    }
+
+    .card-counter {
+        box-shadow: 2px 2px 10px #DADADA;
+        margin: 5px;
+        padding: 20px 10px;
+        background-color: #fff;
+        border-radius: 5px;
+        transition: .3s linear all;
+    }
+
+    .card-counter:hover {
+        box-shadow: 4px 4px 20px #DADADA;
+        transition: .3s linear all;
+    }
+
+    .card-counter.primary {
+        background-color: #007bff;
+        color: #FFF;
+    }
+
+    .card-counter.danger {
+        background-color: #ef5350;
+        color: #FFF;
+    }
+
+    .card-counter.success {
+        background-color: #66bb6a;
+        color: #FFF;
+    }
+
+    .card-counter.info {
+        background-color: #26c6da;
+        color: #FFF;
+    }
+
+    .card-counter.warning {
+        background-color: purple;
+        color: #FFF;
+    }
+
+    .card-counter i {
+        font-size: 5em;
+        opacity: 0.2;
+    }
+
+    .card-counter .count-numbers {
+        position: absolute;
+        right: 35px;
+        top: 20px;
+        font-size: 32px;
+        display: block;
+    }
+
+    .card-counter .count-name {
+        position: absolute;
+        right: 35px;
+        top: 65px;
+        font-style: italic;
+        text-transform: capitalize;
+        opacity: 0.5;
+        display: block;
+        font-size: 18px;
+    }
+
+    .date-form {
+        padding: 0 8rem;
         display: flex;
         flex-direction: column;
-        align-items: center;
-        gap: 4rem;
-        margin-top: 4rem;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
-    }
-
-
-    .wrapper {
-        position: relative;
-    }
-
-    .heading {
-        margin: 25px 0;
-        font-size: 24px;
-    }
-
-    .dashboard-stat {
-        position: relative;
-        display: block;
-        margin: 0 0 25px;
-        overflow: hidden;
-        border-radius: 4px;
-
-        .visual {
-            width: 80px;
-            height: 80px;
-            display: block;
-            float: left;
-            padding-top: 10px;
-            padding-left: 15px;
-            margin-bottom: 15px;
-            font-size: 35px;
-            line-height: 35px;
-
-            >i {
-                margin-left: -15px;
-                font-size: 110px;
-                line-height: 110px;
-                color: #fff;
-                opacity: .1;
-            }
-        }
-
-        .details {
-            position: absolute;
-            right: 15px;
-            padding-right: 15px;
-            color: #fff;
-
-            .number {
-                padding-top: 25px;
-                text-align: right;
-                font-size: 34px;
-                line-height: 36px;
-                letter-spacing: -1px;
-                margin-bottom: 0;
-                font-weight: 300;
-
-                .desc {
-                    text-transform: capitalize;
-                    text-align: right;
-                    font-size: 16px;
-                    letter-spacing: 0;
-                    font-weight: 300;
-                }
-            }
-        }
-
-        &.blue {
-            background-color: #337ab7;
-        }
-
-        &.red {
-            background-color: #67809F;
-        }
-
-        &.purple {
-            background-color: #e7505a;
-        }
-
-        &.hoki {
-            background-color: #8E44AD;
-        }
+        gap: 1rem;
     }
 </style>
 
-
 <%- include('navbar') %>
-
-
-
-    <div class="admin-dashboard">
-        <div class="wrapper container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h2 class="heading">Admin Dashboard Stat</h2>
+    <div class="container dashboard-container">
+        <div class="row mt-5">
+            <div class="col-md-12 mb-3">
+                <h2>Sales Report</h2>
+            </div>
+            <div class="col-md-4">
+                <div class="card-counter info">
+                    <i class="fa-solid fa-hand-holding-dollar"></i>
+                    <span class="count-numbers">
+                        <%= dailyReport.toLocaleString() %>
+                    </span>
+                    <span class="count-name">Daily Sale : <%= new Date().toDateString() %></span>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                    <a class="dashboard-stat red" href="#">
-                        <div class="visual">
-                            <i class="fa fa-usd"></i>
-                        </div>
-                        <div class="details">
-                            <div class="number">
-                                <span>312</span>
-                            </div>
-                            <div class="desc">Total Profit</div>
-                        </div>
-                    </a>
+            <div class="col-md-4">
+                <div class="card-counter success">
+                    <i class="fa-solid fa-coins"></i>
+                    <span class="count-numbers">
+                        <%= weeklyReport.toLocaleString() %>
+                    </span>
+                    <span class="count-name">weeklyReport :</span>
                 </div>
-                <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                    <a class="dashboard-stat blue" href="#">
-                        <div class="visual">
-                            <i class="fa fa-bar-chart-o"></i>
-                        </div>
-                        <div class="details">
-                            <div class="number">
-                                <span>12.5</span>
-                            </div>
-                            <div class="desc">New Order</div>
-                        </div>
-                    </a>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card-counter warning">
+                    <i class="fa-solid fa-sack-dollar"></i>
+                    <span class="count-numbers">
+                        <%= monthlyReport.toLocaleString() %>
+                    </span>
+                    <span class="count-name">Monthly Sale : <span id="current-month"></span></span>
                 </div>
-                <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                    <a class="dashboard-stat hoki" href="#">
-                        <div class="visual">
-                            <i class="fa fa-credit-card"></i>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <div class="card-counter primary">
+                    <i class="fa-solid fa-circle-dollar-to-slot"></i>
+                    <span class="count-numbers" id="custom-sale-display">
+                       00
+                    </span>
+                    <form class="date-form" id="custom-sales-form">
+                        <div>
+                            <label for="startDate">Start</label>
+                            <input id="startDate" class="form-control" type="date" name="startDate" />
+                            <label for="startDate" class="sales-validate text-danger"></label>
                         </div>
-                        <div class="details">
-                            <div class="number">
-                                <span>+ 53%</span>
-                            </div>
-                            <div class="desc">Popularity</div>
+                        <div>
+                            <label for="endDate">End</label>
+                            <input id="endDate" class="form-control" type="date" name="endDate" />
+                            <label for="endDate" class="sales-validate text-danger"></label>
                         </div>
-                    </a>
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                    <a class="dashboard-stat purple" href="#">
-                        <div class="visual">
-                            <i class="fa fa-comments"></i>
+                        <div class="text-center">
+                            <button class="btn btn-success" type="submit">Generate Report</button>
                         </div>
-                        <div class="details">
-                            <div class="number">
-                                <span>689</span>
-                            </div>
-                            <div class="desc">New Feedback</div>
-                        </div>
-                    </a>
+                    </form>
+                    <span class="count-name">Custom Date Sale</span>
                 </div>
             </div>
         </div>
@@ -161,3 +140,57 @@
 
 
     <%- include('footer') %>
+
+        <script>
+
+            // get the current month
+            const getCurrentMonthYear = () => {
+                const now = new Date();
+                const options = { month: 'long', year: 'numeric' };
+                return now.toLocaleDateString('en-US', options);
+            }
+            document.addEventListener('DOMContentLoaded', (event) => {
+                document.getElementById('current-month').innerHTML = getCurrentMonthYear();
+            });
+
+
+            // get the custom date sales report 
+            const customDateForm = document.getElementById('custom-sales-form')
+            const startDate = document.getElementById('startDate')
+            const endDate = document.getElementById('endDate')
+            customDateForm.addEventListener('submit', (e) => {
+                e.preventDefault()
+
+                let validateSale = true
+                document.getElementsByClassName('sales-validate')[0].innerHTML = ""
+                document.getElementsByClassName('sales-validate')[1].innerHTML = ""
+
+                // Validate the dates
+                if (!startDate.value || !endDate.value || new Date(startDate.value) > new Date(endDate.value)) {
+                    validateSale = false;
+                    document.getElementsByClassName('sales-validate')[0].innerHTML = "Invalid date logic";
+                    document.getElementsByClassName('sales-validate')[1].innerHTML = "Invalid date logic";
+                }
+
+                if (validateSale) {
+                    const URL = "/admin/custom-sales"
+                    fetch(URL, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({startDate:startDate.value, endDate:endDate.value})
+                    }).then((res) => {
+                        return res.json()
+                    }).then((data) => {
+                        if(data.sale){
+                            document.getElementById('custom-sale-display').innerHTML=data.sale
+                        }
+                    }).catch((err) => {
+                        console.log("Error on getting custom sales report ", err);
+                    })
+                }
+
+            })
+
+        </script>

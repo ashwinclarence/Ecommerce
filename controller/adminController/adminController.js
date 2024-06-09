@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const productSchema = require('../../model/productSchema')
 const categorySchema = require('../../model/categorySchema')
 const userSchema = require('../../model/userSchema')
-
+const orderSchema = require('../../model/orderSchema')
 
 
 // render the login page for admin only if the admin's session is not present 
@@ -49,26 +49,43 @@ const loginPost = (req, res) => {
 const dashboard = async (req, res) => {
     try {
 
-        // customer details and count
-        const customerCount = await userSchema.find().countDocuments();
-        const activeCustomer = await userSchema.find({ isBlocked: false }).countDocuments()
-        // category details and count
-        const categoryCount = await categorySchema.find().countDocuments();
-        const activeCategory = await categorySchema.find({ isActive: true }).countDocuments();
-        // product details and count
-        const productsCount = await productSchema.find().countDocuments();
-        const activeProducts = await productSchema.find({ isActive: true }).countDocuments();
 
-        const stats = {
-            customerCount,
-            activeCustomer,
-            categoryCount,
-            activeCategory,
-            productsCount,
-            activeProducts
-        }
+        // sales report
+        const orders = await orderSchema.find();
 
-        res.render('admin/dashboard', { title: "Admin Dashboard", alertMessage: req.flash('errorMessage'), stats })
+        // current date
+        const currentDate = new Date();
+        const startOfToday = new Date(currentDate.setHours(0, 0, 0, 0));
+        const startOfWeek = new Date(currentDate.setDate(currentDate.getDate() - currentDate.getDay()));
+        const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+
+        // daily report
+        const dailyReport = orders.reduce((acc, ele) => {
+            if (new Date(ele.createdAt) >= startOfToday) {
+                return acc + ele.totalPrice;
+            }
+            return acc;
+        }, 0);
+
+        // weekly report
+        const weeklyReport = orders.reduce((acc, ele) => {
+            if (new Date(ele.createdAt) >= startOfWeek) {
+                return acc + ele.totalPrice;
+            }
+            return acc;
+        }, 0);
+
+        // monthly report
+        const monthlyReport = orders.reduce((acc, ele) => {
+            if (new Date(ele.createdAt) >= startOfMonth) {
+                return acc + ele.totalPrice;
+            }
+            return acc;
+        }, 0);
+
+
+
+        res.render('admin/dashboard', { title: "Admin Dashboard", alertMessage: req.flash('errorMessage'), dailyReport, weeklyReport, monthlyReport })
 
 
     } catch (err) {
@@ -77,6 +94,28 @@ const dashboard = async (req, res) => {
 
 }
 
+// generate custom sales report using fetch
+const generateCustomSales = async (req, res) => {
+    try {
+        const startDate = req.body.startDate;
+        const endDate = req.body.endDate;
+
+        if (!startDate || !endDate) {
+            return res.status(400).json({ error: "Start date and end date are required" });
+        }
+
+        const orders = await orderSchema.find({ createdAt: { $gte: startDate, $lte: endDate } });
+
+        const sale=orders.reduce((acc,ele)=>{
+            return acc+ele.totalPrice
+        },0)
+
+        return res.status(200).json({ message: "Report Generated", sale });
+    } catch (err) {
+        console.log(`Error on generating custom sales report: ${err}`);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+}
 
 
 
@@ -110,5 +149,6 @@ module.exports = {
     dashboard,
     loginPost,
     logout,
+    generateCustomSales,
 
 }

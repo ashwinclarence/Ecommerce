@@ -19,7 +19,7 @@ admin.post('/login', adminController.loginPost);
 
 // dashboard
 admin.get('/dashboard',checkAdminSession, adminController.dashboard);
-
+admin.post('/custom-sales',checkAdminSession, adminController.generateCustomSales)
 
 
 // user management
