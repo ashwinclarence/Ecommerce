@@ -72,10 +72,11 @@ const placeOrder = async (req, res) => {
 
         const cartItems = await cartSchema.findOne({ userID: req.session.user }).populate('items.productID')
         const paymentDetails = [
-            "Cash On Delivery",
-            "Razor Pay",
+            "Razor pay",
+            "Cash on delivery",
             "Wallet"
         ]
+        
         const products = []
         let totalQuantity = 0
 
@@ -95,7 +96,7 @@ const placeOrder = async (req, res) => {
                 brand: ele.productID.productBrand,
                 quantity: ele.productCount,
                 price: ele.productID.productPrice,
-                productStatus: "Pending",
+                productStatus: "Confirmed",
                 discountPrice: ele.productID.productDiscount,
                 productImage: ele.productID.productImage[0]
             })

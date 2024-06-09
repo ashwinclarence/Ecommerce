@@ -1,21 +1,41 @@
 const mongoose = require("mongoose");
 
-const productDeliveryStatusEnum = ['Pending', 'Shipped', 'Delivered', 'Returned'];
-
+// ['Pending', 'Shipped', 'Delivered', 'Returned'] 
 const schema = new mongoose.Schema({
     userID: { type: String },
     products: [{
-        productID: { type: mongoose.Schema.Types.ObjectId },
-        productName: { type: String },
-        brand: { type: String },
-        quantity: { type: Number },
-        price: { type: Number },
-        productStatus: { type: String, enum: productDeliveryStatusEnum },
-        discountPrice: { type: Number },
-        productImage: { type: String }
+        productID: { 
+            type: mongoose.Schema.Types.ObjectId 
+        },
+        productName: { 
+            type: String 
+        },
+        brand: { 
+            type: String 
+        },
+        quantity: { 
+            type: Number 
+        },
+        price: { 
+            type: Number 
+        },
+        productStatus: { 
+            type: String, 
+            enum:['Confirmed', 'Pending', 'Delivered', 'Returned', 'Cancelled']
+        },
+        discountPrice: { 
+            type: Number 
+        },
+        productImage: { 
+            type: String 
+        }
     }],
-    totalQuantity: { type: Number },
-    totalPrice: { type: Number },
+    totalQuantity: { 
+        type: Number 
+    },
+    totalPrice: { 
+        type: Number 
+    },
     address: {
         contactName: String,
         pincode: String,
@@ -29,8 +49,18 @@ const schema = new mongoose.Schema({
         default:null
     },
     paymentMethod: {
-        type: String
+        type: String,
+        required: true,
+        enum: [ 'Cash on delivery','Razor pay', 'Wallet']
     },
+    isCancelled: {
+        type: Boolean,
+        default: false
+    },
+    paymentId: {
+        type: String,
+        required: false
+    }
 },{timestamps:true})
 
 
