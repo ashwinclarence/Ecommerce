@@ -1,33 +1,37 @@
-const mongoose=require('mongoose');
+const mongoose = require('mongoose');
 const addressSchema = require('./addressSchema');
 
 // defining the schema for user collection
-const schema =new mongoose.Schema({
-    name:{
-        type:String,
-        required:true
+const schema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true
     },
-    phone:{
-        type:Number,
+    phone: {
+        type: Number,
     },
-    email:{
-        type:String,
-        required:true
+    email: {
+        type: String,
+        required: true
     },
-    password:{
-        type:String,
+    password: {
+        type: String,
     },
-    address:{
-        type:[addressSchema],
-        default:[]
+    address: {
+        type: [addressSchema],
+        default: []
     },
-    isBlocked:{
-        type:Boolean,
-        default:false
+    isBlocked: {
+        type: Boolean,
+        default: false
     },
-    googleID:{
-        type:String
+    googleID: {
+        type: String
+    },
+    wallet: {
+        type: Number,
+        default: 0,
     }
-},{timestamps:true})
+}, { timestamps: true })
 
-module.exports= mongoose.model("user",schema);
+module.exports = mongoose.model("user", schema);

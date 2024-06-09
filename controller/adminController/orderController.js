@@ -10,7 +10,7 @@ const order = async (req, res) => {
         const orderSearch=req.query.search;
 
         // get the order details from order collection (
-        const orderDetails = await orderSchema.find().populate('products.productID')
+        const orderDetails = await orderSchema.find().populate('products.productID').sort({createdAt:-1})
 
      
         res.render('admin/order', { title: "Order list", orderDetails, alertMessage: req.flash('errorMessage') })
