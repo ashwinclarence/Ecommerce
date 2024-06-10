@@ -1,9 +1,14 @@
 <style>
+    .order-status-container {
+        min-height: 100vh;
+    }
+
     .card {
         box-shadow: 0 20px 27px 0 rgb(0 0 0 / 5%);
     }
 
     .card {
+
         position: relative;
         display: flex;
         flex-direction: column;
@@ -11,7 +16,7 @@
         word-wrap: break-word;
         background-color: #fff;
         background-clip: border-box;
-        border: 0 solid rgba(0, 0, 0, .125);
+        border: 2 solid rgba(0, 0, 0, .125);
         border-radius: 1rem;
     }
 
@@ -28,7 +33,7 @@
 
 
 <%- include('navbar') %>
-    <div class="container my-5">
+    <div class="container my-5 order-status-container">
         <!-- Title -->
         <div class="d-flex justify-content-between align-items-center py-3">
             <h2 class="h5 mb-0"><a href="#" class="text-muted"></a> Order #<%= orderDetails._id %>
@@ -150,7 +155,7 @@
                 <div class="card mb-4">
                     <div class="card-body">
                         <h3 class="h6">Current Order Status</h3>
-                        <div class="badge">
+                        <div class="badge" id="current-order-status">
                             <%= orderDetails.orderStatus %>
                         </div>
                     </div>
@@ -166,6 +171,8 @@
                                     <option value="1">Pending</option>
                                     <option value="2">Delivered</option>
                                 </select>
+                                <label for="productDeliveryStatus" id="productDeliveryStatusLabel"
+                                    class="text-danger"></label>
                             </div>
                             <div class="text-center">
                                 <a href="/admin/orders" class="btn btn-secondary">Go Back</a>
@@ -182,21 +189,48 @@
     <%- include('footer') %>
 
         <script>
+            const orderStat = ['Confirmed', 'Pending', 'Delivered', 'Returned', 'Cancelled']
+            // order status updating validation
+            const currentOrderStatus = document.querySelector('#current-order-status').innerHTML
+            const productDeliveryStatus = document.querySelector('#productDeliveryStatus')
             const editOrderStatusForm = document.getElementById('edit-order-status-form')
             editOrderStatusForm.addEventListener('submit', (e) => {
                 e.preventDefault()
-
-                Swal.fire({
-                    icon: "question",
-                    title: "Change Order Status",
-                    text: "Are you sure want to change the order status",
-                    showCancelButton: true,
-                    confirmButtonText: "Change status"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        editOrderStatusForm.submit()
+                let validForm = true
+                document.querySelector('#productDeliveryStatusLabel').innerHTML = ""
+                
+                if (currentOrderStatus.trim() === "Pending") {
+                    if (productDeliveryStatus.value === "0" || productDeliveryStatus.value === "1") {
+                        validForm = false
+                        document.querySelector('#productDeliveryStatusLabel').innerHTML = "Current order status is pending."
                     }
-                })
+                }
+                if (currentOrderStatus.trim() === "Delivered") {
+                    if (productDeliveryStatus.value === "0" || productDeliveryStatus.value === "1" || productDeliveryStatus.value === "2") {
+                        validForm = false
+                        document.querySelector('#productDeliveryStatusLabel').innerHTML = "Current order status is delivered."
+                    }
+                }
+                if (currentOrderStatus.trim() === "Confirmed") {
+                    if (productDeliveryStatus.value === "0") {
+                        validForm = false
+                        document.querySelector('#productDeliveryStatusLabel').innerHTML = "Order is already confirmed"
+                    }
+                }
+                if (validForm) {
+                    Swal.fire({
+                        icon: "question",
+                        title: "Change Order Status",
+                        text: "Are you sure want to change the order status",
+                        showCancelButton: true,
+                        confirmButtonText: "Change status"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            editOrderStatusForm.submit()
+                        }
+                    })
+                }
+
             })
 
 
@@ -219,5 +253,9 @@
                     badge.classList.add('badge-primary')
                 }
             })
+
+
+
+
 
         </script>
