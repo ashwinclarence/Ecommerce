@@ -202,7 +202,6 @@
 
             // change the badge color of order status
             const orderStatusBadge = document.querySelectorAll('.badge')
-
             orderStatusBadge.forEach((badge) => {
                 if (badge.innerHTML.trim().toLocaleLowerCase() === "cancelled") {
                     badge.classList.add('badge-danger')
@@ -216,5 +215,9 @@
                 if (badge.innerHTML.trim().toLocaleLowerCase() === "pending") {
                     badge.classList.add('badge-info')
                 }
+                if (badge.innerHTML.trim().toLocaleLowerCase() === "confirmed") {
+                    badge.classList.add('badge-primary')
+                }
             })
+
         </script>
