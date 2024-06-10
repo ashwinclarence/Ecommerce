@@ -160,6 +160,7 @@
                         </div>
                     </div>
                 </div>
+              
                 <div class="card mb-4">
                     <div class="card-body">
                         <h3 class="h6">Change Order Status</h3>
@@ -216,6 +217,14 @@
                         validForm = false
                         document.querySelector('#productDeliveryStatusLabel').innerHTML = "Order is already confirmed"
                     }
+                }
+                if (currentOrderStatus.trim() === "Returned") {
+                        validForm = false
+                        document.querySelector('#productDeliveryStatusLabel').innerHTML = "Order Returned Already"
+                }
+                if (currentOrderStatus.trim() === "Cancelled") {
+                        validForm = false
+                        document.querySelector('#productDeliveryStatusLabel').innerHTML = "Order Cancelled Already"
                 }
                 if (validForm) {
                     Swal.fire({
