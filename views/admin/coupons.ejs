@@ -165,7 +165,7 @@
             <div class="modal-dialog modal-lg">
                 <div class="modal-content p-5">
                     <div class="form-header text-center">
-                        <h2>Add Coupon</h2>
+                        <h2>Add Coupon <i class="fa-solid fa-ticket"></i></h2>
                     </div>
                     <form action="/admin/add-coupon" method="post" class=" mt-5" id="add-coupon-form">
                         <div>
@@ -244,7 +244,7 @@
         </div>
 
 
-
+        <!-- table shows the available coupons -->
         <div class="mt-5 table-responsive">
             <table class="table coupon-tabel">
                 <thead class="table-primary">
@@ -473,7 +473,8 @@
                     Swal.fire({
                         icon: "question",
                         title: "Block the Coupon",
-                        text: "Are you sure want to block the coupon"
+                        text: "Are you sure want to block the coupon",
+                        showCancelButton:true,
                     }).then((result) => {
                         if (result.isConfirmed) {
 
@@ -539,7 +540,8 @@
                     Swal.fire({
                         icon: "question",
                         title: "Un-Block the Coupon",
-                        text: "Are you sure want to un-block the coupon"
+                        text: "Are you sure want to un-block the coupon",
+                        showCancelButton:true,
                     }).then((result) => {
                         if (result.isConfirmed) {
 
@@ -604,7 +606,8 @@
                     Swal.fire({
                         icon: "question",
                         title: "Delete the Coupon",
-                        text: "Are you sure want to delete the coupon"
+                        text: "Are you sure want to delete the coupon",
+                        showCancelButton:true,
                     }).then((result) => {
                         if (result.isConfirmed) {
 

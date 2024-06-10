@@ -41,7 +41,7 @@ const addCoupon = async (req, res) => {
         }
 
         // check if the same coupon exist or not 
-        const checkCoupon = await couponSchema.find({ couponCode: code[0], couponName: req.body.couponName, discount: req.body.discountAmount })
+        const checkCoupon = await couponSchema.find({couponName: req.body.couponName})
         if (checkCoupon.length != 0) {
             req.flash("errorMessage", "Coupon already exist")
             return res.redirect('/admin/coupons')
