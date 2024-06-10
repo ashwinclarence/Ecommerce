@@ -27,6 +27,10 @@ const coupons = async (req, res) => {
 const addCoupon = async (req, res) => {
     try {
 
+
+        // coupon name
+        const couponName=req.body.couponName
+        const trimmedCouponName=couponName.trim()
         // coupon code generator 
         const code = voucher_codes.generate({
             length: 9,
@@ -41,7 +45,7 @@ const addCoupon = async (req, res) => {
         }
 
         // check if the same coupon exist or not 
-        const checkCoupon = await couponSchema.find({couponName: req.body.couponName})
+        const checkCoupon = await couponSchema.find({couponName: {$regex:trimmedCouponName,$options:"i"}})
         if (checkCoupon.length != 0) {
             req.flash("errorMessage", "Coupon already exist")
             return res.redirect('/admin/coupons')
@@ -49,7 +53,7 @@ const addCoupon = async (req, res) => {
 
 
         const newCoupon = new couponSchema({
-            couponName: req.body.couponName,
+            couponName: trimmedCouponName,
             couponCode: code[0],
             discount: req.body.discountAmount,
             minAmount: req.body.minAmount,
