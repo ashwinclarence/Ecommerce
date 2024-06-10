@@ -53,6 +53,9 @@ const dashboard = async (req, res) => {
         // sales report
         const orders = await orderSchema.find();
 
+        // get the order details from order collection (
+        const orderDetails = await orderSchema.find().populate('products.productID').sort({ createdAt: -1 })
+
         // current date
         const currentDate = new Date();
         const startOfToday = new Date(currentDate.setHours(0, 0, 0, 0));
@@ -85,7 +88,7 @@ const dashboard = async (req, res) => {
 
 
 
-        res.render('admin/dashboard', { title: "Admin Dashboard", alertMessage: req.flash('errorMessage'), dailyReport, weeklyReport, monthlyReport })
+        res.render('admin/dashboard', { title: "Admin Dashboard", alertMessage: req.flash('errorMessage'), dailyReport, weeklyReport, monthlyReport,orderDetails })
 
 
     } catch (err) {
@@ -106,9 +109,9 @@ const generateCustomSales = async (req, res) => {
 
         const orders = await orderSchema.find({ createdAt: { $gte: startDate, $lte: endDate } });
 
-        const sale=orders.reduce((acc,ele)=>{
-            return acc+ele.totalPrice
-        },0)
+        const sale = orders.reduce((acc, ele) => {
+            return acc + ele.totalPrice
+        }, 0)
 
         return res.status(200).json({ message: "Report Generated", sale });
     } catch (err) {

@@ -29,7 +29,7 @@ admin.get('/unblock-user/:id',checkAdminSession, userManagement.unBlockUser)
 
 // category management
 admin.get('/category',checkAdminSession, adminCategoryController.category);
-admin.post('/category', adminCategoryController.newCategoryPost)
+admin.post('/category',checkAdminSession, adminCategoryController.newCategoryPost)
 admin.get('/edit-category/:id', checkAdminSession, adminCategoryController.editCategory)
 admin.post('/edit-category/:id', adminCategoryController.editCategoryPost)
 admin.get('/hide-category/:id', checkAdminSession, adminCategoryController.hideCategory)
