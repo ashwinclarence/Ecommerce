@@ -144,63 +144,81 @@ const downloadPdfReport = async (req, res) => {
 
         // Get the order details from order collection
         const orderDetails = await orderSchema.find({ createdAt: { $gte: start, $lte: end } }).populate('products.productID').sort({ createdAt: -1 });
-        console.log("🚀 ~ file: adminController.js:147 ~ downloadPdfReport ~ orderDetails:", orderDetails);
 
-        // Initialize PDF document
-        const doc = new PDFDocument({ margin: 30, size: 'A4' });
+        const doc = new PDFDocument();
+        const filename = `Cleat Craft Sales Report ${Date.now()}.pdf`;
 
-        // Set response headers
-        res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', `attachment; filename=report-${Date.now()}.pdf`);
+        res.setHeader("Content-Disposition", `attachment; filename=${filename}`);
+        res.setHeader("Content-Type", "application/pdf");
 
-        // Pipe PDF document to response
         doc.pipe(res);
 
-        // Add title and date range
-        doc.fontSize(18).text('Sales Report', { align: 'center' });
-        doc.fontSize(12).text(`From ${startDate} to ${endDate}`, { align: 'center', marginBottom: 20 });
-
+        // Add header aligned to center 
+        doc.font("Helvetica-Bold").fontSize(36).text("Cleat Craft", { align: "center", margin: 10 });
+        doc.font("Helvetica-Bold").fillColor("grey").fontSize(8).text("Empowering your game with elite football footwear", { align: "center", margin: 10 });
         doc.moveDown();
 
-        // Add summary
-        const totalOrders = orderDetails.length;
-        const totalProducts = orderDetails.reduce((sum, order) => sum + order.products.reduce((sum, product) => sum + product.quantity, 0), 0);
-        const totalRevenue = orderDetails.reduce((sum, order) => sum + order.products.reduce((sum, product) => sum + product.quantity * product.price, 0), 0);
-
-        doc.fontSize(12).text(`Total Orders: ${totalOrders}`);
-        doc.fontSize(12).text(`Total Products Sold: ${totalProducts}`);
-        doc.fontSize(12).text(`Total Revenue: $${totalRevenue.toFixed(2)}`);
+        // Add logo to the left side
+        // doc.image('public/img/somePlant.jpeg', {
+        //     width: 100,
+        //     x: 410, // Adjust for desired left margin
+        //     y: 80 // Adjust for vertical position
+        // });
 
         doc.moveDown();
+        
+        // Add address details of the company
+        doc.fontSize(10).fillColor("black").text(`Address: Trivandrum, Shangumugham`);
+        doc.text(`Pincode: 789589`);
+        doc.text(`Phone: 987 121 120`);
+        
+        doc.moveDown();
 
-        // Define table columns
-        const tableHeaders = ['OrderID', 'Date', 'Payment Mode', 'Status', 'Total'];
+        const totalSale=orderDetails.reduce((acc,sum)=>acc+sum.totalPrice,0)
+        const totalOrders=orderDetails.length
 
-        // Draw table header
-        doc.fontSize(10).font('Helvetica-Bold');
-        tableHeaders.forEach((header, i) => {
-            doc.text(header, 50 + i * 80, doc.y, { width: 80, align: 'left' });
+        // Add total sales report
+        doc.text(`Total Orders : ${totalOrders}`);
+        doc.fontSize(10).fillColor("red").text(`Total Sales : Rs ${totalSale}`);
+
+        // Move to the next line after the details
+        doc.moveDown();
+
+        doc.moveDown(); // Move down after the title
+        doc.font("Helvetica-Bold").fillColor("black").fontSize(14).text(`Sales Report`, { align: "center", margin: 10 });
+        doc.fontSize(12).text(`From ${startDate} To ${endDate}`, { align: "center", margin: 10 });
+
+        doc.moveDown(); // Move down after the title
+
+        const tableData = {
+            headers: [
+                "Order ID",
+                "Address",
+                "Quantity",
+                "order Status",
+                "Total"
+            ],
+            rows: orderDetails.map((order) => {
+                return  [
+                    order?._id,
+                    order.address?.homeAddress +"\n "+ order.address?.areaAddress+"\n "+"Pincode :"+ order.address?.pincode,
+                    order?.totalQuantity,
+                    order?.orderStatus,
+                    'Rs ' + order?.totalPrice,
+                ]
+            }),
+        };
+
+        // Customize the appearance of the table
+        await doc.table(tableData, {
+            prepareHeader: () => doc.font("Helvetica-Bold").fontSize(10),
+            prepareRow: (row, i) => doc.font("Helvetica").fontSize(8),
+            hLineColor: '#b2b2b2', // Horizontal line color
+            vLineColor: '#b2b2b2', // Vertical line color
+            textMargin: 2, // Margin between text and cell border
         });
-        doc.moveDown();
 
-        // Draw table rows
-        doc.fontSize(10).font('Helvetica');
-        orderDetails.forEach(order => {
-            const orderID = order._id.toString();
-            const date = order.createdAt.toISOString().split('T')[0];
-            const paymentMode = order.paymentMethod; 
-            const status = order.orderStatus;
-            const total = order.totalPrice;
-
-            const row = [orderID, date, paymentMode, status, `Rs${total}`];
-
-            row.forEach((cell, i) => {
-                doc.text(cell, 50 + i * 80, doc.y, { width: 80, align: 'left' });
-            });
-            doc.moveDown();
-        });
-
-        // Finalize the PDF and end the document
+        // Finalize the PDF document
         doc.end();
 
     } catch (err) {
@@ -208,6 +226,7 @@ const downloadPdfReport = async (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 };
+
 
 
 
