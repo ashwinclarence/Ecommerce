@@ -1,118 +1,71 @@
 <style>
-    .admin-navbar-container {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        padding: 1.5rem 2rem;
-        align-items: center;
-        border-bottom: 1px solid #b7b7b767;
-        z-index: 99;
-    }
-
     .logo {
-        text-decoration: none;
-        font-size: 2rem;
-        font-weight: 700;
-        color: #000000;
-    }
-    .logo:hover {
-        text-decoration: none;
-        font-size: 2rem;
-        font-weight: 700;
-        color: #000000;
+        width: 200px;
     }
 
-    .admin-navlinks {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        gap: 2rem;
-        margin-left: 1rem;
+    .form-white.input-group>.form-control:focus {
+        border-color: #fff;
+        box-shadow: inset 0 0 0 1px #fff;
     }
 
-    .admin-navlinks a {
-        display: grid;
-        grid-template-columns: 3rem auto;
-        text-decoration: none;
-        color: #000000;
-        align-items: center;
-        border: 2px solid #e7e7e7;
-        padding: .5rem;
-        padding-left: 1rem;
-        border-radius: 10px;
-        transition: .3s ease-in-out;
-    }
-    .admin-navlinks a:hover {
-       background-color: #d9d9da;
+    .navbar-dark .navbar-nav .nav-link {
+        color: #fff;
     }
 
-    .search-form {
-        width: 500px;
-        position: relative;
-    }
-
-    .search-form .fa-search {
-        position: absolute;
-        top: 10px;
-        left: 20px;
-        color: #9ca3af;
-
-    }
-
-    .form-input {
-        text-indent: 33px;
-        border-radius: 10px;
-    }
-
-    .offcanvas {
-        width: 20% !important;
+    .navbar-dark .navbar-nav .nav-link:hover,
+    .navbar-dark .navbar-nav .nav-link:focus {
+        color: rgba(255, 255, 255, 0.75);
     }
 </style>
 
-
-<header class="admin-navbar-container">
-    <a href="/admin/dashboard" class="logo">Cleat Craft</a>
-    <form action="" class="search-form">
-        <i class="fa fa-search"></i>
-        <input type="text" class="form-control form-input" name="adminSearch" placeholder="Search anything...">
-    </form>
-
-    <button class="btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
-        aria-controls="offcanvasRight"><i class="fa-solid fa-bars"></i></button>
-</header>
-
-
-<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
-  
-    <div class="offcanvas-body mt-3">
-        <nav class="admin-navlinks">
-            <button type="button" class="btn btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        
-            <a href="/admin/dashboard">
-                <i class="fa-solid fa-chart-pie"></i>
-                <h5>Dashboard</h5>
-            </a>
-            <a href="/admin/user"><i class="fa-solid fa-users"></i>
-                <h5>Customers</h5>
-            </a>
-            <a href="/admin/category"><i class="fa-solid fa-layer-group"></i>
-                <h5>Category</h5>
-            </a>
-            <a href="/admin/products"><i class="fa-solid fa-boxes-stacked"></i>
-                <h5>Products</h5>
-            </a>
-            <a href="/admin/orders"><i class="fa-solid fa-cart-shopping"></i>
-                <h5>Orders</h5>
-            </a>
-            <a href="/admin/coupons"><i class="fa-solid fa-ticket"></i>
-                <h5>Coupons</h5>
-            </a>
-            <a href="/admin/logout"><i class="fa-solid fa-right-from-bracket"></i>
-                <h5>Logout</h5>
-            </a>
-        </nav>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid p-3 mx-5">
+        <a class="navbar-brand" href="/admin/dashboard">
+            <img src="../../image/logo.png" alt="" class="logo">
+        </a>
+     
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <form class="mx-5">
+                <div class="input-group" style="width: 350px;">
+                    <input type="search" class="form-control rounded" placeholder="Search anything..."
+                        aria-label="Search" aria-describedby="search-addon" />
+                </div>
+            </form>
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a href="/admin/dashboard" class="nav-link">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/admin/user" class="nav-link">Customers</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/admin/category" class="nav-link">Category</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/admin/products" class="nav-link">Products</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/admin/orders" class="nav-link">Orders</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/admin/coupons" class="nav-link">Coupons</a>
+                </li>
+             
+            </ul>
+        </div>
+        <ul class="navbar-nav d-flex flex-row ms-auto me-3">
+            
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+            <li class="nav-item ms-4">
+                <a href="/admin/logout" class="nav-link"><i class="fa-solid fa-power-off"></i></a>
+            </li>
+        </ul>
     </div>
-</div>
+</nav>
+
 
 
 <%- include('alert') %>
