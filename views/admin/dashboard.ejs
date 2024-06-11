@@ -121,72 +121,49 @@
                     <span class="count-numbers" id="custom-sale-display">&#8377; 00</span>
                     <form class="date-form" id="custom-sales-form">
                         <div class="row">
-                            <div class="col-md-6">
+
+
+                            <div class="col-md-4">
                                 <label for="startDate">Starting Date</label>
                                 <input id="startDate" class="form-control" type="date" name="startDate" />
                                 <label id="startDate-validate" class="text-danger"></label>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <label for="endDate">Ending Date</label>
                                 <input id="endDate" class="form-control" type="date" name="endDate" />
                                 <label id="endDate-validate" class="text-danger"></label>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <label for="report-select">Sales Duration</label>
                                 <select class="form-select" aria-label="Default select example" id="report-select">
                                     <option value="1" selected>Today</option>
                                     <option value="2">One Week</option>
                                     <option value="3">One Month</option>
-                                    <option value="4">Six Months</option>
-                                    <option value="5">One Year</option>
+                                    <option value="4" id="current-month-option">This Month</option>
+                                    <option value="5">Six Months</option>
+                                    <option value="6">One Year</option>
                                 </select>
                                 <label id="report-select-validate" class="text-danger"></label>
                             </div>
-                            <div class="col-md-6">
-                                <label for="report-format">Report Format</label>
-                                <select class="form-select" aria-label="Default select example" id="report-format">
-                                    <option value="pdf" selected>PDF</option>
-                                    <option value="excel">Excel</option>
-                                </select>
-                                <label id="report-format-validate" class="text-danger"></label>
+
+                            <div class="col-md-12 text-center">
+                                <button class="btn btn-dark m-2" type="submit">Generate Report</button>
+                                <button class="btn btn-dark m-2" type="button" onclick="downloadExcelReport()">Download
+                                    Excel
+                                    Report</button>
+                                <button class="btn btn-dark m-2" type="button" onclick="downloadPdfReport()">Download
+                                    PDf
+                                    Report</button>
                             </div>
-                        </div>
-                        <div class="text-center">
-                            <button class="btn btn-dark" type="submit">Generate Report</button>
-                            <button class="btn btn-dark" type="button" id="download-report">Download Report</button>
+
+
+
                         </div>
                     </form>
 
                     <span class="count-name">Custom Date Sale</span>
                 </div>
             </div>
-            <!-- <div class="col-md-6">
-                <div class="card-counter ">
-                    <i class="fa-solid fa-file-pdf"></i>
-                    <span class="count-numbers" id="custom-sale-display">Generate PDF report</span>
-                    <form class="date-form" id="custom-sales-form">
-                        <div>
-                            <label for="report-select">Sales duration</label>
-                            <select class="form-select" aria-label="Default select example" id="report-select">
-                                <option value="1" selected>Today</option>
-                                <option value="2">One Week</option>
-                                <option value="3">One Month</option>
-                                <option value="3">Six Month</option>
-                                <option value="3">One Year</option>
-                            </select>
-                            <label for="report-select" class="sales-validate text-danger"></label>
-                        </div>
-                        <div>
-                            <label for="endDate">End</label>
-                            <input id="endDate" class="form-control" type="date" name="endDate" />
-                            <label for="endDate" class="sales-validate text-danger"></label>
-                        </div>
-                        <div class="text-center">
-                            <button class="btn btn-info" type="submit">Generate Report</button>
-                        </div>
-                    </form>
-                </div>
-            </div> -->
         </div>
 
 
@@ -247,14 +224,41 @@
 
         <script>
 
-            // get the current month
+            // function for validating the date
+            function validateDates(startDate, endDate) {
+                // Clear previous validation messages
+                document.getElementById('startDate-validate').innerHTML = "";
+                document.getElementById('endDate-validate').innerHTML = "";
+                document.getElementById('report-select-validate').innerHTML = "";
+
+                // Validate the dates
+                if (!startDate) {
+                    document.getElementById('startDate-validate').innerHTML = "Start date is required";
+                    return false;
+                }
+                if (!endDate) {
+                    document.getElementById('endDate-validate').innerHTML = "End date is required";
+                    return false;
+                }
+                if (new Date(startDate) > new Date(endDate)) {
+                    document.getElementById('startDate-validate').innerHTML = "Start date cannot be later than end date";
+                    document.getElementById('endDate-validate').innerHTML = "End date cannot be earlier than start date";
+                    return false;
+                }
+                return true
+            }
+
+            // get the current month 
             const getCurrentMonthYear = () => {
                 const now = new Date();
                 const options = { month: 'long', year: 'numeric' };
                 return now.toLocaleDateString('en-US', options);
             }
+
+            // render the current month and year on the respective fields
             document.addEventListener('DOMContentLoaded', (event) => {
                 document.getElementById('current-month').innerHTML = getCurrentMonthYear();
+                document.getElementById('current-month-option').innerHTML = getCurrentMonthYear();
             });
 
 
@@ -266,30 +270,10 @@
             customDateForm.addEventListener('submit', (e) => {
                 e.preventDefault();
 
-                // Clear previous validation messages
-                document.getElementById('startDate-validate').innerHTML = "";
-                document.getElementById('endDate-validate').innerHTML = "";
-                document.getElementById('report-select-validate').innerHTML = "";
-                document.getElementById('report-format-validate').innerHTML = "";
+                // validate the dates and if valid then proceed with fetch
+                if (validateDates(startDate.value, endDate.value)) {
 
-                let validateSale = true;
-
-                // Validate the dates
-                if (!startDate.value) {
-                    validateSale = false;
-                    document.getElementById('startDate-validate').innerHTML = "Start date is required";
-                }
-                if (!endDate.value) {
-                    validateSale = false;
-                    document.getElementById('endDate-validate').innerHTML = "End date is required";
-                }
-                if (new Date(startDate.value) > new Date(endDate.value)) {
-                    validateSale = false;
-                    document.getElementById('startDate-validate').innerHTML = "Start date cannot be later than end date";
-                    document.getElementById('endDate-validate').innerHTML = "End date cannot be earlier than start date";
-                }
-
-                if (validateSale) {
+                    // fetch for getting the custom sales report 
                     const URL = "/admin/custom-sales";
                     fetch(URL, {
                         method: "POST",
@@ -301,7 +285,7 @@
                         .then((res) => res.json())
                         .then((data) => {
                             if (data.sale) {
-                                document.getElementById('custom-sale-display').innerHTML = "&#8377; " + data.sale;
+                                document.getElementById('custom-sale-display').innerHTML = "&#8377; " + data.sale.toLocaleString();
                             } else {
                                 console.log("No sales data available for the selected period");
                             }
@@ -312,8 +296,8 @@
                 }
             });
 
+            // badge color based on order status
             const orderStatusBadge = document.querySelectorAll('.badge')
-
             orderStatusBadge.forEach((badge) => {
                 if (badge.innerHTML.trim().toLocaleLowerCase() === "cancelled") {
                     badge.classList.add('badge-danger')
@@ -327,39 +311,118 @@
                 if (badge.innerHTML.trim().toLocaleLowerCase() === "pending") {
                     badge.classList.add('badge-info')
                 }
+                if (badge.innerHTML.trim().toLocaleLowerCase() === "confirmed") {
+                    badge.classList.add('badge-primary')
+                }
             })
 
-            // download the report
-            const salesDownloadFormat=document.querySelector('#report-format')
-            const salesDuration=document.querySelector('#report-select')
-            salesDuration.addEventListener('change',(e)=>{
-                e.preventDefault();
-                
-            })
 
-            const downloadReport=document.querySelector('#download-report')
-            downloadReport.addEventListener('click',(e)=>{
-                e.preventDefault()
+            // select the predefined dates
+            document.addEventListener("DOMContentLoaded", function () {
+                const reportSelect = document.getElementById('report-select');
+                const startDateInput = document.getElementById('startDate');
+                const endDateInput = document.getElementById('endDate');
 
-                let validateSaleDownload=true
+                reportSelect.addEventListener('change', function () {
+                    const now = new Date();
+                    let startDate, endDate;
 
-                
+                    switch (reportSelect.value) {
+                        case '1':
+                            // Today
+                            startDate = now;
+                            endDate = now;
+                            break;
+                        case '2':
+                            // One Week
+                            startDate = new Date(now);
+                            startDate.setDate(now.getDate() - 7);
+                            endDate = now;
+                            break;
+                        case '3':
+                            // One Month
+                            startDate = new Date(now);
+                            startDate.setMonth(now.getMonth() - 1);
+                            endDate = now;
+                            break;
+                        case '4':
+                            // This Month
+                            startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+                            endDate = now;
+                            break;
+                        case '5':
+                            // Six Months
+                            startDate = new Date(now);
+                            startDate.setMonth(now.getMonth() - 6);
+                            endDate = now;
+                            break;
+                        case '6':
+                            // One Year
+                            startDate = new Date(now);
+                            startDate.setFullYear(now.getFullYear() - 1);
+                            endDate = now;
+                            break;
+                        default:
+                            startDate = null;
+                            endDate = null;
+                    }
 
-                const URL="/admin/download-sales-report"
+                    startDateInput.value = startDate ? startDate.toISOString().split('T')[0] : '';
+                    endDateInput.value = endDate ? endDate.toISOString().split('T')[0] : '';
+                });
 
-                fetch(URL,{
-                    method:"POST",
-                    headers:{
-                        "Content-Type":"application/json"
-                    },
-                    body:JSON.stringify({})
-                }).then((res)=>{
-                    return res.json()
-                }).then((data)=>{
-                    console.log(data);
-                }).catch((err)=>{
-                    console.log(`Error on downloading the sales report`);
-                })
-            })
+                // Trigger the change event to set initial dates based on the default selection
+                reportSelect.dispatchEvent(new Event('change'));
+            });
+
+
+            // download excel report 
+            function downloadExcelReport() {
+
+                if (validateDates(startDate.value, endDate.value)) {
+                    const URL = "/admin/excel-report"
+                    fetch(URL, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ startDate: startDate.value, endDate: endDate.value })
+                    })
+                }
+
+            }
+
+
+            // download pdf report 
+            function downloadPdfReport() {
+
+                if (validateDates(startDate.value, endDate.value)) {
+                    const URL = "/admin/pdf-report"
+                    fetch(URL, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ startDate: startDate.value, endDate: endDate.value })
+                    }).then((res) => {
+                        if (res.ok) {
+                            return res.blob();
+                        }
+                        throw new Error('Network response was not ok.');
+                    })
+                        .then((blob) => {
+                            const url = window.URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.style.display = 'none';
+                            a.href = url;
+                            a.download = `report-${Date.now()}.pdf`;
+                            document.body.appendChild(a);
+                            a.click();
+                            window.URL.revokeObjectURL(url);
+                        })
+                }
+
+            }
+
 
         </script>

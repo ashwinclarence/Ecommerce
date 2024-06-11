@@ -1,238 +1,53 @@
 <style>
-    .admin-navbar-container {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        padding: 1.5rem 3rem;
-        align-items: center;
-        border-bottom: 1px solid #48484829;
-        /* box-shadow: 1px 1px 5px #d7d7d7; */
-        z-index: 99;
-        position: relative;
-    }
-
-    .logo {
+    .navbar-light .navbar-nav .nav-link {
+        color: #000;
         text-decoration: none;
-        font-size: 2rem;
-        font-weight: 700;
-        color: #000000;
-    }
-
-    .logo:hover {
-        text-decoration: none;
-        font-size: 2rem;
-        font-weight: 700;
-        color: #000000;
-    }
-
-    .admin-navlinks {
-        display: flex;
-        align-items: center;
-        gap: 2rem;
-        cursor: pointer;
-    }
-
-    .admin-navlinks a {
-        text-decoration: none;
-        font-size: 1rem;
-        color: #000000;
-    }
-
-
-    .navbar-search-box {
-        border: 1px solid #d7d7d7;
-        border-radius: 10px;
-        width: 20rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding-left: .5rem;
-    }
-
-    .navbar-search-box input {
-        border: none;
-        outline: none;
-        width: 90%;
-    }
-
-    .navbar-search-box button i {
-        color: #d7d7d7;
-    }
-
-    .nav-link-items {
-        scale: 1.3;
-    }
-
-    /* side bar  */
-    .sidebar {
-        height: 100%;
-        width: 250px;
-        position: fixed;
-        top: 0;
-        right: -250px;
-        background-color: #373A47;
-        transition: right 0.3s ease;
-        /* box-shadow: 0 0 20px #000000; */
-        z-index: 10;
-    }
-
-    .sidebar ul {
-        color: #ffffff;
-        list-style-type: none;
-        padding: 0;
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 1rem;
-        margin-top: 2rem;
-
-    }
-
-    .sidebar ul li {
-        width: 90%;
-        padding: 10px;
-        cursor: pointer;
-        border-radius: 10px;
-        font-weight: 700;
-        transition: .3s ease-in-out;
-        background-color: #707070;
-    }
-
-    .sidebar ul li:hover {
-        border: 1px solid #bcbcbc;
-    }
-
-    .sidebar ul li a {
-        display: block;
-        width: 100%;
-        text-decoration: none;
-        color: #ffffff;
-        font-weight: 600;
-    }
-
-    .toggle-btn {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-    }
-
-    #go-back-home {
-        background-color: #707070;
-        color: #ffffff;
-    }
-
-    #wishlist-nav {
-        position: relative;
-    }
-
-    #wishlist-badge {
-        position: absolute;
-        right: -.5rem;
-        top: -.4rem;
-        background-color: red;
-        border-radius: 50%;
-        z-index: 15;
-        font-size: 12px;
-        height: 1rem;
-        width: 1rem;
-        color: #ffffff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 700;
-
-    }
-
-    #cart-nav {
-        position: relative;
-    }
-
-    #cart-badge {
-        position: absolute;
-        right: -.5rem;
-        top: -.4rem;
-        background-color: red;
-        border-radius: 50%;
-        z-index: 15;
-        font-size: 12px;
-        height: 1rem;
-        width: 1rem;
-        color: #ffffff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 700;
-
     }
 </style>
 
 
-<header class="admin-navbar-container">
-    <a href="/user" class="logo">Cleat Craft</a>
-    <form action="" method="get" class="navbar-search-box">
-        <input type="text" name="userSearch" id="user-search" placeholder="What are you looking for?">
-        <button type="submit" class="btn"><i class="fa-solid fa-magnifying-glass"></i></button>
-    </form>
-    <nav class="admin-navlinks">
-        <!-- wishlist  -->
-        <a href="/user/wishlist" class="nav-link-items" id="wishlist-nav">
-            <i class="fa-solid fa-heart"></i>
-            <!-- <span id="wishlist-badge">0</span> -->
-            </a>
-            <!-- cart -->
-            <a href="/user/cart" class="nav-link-items"><i class="fa-solid fa-cart-shopping"></i></a>
-            <% if (user) { %>
-                <a href="/user/profile" class="nav-link-items"><i class="fa-solid fa-user"></i></a>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg bg-white navbar-light py-4 border-bottom">
+    <div class="container">
+        <a class="navbar-brand" href="/user/home"><img id="MDB-logo" src="../../image/logo.png" alt="MDB Logo"
+                draggable="false" height="30" /></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#user-nav" aria-controls="user-nav" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+        </button>
+       
+        <div class="collapse navbar-collapse" id="user-nav">
+            <ul class="navbar-nav ms-auto align-items-center">
+                <li class="nav-item">
+                    <form class="mx-5">
+                        <div class="input-group" style="width: 350px;">
+                            <input type="search" class="form-control rounded" placeholder="Search anything..."
+                                aria-label="Search" aria-describedby="search-addon" />
+                        </div>
+                    </form>
+                </li>
+                <li class="nav-item">
+                    <a href="/user/wishlist" class="nav-link mx-2" id="wishlist-nav"><i
+                            class="fa-solid fa-heart"></i></a>
+                </li>
+                <li class="nav-item">
+                    <a href="/user/cart" class="nav-link mx-2"><i class="fa-solid fa-cart-shopping"></i></a>
+                </li>
+                <% if (user) { %>
+                    <li class="nav-item">
+                        <a href="/user/profile" class="nav-link mx-2"><i class="fa-solid fa-user"></i></a>
+                    </li>
                     <% } else { %>
-                        <a href="/user/login" class="btn btn-outline-secondary">Login</a>
+                        <li class="nav-item">
+                            <a href="/user/login" class="btn">Login</a>
+                        </li>
                         <% } %>
-        <!-- if user is logged in then show the profile and other options else show the login button -->
 
-
-            <!-- button for side bar toggle with user icon -->
-            <!-- <span data-bs-toggle="offcanvas" data-bs-target="#side-bar-home-right" aria-controls="offcanvasRight"><i
-                    class="fa-solid fa-user"></i></span> -->
-
-            <!-- side bar right -->
-            <!-- <div class="offcanvas offcanvas-end" tabindex="-1" id="side-bar-home-right"
-                aria-labelledby="offcanvasRightLabel">
-                <div class="offcanvas-header">
-                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
-                        aria-label="Close"></button>
-                </div>
-                <div class="offcanvas-body">
-                    <div class="list-group list-group-flush d-flex flex-column gap-4">
-                        <a href="/user/profile" class="text-center">
-                            <img src="../../image/icon.png" class="w-50" alt="">
-                        </a>
-
-                        <a href="/user/profile" class="list-group-item list-group-item-action"><i
-                                class="fa-solid fa-user"></i> Profile</a>
-                        <a href="/user/orders" class="list-group-item list-group-item-action"><i
-                                class="fa-solid fa-box-open"></i> Orders</a>
-                        <a href="/user/cancelled-orders" class="list-group-item list-group-item-action"><i
-                                class="fa-solid fa-trash-can"></i> Canceled Orders</a>
-                        <a href="/user/forget-password" class="list-group-item list-group-item-action"><i
-                                class="fa-solid fa-lock"></i> Reset Password</a>
-                        <a href="/user/logout" class="list-group-item list-group-item-action"><i
-                                class="fa-solid fa-right-from-bracket"></i> Logout</a>
-
-                    </div>
-                </div>
-            </div>
-                <a href="/user/login" class="btn btn-outline-secondary">Login</a> -->
-
-
-
-
-    </nav>
-</header>
+            </ul>
+        </div>
+    </div>
+</nav>
 
 <!-- alert bar -->
 <%- include('alert')%>
-
-
-    <script>
-
-    </script>

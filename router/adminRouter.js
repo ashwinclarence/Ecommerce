@@ -20,6 +20,8 @@ admin.post('/login', adminController.loginPost);
 // dashboard
 admin.get('/dashboard',checkAdminSession, adminController.dashboard);
 admin.post('/custom-sales',checkAdminSession, adminController.generateCustomSales)
+admin.post('/pdf-report',checkAdminSession, adminController.downloadPdfReport)
+admin.post('/excel-report',checkAdminSession, adminController.downloadExcelReport)
 
 
 // user management

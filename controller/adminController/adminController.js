@@ -4,7 +4,9 @@ const productSchema = require('../../model/productSchema')
 const categorySchema = require('../../model/categorySchema')
 const userSchema = require('../../model/userSchema')
 const orderSchema = require('../../model/orderSchema')
-
+const fs = require("fs");
+const PDFDocument = require("pdfkit-table");
+const path = require('path')
 
 // render the login page for admin only if the admin's session is not present 
 const admin = (req, res) => {
@@ -88,7 +90,7 @@ const dashboard = async (req, res) => {
 
 
 
-        res.render('admin/dashboard', { title: "Admin Dashboard", alertMessage: req.flash('errorMessage'), dailyReport, weeklyReport, monthlyReport,orderDetails })
+        res.render('admin/dashboard', { title: "Admin Dashboard", alertMessage: req.flash('errorMessage'), dailyReport, weeklyReport, monthlyReport, orderDetails })
 
 
     } catch (err) {
@@ -100,27 +102,125 @@ const dashboard = async (req, res) => {
 // generate custom sales report using fetch
 const generateCustomSales = async (req, res) => {
     try {
-        const startDate = req.body.startDate;
-        const endDate = req.body.endDate;
+        const { startDate, endDate } = req.body;
 
+        // Validate start and end dates
         if (!startDate || !endDate) {
             return res.status(400).json({ error: "Start date and end date are required" });
         }
 
-        const orders = await orderSchema.find({ createdAt: { $gte: startDate, $lte: endDate } });
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999); // Set end time to the end of the day
 
-        const sale = orders.reduce((acc, ele) => {
-            return acc + ele.totalPrice
-        }, 0)
+        // Fetch orders within the specified date range
+        const orders = await orderSchema.find({ createdAt: { $gte: start, $lte: end } });
 
+        // Calculate total sales
+        const sale = orders.reduce((acc, order) => acc + order.totalPrice, 0);
+
+        // Send response with the calculated sales
         return res.status(200).json({ message: "Report Generated", sale });
     } catch (err) {
-        console.log(`Error on generating custom sales report: ${err}`);
+        console.error(`Error on generating custom sales report: ${err}`);
         return res.status(500).json({ error: "Internal server error" });
     }
+};
+
+
+
+const downloadPdfReport = async (req, res) => {
+    try {
+        const { startDate, endDate } = req.body;
+
+        // Validate start and end dates
+        if (!startDate || !endDate) {
+            return res.status(400).json({ error: "Start date and end date are required" });
+        }
+
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999); // Set end time to the end of the day
+
+        // Get the order details from order collection
+        const orderDetails = await orderSchema.find({ createdAt: { $gte: start, $lte: end } }).populate('products.productID').sort({ createdAt: -1 });
+        console.log("🚀 ~ file: adminController.js:147 ~ downloadPdfReport ~ orderDetails:", orderDetails);
+
+        // Initialize PDF document
+        const doc = new PDFDocument({ margin: 30, size: 'A4' });
+
+        // Set response headers
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename=report-${Date.now()}.pdf`);
+
+        // Pipe PDF document to response
+        doc.pipe(res);
+
+        // Add title and date range
+        doc.fontSize(18).text('Sales Report', { align: 'center' });
+        doc.fontSize(12).text(`From ${startDate} to ${endDate}`, { align: 'center', marginBottom: 20 });
+
+        doc.moveDown();
+
+        // Add summary
+        const totalOrders = orderDetails.length;
+        const totalProducts = orderDetails.reduce((sum, order) => sum + order.products.reduce((sum, product) => sum + product.quantity, 0), 0);
+        const totalRevenue = orderDetails.reduce((sum, order) => sum + order.products.reduce((sum, product) => sum + product.quantity * product.price, 0), 0);
+
+        doc.fontSize(12).text(`Total Orders: ${totalOrders}`);
+        doc.fontSize(12).text(`Total Products Sold: ${totalProducts}`);
+        doc.fontSize(12).text(`Total Revenue: $${totalRevenue.toFixed(2)}`);
+
+        doc.moveDown();
+
+        // Define table columns
+        const tableHeaders = ['OrderID', 'Date', 'Payment Mode', 'Status', 'Total'];
+
+        // Draw table header
+        doc.fontSize(10).font('Helvetica-Bold');
+        tableHeaders.forEach((header, i) => {
+            doc.text(header, 50 + i * 80, doc.y, { width: 80, align: 'left' });
+        });
+        doc.moveDown();
+
+        // Draw table rows
+        doc.fontSize(10).font('Helvetica');
+        orderDetails.forEach(order => {
+            const orderID = order._id.toString();
+            const date = order.createdAt.toISOString().split('T')[0];
+            const paymentMode = order.paymentMethod; 
+            const status = order.orderStatus;
+            const total = order.totalPrice;
+
+            const row = [orderID, date, paymentMode, status, `Rs${total}`];
+
+            row.forEach((cell, i) => {
+                doc.text(cell, 50 + i * 80, doc.y, { width: 80, align: 'left' });
+            });
+            doc.moveDown();
+        });
+
+        // Finalize the PDF and end the document
+        doc.end();
+
+    } catch (err) {
+        console.error(`Error on downloading PDF sales report: ${err}`);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+};
+
+
+
+
+// download the excel report
+const downloadExcelReport = async (req, res) => {
+    try {
+        const { startDate, endDate } = req.body;
+
+    } catch (err) {
+        console.log(`Error on downloading excel sales report fetch ${err}`);
+    }
 }
-
-
 
 
 
@@ -153,5 +253,7 @@ module.exports = {
     loginPost,
     logout,
     generateCustomSales,
+    downloadPdfReport,
+    downloadExcelReport
 
 }
