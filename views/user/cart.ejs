@@ -9,7 +9,7 @@
         align-items: end;
         justify-content: center;
     }
-   
+
 
 
     .avatar-lg {
@@ -276,11 +276,11 @@
                             </div>
                             <!-- end card -->
                             <% }) %>
-                            <% }else{ %>
-                                <div class="empty-cart-container">
-                                      
-                                </div>
-                                <% } %>
+                                <% }else{ %>
+                                    <div class="empty-cart-container">
+
+                                    </div>
+                                    <% } %>
                 </div>
 
 
@@ -413,8 +413,8 @@
 
         <% }else{ %>
             <div class="empty-cart-container">
-                    <a href="/user/home" class="btn btn-primary">
-                        <i class="mdi mdi-arrow-left me-1"></i> Continue Shopping </a>
+                <a href="/user/home" class="btn btn-primary">
+                    <i class="mdi mdi-arrow-left me-1"></i> Continue Shopping </a>
             </div>
             <% } %>
 
@@ -433,7 +433,9 @@
                         // increase the product quantity 
                         function increaseQuantity(productID, index) {
 
-
+                            // unblock the minus button
+                            document.getElementsByClassName('minus1')[0].disabled = false
+                            
                             if (productQualityInput[index].value >= 10) {
                                 Swal.fire({
                                     icon: "info",
