@@ -65,6 +65,8 @@ user.get('/orders',checkUserSession,orderController.order)
 user.get('/cancelled-orders',checkUserSession,orderController.cancelledOrder)
 user.post('/cancel-order/:orderID',checkUserSession,orderController.cancelledOrderPost)
 
+// wallet
+user.get('/wallet',checkUserSession,orderController.walletRender)
 
 // wishlist
 user.get('/wishlist',checkUserSession,wishlistController.wishlist)
