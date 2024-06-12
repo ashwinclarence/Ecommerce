@@ -187,11 +187,11 @@
                     <% orderDetails.forEach((ele,index)=> { %>
                             <tbody>
                                 <tr>
-                                    <th scope="row"><%= index+1 %></th>
-                                    <td>  <%= ele.createdAt.toDateString() %></td>
-                                    <td> <%= ele._id %></td>
-                                    <td> <%= ele.orderStatus %></td>
-                                    <td>&#8377; <%= ele.totalPrice %></td>
+                                    <th scope="row" class="py-3"><%= index+1 %></th>
+                                    <td class="py-3">  <%= ele.createdAt.toDateString() %></td>
+                                    <td class="py-3"> <%= ele._id %></td>
+                                    <td class="py-3"> <%= ele.orderStatus %></td>
+                                    <td >&#8377; <%= ele.totalPrice %></td>
                                 </tr>
                             </tbody>
                         
