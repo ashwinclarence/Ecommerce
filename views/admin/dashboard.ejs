@@ -287,7 +287,7 @@
                             if (data.sale) {
                                 document.getElementById('custom-sale-display').innerHTML = "&#8377; " + data.sale.toLocaleString();
                             } else {
-                                console.log("No sales data available for the selected period");
+                                document.getElementById('custom-sale-display').innerHTML = "&#8377; " + 0;
                             }
                         })
                         .catch((err) => {
@@ -378,9 +378,8 @@
 
             // download excel report 
             function downloadExcelReport() {
-
                 if (validateDates(startDate.value, endDate.value)) {
-                    const URL = "/admin/excel-report"
+                    const URL = "/admin/excel-report";
                     fetch(URL, {
                         method: "POST",
                         headers: {
@@ -388,10 +387,27 @@
                         },
                         body: JSON.stringify({ startDate: startDate.value, endDate: endDate.value })
                     })
+                        .then((res) => {
+                            if (res.ok) {
+                                return res.blob();
+                            }
+                            throw new Error('Network response was not ok.');
+                        })
+                        .then((blob) => {
+                            const url = window.URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.style.display = 'none';
+                            a.href = url;
+                            a.download = `report-${Date.now()}.xlsx`; // Change extension to .xlsx
+                            document.body.appendChild(a);
+                            a.click();
+                            window.URL.revokeObjectURL(url);
+                        })
+                        .catch((error) => {
+                            console.error('Error:', error);
+                        });
                 }
-
             }
-
 
             // download pdf report 
             function downloadPdfReport() {

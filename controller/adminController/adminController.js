@@ -7,6 +7,8 @@ const orderSchema = require('../../model/orderSchema')
 const fs = require("fs");
 const PDFDocument = require("pdfkit-table");
 const path = require('path')
+const ExcelJS = require('exceljs');
+
 
 // render the login page for admin only if the admin's session is not present 
 const admin = (req, res) => {
@@ -118,8 +120,6 @@ const generateCustomSales = async (req, res) => {
 
         // Calculate total sales
         const sale = orders.reduce((acc, order) => acc + order.totalPrice, 0);
-
-        // Send response with the calculated sales
         return res.status(200).json({ message: "Report Generated", sale });
     } catch (err) {
         console.error(`Error on generating custom sales report: ${err}`);
@@ -166,16 +166,16 @@ const downloadPdfReport = async (req, res) => {
         // });
 
         doc.moveDown();
-        
+
         // Add address details of the company
         doc.fontSize(10).fillColor("black").text(`Address: Trivandrum, Shangumugham`);
         doc.text(`Pincode: 789589`);
         doc.text(`Phone: 987 121 120`);
-        
+
         doc.moveDown();
 
-        const totalSale=orderDetails.reduce((acc,sum)=>acc+sum.totalPrice,0)
-        const totalOrders=orderDetails.length
+        const totalSale = orderDetails.reduce((acc, sum) => acc + sum.totalPrice, 0)
+        const totalOrders = orderDetails.length
 
         // Add total sales report
         doc.text(`Total Orders : ${totalOrders}`);
@@ -199,9 +199,9 @@ const downloadPdfReport = async (req, res) => {
                 "Total"
             ],
             rows: orderDetails.map((order) => {
-                return  [
+                return [
                     order?._id,
-                    order.address?.homeAddress +"\n "+ order.address?.areaAddress+"\n "+"Pincode :"+ order.address?.pincode,
+                    order.address?.homeAddress + "\n " + order.address?.areaAddress + "\n " + "Pincode :" + order.address?.pincode,
                     order?.totalQuantity,
                     order?.orderStatus,
                     'Rs ' + order?.totalPrice,
@@ -235,6 +235,67 @@ const downloadPdfReport = async (req, res) => {
 const downloadExcelReport = async (req, res) => {
     try {
         const { startDate, endDate } = req.body;
+
+        // Validate start and end dates
+        if (!startDate || !endDate) {
+            return res.status(400).json({ error: "Start date and end date are required" });
+        }
+
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999); // Set end time to the end of the day
+
+        // Get the order details from order collection
+        const orderDetails = await orderSchema.find({ createdAt: { $gte: start, $lte: end } }).populate('products.productID').sort({ createdAt: -1 });
+
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet("Sheet 1");
+
+        // Add data to the worksheet
+        worksheet.columns = [
+            { header: "Reference ID", key: "orderId", width: 15 },
+            { header: "Product", key: "productName", width: 20 },
+            { header: "Price", key: "price", width: 15 },
+            { header: "Quantity", key: "quantity", width: 15 },
+            { header: "Status", key: "status", width: 15 },
+            { header: "Address", key: "address", width: 30 },
+            { header: "Pincode", key: "pin", width: 15 },
+            { header: "Order Date", key: "orderDate", width: 18 },
+        ];
+
+        
+
+        for (const order of orderDetails) {
+            const orderId = order._id;
+            const orderDate = order.createdAt;
+            const address = order.address?.homeAddress + ', ' + order.address?.areaAddress
+            const pin = order.address.pincode;
+            const status = order.orderStatus;
+
+            for (const item of order.products) {
+                worksheet.addRow({
+                    orderId,
+                    status,
+                    orderDate,
+                    address,
+                    pin,
+                    productName: item.productName,
+                    price: item.price-item.discount,
+                    quantity: item.quantity
+                });
+            }
+        }
+
+        // Generate the Excel file and send it as a response
+        workbook.xlsx.writeBuffer().then((buffer) => {
+            const excelBuffer = Buffer.from(buffer);
+            res.setHeader(
+                "Content-Type",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            );
+            res.setHeader("Content-Disposition", "attachment; filename=excel.xlsx");
+            res.send(excelBuffer);
+        });
 
     } catch (err) {
         console.log(`Error on downloading excel sales report fetch ${err}`);
