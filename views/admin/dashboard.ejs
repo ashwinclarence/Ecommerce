@@ -28,7 +28,7 @@
     }
 
     .card-counter.success {
-        background-color: #66bb6a;
+        background-color: green;
         color: #FFF;
     }
 
@@ -46,6 +46,15 @@
         background-color: orange;
         color: #FFF;
     }
+    .card-counter.secondary {
+        background-color: rebeccapurple;
+        color: #FFF;
+    }
+    .card-counter.red {
+        background-color: rgb(222, 68, 68);
+        color: #FFF;
+    }
+    
 
     .card-counter i {
         font-size: 5em;
@@ -86,6 +95,36 @@
                 <h2>Sales Report</h2>
             </div>
             <div class="col-md-4">
+                <div class="card-counter secondary">
+                    <i class="fa-solid fa-dollar-sign"></i>
+                    <span class="count-numbers">
+                    <%= overallSalesCount.toLocaleString() %>
+                    </span>
+                    <span class="count-name">Overall Sales Count</span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card-counter primary">
+                    <i class="fa-solid fa-box-archive"></i>
+                    <span class="count-numbers">
+                        &#8377; <%= overallSalesAmount.toLocaleString() %>
+                    </span>
+                    <span class="count-name">Overall Order Amount</span>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card-counter success">
+                    <i class="fa-solid fa-percent"></i>
+                    <span class="count-numbers">
+                        &#8377; <%= overallDiscount.toLocaleString() %>
+                    </span>
+                    <span class="count-name">Overall Discount</span>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-4">
                 <div class="card-counter info">
                     <i class="fa-solid fa-hand-holding-dollar"></i>
                     <span class="count-numbers">
@@ -95,7 +134,7 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card-counter success">
+                <div class="card-counter red">
                     <i class="fa-solid fa-coins"></i>
                     <span class="count-numbers">
                         &#8377; <%= weeklyReport.toLocaleString() %>

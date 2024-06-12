@@ -23,7 +23,7 @@ const login = (req, res) => {
         if (req.session.admin) {
             res.redirect('/admin/dashboard')
         } else {
-            res.render('admin/login', { title: "Admin Login", alertMessage: "" })
+            res.render('admin/login', { title: "Admin Login", alertMessage:req.flash('errorMessage')})
         }
     } catch (err) {
         console.log(`Error during admin login page render ${err}`)
@@ -39,7 +39,8 @@ const loginPost = (req, res) => {
             req.session.admin = req.body.username;
             res.redirect('/admin/dashboard')
         } else {
-            res.render('admin/login', { title: "Admin Login", alertMessage: "Invalid username or password" })
+            req.flash('errorMessage',"Invalid username or password")
+            res.redirect('/admin/login')
         }
 
     } catch (err) {
@@ -54,8 +55,6 @@ const dashboard = async (req, res) => {
     try {
 
 
-        // sales report
-        const orders = await orderSchema.find();
 
         // get the order details from order collection (
         const orderDetails = await orderSchema.find().populate('products.productID').sort({ createdAt: -1 })
@@ -67,7 +66,7 @@ const dashboard = async (req, res) => {
         const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
 
         // daily report
-        const dailyReport = orders.reduce((acc, ele) => {
+        const dailyReport = orderDetails.reduce((acc, ele) => {
             if (new Date(ele.createdAt) >= startOfToday) {
                 return acc + ele.totalPrice;
             }
@@ -75,7 +74,7 @@ const dashboard = async (req, res) => {
         }, 0);
 
         // weekly report
-        const weeklyReport = orders.reduce((acc, ele) => {
+        const weeklyReport = orderDetails.reduce((acc, ele) => {
             if (new Date(ele.createdAt) >= startOfWeek) {
                 return acc + ele.totalPrice;
             }
@@ -83,16 +82,30 @@ const dashboard = async (req, res) => {
         }, 0);
 
         // monthly report
-        const monthlyReport = orders.reduce((acc, ele) => {
+        const monthlyReport = orderDetails.reduce((acc, ele) => {
             if (new Date(ele.createdAt) >= startOfMonth) {
                 return acc + ele.totalPrice;
             }
             return acc;
         }, 0);
 
+        // overall sales
+        const overallSalesAmount=orderDetails.reduce((acc,ele)=>{
+            return acc+ele.totalPrice
+        },0)
+
+        //overall sales count
+        const overallSalesCount=orderDetails.length
 
 
-        res.render('admin/dashboard', { title: "Admin Dashboard", alertMessage: req.flash('errorMessage'), dailyReport, weeklyReport, monthlyReport, orderDetails })
+        // overall discount
+        const overallDiscount=orderDetails.reduce((acc,ele)=>{
+            return acc+ele.couponDiscount
+        },0)
+
+
+
+        res.render('admin/dashboard', { title: "Admin Dashboard", alertMessage: req.flash('errorMessage'), dailyReport, weeklyReport, monthlyReport, orderDetails,overallSalesAmount,overallSalesCount,overallDiscount })
 
 
     } catch (err) {
