@@ -69,9 +69,9 @@ const placeOrder = async (req, res) => {
 
         // address index and payment mode
         const addressIndex = req.params.address
-        const paymentMode = req.params.payment
-        let paymentId = 0
-
+        const paymentMode = parseInt(req.params.payment)
+        let paymentId = ""
+        
         // check if selected payment method is razor pay or not
         if (paymentMode === 1) {
             // order details when razor pay is selected
@@ -79,14 +79,14 @@ const placeOrder = async (req, res) => {
             const razorpay_order_id = req.body.razorpay_order_id
             const razorpay_signature = req.body.razorpay_signature
             paymentId = req.body.razorpay_payment_id
-
+            
             // verify the payment
             // const instance = new Razorpay({ key_id: process.env.RAZORPAY_KEY_ID, key_secret: process.env.RAZORPAY_KEY_SECRET })
 
             // let { validatePaymentVerification, validateWebhookSignature } = require('./dist/utils/razorpay-utils');
             // validatePaymentVerification({ "order_id": razorpayOrderId, "payment_id": razorpayPaymentId }, signature, secret);
-        }
-
+            }
+            
 
         const cartItems = await cartSchema.findOne({ userID: req.session.user }).populate('items.productID')
         const paymentDetails = [
@@ -137,7 +137,8 @@ const placeOrder = async (req, res) => {
             },
             paymentMethod: paymentDetails[paymentMode],
             orderStatus: "Confirmed",
-            paymentId: paymentId
+            paymentId: paymentId,
+            couponDiscount:cartItems.couponDiscount
         })
 
         // Start a session for transaction

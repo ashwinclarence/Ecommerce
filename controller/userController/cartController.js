@@ -284,6 +284,9 @@ const incrementProduct = async (req, res) => {
         return res.status(500).json({ error: "Internal Server Error" })
     }
 }
+
+
+
 // decrement the product quantity
 const decrementProduct = async (req, res) => {
     try {
@@ -397,8 +400,8 @@ const applyCoupon = async (req, res) => {
         // find the total price after minus the coupon discount amount from total price from cart 
         let totalAmountAfterCoupon = cart.payableAmount - coupon.discount
 
-        // // save the coupon id in the cart
-        cart.couponDiscount = coupon._id
+         // save the coupon id in the cart
+        cart.couponDiscount = coupon.discount
         await cart.save()
 
         return res.status(200).json({
