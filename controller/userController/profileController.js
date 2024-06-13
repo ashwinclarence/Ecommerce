@@ -1,10 +1,13 @@
 const userSchema = require("../../model/userSchema");
+const walletSchema = require("../../model/walletSchema");
 
 const profileView = async (req, res) => {
     try {
 
         // find the user details using the user's email
         const userDetail = await userSchema.findById(req.session.user)
+        const wallet=await walletSchema.findOne({userID:req.session.user})
+
 
         // if user data is not available by any chance then redirect to home page with an alert message
         if (userDetail === null) {
@@ -13,7 +16,7 @@ const profileView = async (req, res) => {
         }
 
         // if user data is available then redirect to user profile page
-        res.render('user/profile', { title: "Profile", alertMessage: req.flash('errorMessage'), user: req.session.user, userDetail })
+        res.render('user/profile', { title: "Profile", alertMessage: req.flash('errorMessage'), user: req.session.user, userDetail ,wallet:wallet.balance})
 
 
     } catch (err) {

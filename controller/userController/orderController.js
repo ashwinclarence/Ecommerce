@@ -105,12 +105,14 @@ const cancelledOrderPost = async (req, res) => {
     }
 }
 
+
+// wallet render
 const walletRender = async (req, res) => {
     try {
 
-        const wallet = await userSchema.findById(req.session.user)
+        const wallet = await walletSchema.findOne({userID:req.session.user})
 
-        const walletBalance = wallet.wallet
+        const walletBalance = wallet.balance
 
         const orderDetails = await orderSchema.find({ userID: req.session.user, paymentMethod: "Razor pay", orderStatus: { $in: ["Cancelled", "Returned"] } }).sort({ createdAt: -1 })
 
