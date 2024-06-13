@@ -22,27 +22,44 @@ const orderConfirmPage = (req, res) => {
 // render the checkout page
 const checkout = async (req, res) => {
     try {
+        // Find the user's address
+        const userAddress = await userSchema.findById(req.session.user);
 
-        // find the user address
-        const userAddress = await userSchema.findById(req.session.user)
+        // Get the address section from the userAddress
+        const addressData = userAddress.address;
 
-        // get the address section from the userAddress
-        const addressData = userAddress.address
+        // Get all cart items
+        const cartDetails = await cartSchema.findOne({ userID: req.session.user }).populate("items.productID");
 
-        // get all cart items
-        const cartDetails = await cartSchema.findOne({ userID: req.session.user }).populate("items.productID")
+        // Get the list of items in the cart
+        const cartItems = cartDetails.items;
 
-        // get the list of items in the cart
-        const cartItems = cartDetails.items
+        // Check if current product quantity is available or not
+        for (const item of cartDetails.items) {
+            if (item.productID.productQuantity === 0 || item.productID.productQuantity < item.productCount) {
+                req.flash('errorMessage', 'The selected quantity for one or more items is not available. Please adjust your order and try again.');
+                return res.redirect('/user/cart');
+            }
+        }
 
 
-
-        res.render('user/checkout', { title: "Checkout", addressData, cartItems, cartDetails, user: userAddress, alertMessage: req.flash('errorMessage') })
+        // Render the checkout page with fetched data
+        res.render('user/checkout', {
+            title: "Checkout",
+            addressData,
+            cartItems,
+            cartDetails,
+            user: userAddress,
+            alertMessage: req.flash('errorMessage')
+        });
 
     } catch (err) {
-        console.log(`Error on rendering the checkout page ${err}`)
+        // Handle any errors
+        console.log(`Error on rendering the checkout page ${err}`);
+        // You might want to redirect or render an error page here
     }
 }
+
 
 
 // place order post method
@@ -53,14 +70,15 @@ const placeOrder = async (req, res) => {
         // address index and payment mode
         const addressIndex = req.params.address
         const paymentMode = req.params.payment
-        let paymentId = ''
+        let paymentId = 0
+
         // check if selected payment method is razor pay or not
         if (paymentMode === 1) {
             // order details when razor pay is selected
             const razorpay_payment_id = req.body.razorpay_payment_id
             const razorpay_order_id = req.body.razorpay_order_id
             const razorpay_signature = req.body.razorpay_signature
-             paymentId=req.body.razorpay_payment_id
+            paymentId = req.body.razorpay_payment_id
 
             // verify the payment
             // const instance = new Razorpay({ key_id: process.env.RAZORPAY_KEY_ID, key_secret: process.env.RAZORPAY_KEY_SECRET })
@@ -80,14 +98,8 @@ const placeOrder = async (req, res) => {
         const products = []
         let totalQuantity = 0
 
+        
         cartItems.items.forEach((ele) => {
-
-            // check the product count is available at the product stock
-            if (ele.productID.productQuantity - ele.productCount < 0) {
-                req.flash('errorMessage', 'The selected quantity for one or more items is not available. Please adjust your order and try again.')
-                return res.redirect('/user/cart')
-            }
-
 
             // add each products details in the cart to an array called products
             products.push({

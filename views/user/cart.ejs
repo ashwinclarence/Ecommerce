@@ -156,7 +156,6 @@
             <div class="row">
                 <div class="col-xl-8">
                     <!-- check the cart is empty or not -->
-
                     <% if(cart.items.length!=0){ %>
                         <% cart.items.forEach((items,index)=>{ %>
                             <div class="card border shadow-none">
@@ -188,6 +187,11 @@
                                                 <p class="mb-0 mt-1 badge badge-success">
                                                     <%= items.productID.productDiscount %>&percnt; OFF
                                                 </p>
+                                                <% if(items.productID.productQuantity<10){ %>
+                                                    <b class="mb-0 mt-1 ms-3 text-danger">
+                                                        Only <%= items.productID.productQuantity %> stock left
+                                                    </b>
+                                                    <% }%>
                                             </div>
                                         </div>
                                         <div class="flex-shrink-0 ms-2">
@@ -263,7 +267,7 @@
                                                 <div class="mt-3">
                                                     <p class="text-muted mb-2">Total</p>
                                                     <h5>&#8377;<span class="each-product-total">
-                                                            <%= items.productID.productDiscountedPrice*items.productCount
+                                                            <%= (items.productID.productDiscountedPrice*items.productCount).toLocaleString()
                                                                 %>
                                                         </span>
                                                     </h5>
@@ -425,17 +429,18 @@
 
                     <script>
 
+
                         const productQualityInput = document.querySelectorAll('#quantity-count')
                         const productTotal = document.querySelectorAll('.each-product-total')
                         const subTotalPrice = document.getElementById('sub-total-price')
                         const savingsAmount = document.getElementById('savings-price')
                         const totalAmount = document.getElementById('total-price-box')
-                        // increase the product quantity 
+                        // increase the product quantity
                         function increaseQuantity(productID, index) {
 
                             // unblock the minus button
                             document.getElementsByClassName('minus1')[0].disabled = false
-                            
+
                             if (productQualityInput[index].value >= 10) {
                                 Swal.fire({
                                     icon: "info",
@@ -445,31 +450,36 @@
 
 
                             if (productQualityInput[index].value >= 1 && productQualityInput[index].value < 10) {
-                                const URL = `/user/increment-product/${productID}`
+                                const URL = `/user/increment-product/${productID}`;
                                 fetch(URL, {
-                                    method: "PUT",
-                                    headers: {
-                                        "Content-Type": "application/json"
-                                    },
-                                    body: JSON.stringify({ quantity: productQualityInput[index].value })
+                                    method: "PUT", headers:
+                                        { "Content-Type": "application/json" }, body: JSON.stringify({
+                                            quantity:
+                                                productQualityInput[index].value
+                                        })
                                 }).then((res) => {
-                                    if (res.ok) {
-                                        return res.json()
-                                    } else {
-                                        throw new Error("Cannot update product quantity")
-                                    }
+                                    // if (!res.ok) {
+                                    //     throw new Error("Cannot update product quantity")
+                                    // }
+                                    return res.json()
                                 }).then((data) => {
 
                                     // if product quantity changed then change and quantity in all fields
                                     if (data.productCount) {
                                         productQualityInput[index].value = data.productCount
-                                        productTotal[index].innerHTML = data.productTotal
+                                        productTotal[index].innerHTML = data.productTotal.toLocaleString()
                                         subTotalPrice.innerHTML = data.subTotal.toLocaleString()
                                         savingsAmount.innerHTML = data.savings.toLocaleString()
                                         totalAmount.innerHTML = data.total.toLocaleString()
-
+                                    }
+                                    if (data.error) {
+                                        const notyf = new Notyf({ duration: 9000 });
+                                        notyf.error(data.error)
+                                        console.log(data.error);
 
                                     }
+                                }).catch((err) => {
+
                                 })
                             }
 
@@ -488,8 +498,9 @@
                                 document.getElementsByClassName('minus1')[0].disabled = true
                             }
 
+
                             if (productQualityInput[index].value > 1) {
-                                const URL = `/user/decrement-product/${productID}`
+                                const URL = `/user/decrement-product/${productID}`;
 
                                 fetch(URL, {
                                     method: "PUT",
@@ -498,20 +509,28 @@
                                     },
                                     body: JSON.stringify({ quantity: productQualityInput[index].value })
                                 }).then((res) => {
-                                    if (res.ok) {
-                                        return res.json()
-                                    } else {
-                                        throw new Error("Cannot reduce the product quantity")
-                                    }
+                                    // if (!res.ok) {
+                                    //     throw new Error("Cannot reduce the product quantity")
+                                    // }
+                                    return res.json()
                                 }).then((data) => {
-                                    // if the product quantity changed in backend then change the quantity and prices at the cart 
+                                    // if the product quantity changed in backend then change the quantity and prices at the 
                                     if (data.productCount) {
                                         productQualityInput[index].value = data.productCount
-                                        productTotal[index].innerHTML = data.productTotal
+                                        productTotal[index].innerHTML = data.productTotal.toLocaleString()
                                         subTotalPrice.innerHTML = data.subTotal.toLocaleString()
                                         savingsAmount.innerHTML = data.savings.toLocaleString()
                                         totalAmount.innerHTML = data.total.toLocaleString()
                                     }
+                                    if (data.error) {
+                                        const notyf = new Notyf({ duration: 9000 });
+                                        notyf.error(data.error)
+                                        console.log(data.error);
+
+                                    }
+                                }).catch((err) => {
+
+
                                 })
                             }
                         }
@@ -519,7 +538,7 @@
                         // product quantity and productID on onChange function
                         function updateProductCount(productID, value) {
 
-                            // url for the fetch request 
+                            // url for the fetch request
                             const URL = `/user/cart-count/${productID}/?productCount=${value}`;
 
                             // fetch request for updating product count in cart
@@ -611,11 +630,8 @@
                         const couponOffer = document.getElementById("coupon-offer")
                         const minAmount = document.getElementById('min-coupon-amount')
 
-
-
                         let offerAmount = 0
                         let minAmountNeeded = 0
-
 
                         couponSelect.addEventListener('change', (e) => {
                             e.preventDefault()
@@ -697,7 +713,7 @@
 
                             }).then((res) => {
                                 // if(!res.ok){
-                                //     throw new Error('Cannot apply coupon')
+                                // throw new Error('Cannot apply coupon')
                                 // }
                                 return res.json()
                             }).then((data) => {

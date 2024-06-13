@@ -101,7 +101,7 @@
         <h1 class="h3 mb-5">Checkout</h1>
         <div class="row">
             <!-- left side -->
-            <div class="accordion col-lg-9" id="accordionExample">
+            <div class="accordion col-lg-8" id="accordionExample">
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingOne">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse"
@@ -113,7 +113,7 @@
                         data-bs-parent="#accordionExample">
                         <div class="accordion-body">
                             <% if(addressData.length<4){ %>
-                                <div class="text-center m-5">
+                                <div class="text-center m-3">
                                     <button class="btn btn-primary " type="button" data-toggle="modal"
                                         data-target=".add-new-address-modal" id="add-address-button">Add
                                         address</button>
@@ -405,7 +405,7 @@
             <!-- end of third accordion -->
 
             <!-- Right -->
-            <div class="col-lg-3">
+            <div class="col-lg-4">
                 <div class="card position-sticky top-0 border-1">
                     <div class="p-3 bg-light bg-opacity-10">
                         <h6 class="card-title mb-3">Order Summary</h6>
@@ -431,7 +431,7 @@
                                         <span>TOTAL</span> <strong class="text-dark">&#8377;<%=
                                                 (cartDetails.payableAmount).toLocaleString() %></strong>
                                     </div>
-                                    <!-- <div class="form-check mb-1 small">
+                                    <div class="form-check mb-1 small">
                             <input class="form-check-input" type="checkbox" value="" id="tnc">
                             <label class="form-check-label" for="tnc">
                                 I agree to the <a href="#">terms and conditions</a>
@@ -443,7 +443,7 @@
                                 Get emails about product updates and events. If you change your mind, you can
                                 unsubscribe at any time. <a href="#">Privacy Policy</a>
                             </label>
-                        </div> -->
+                        </div>
                                     <form action="" method="post" id="place-order-form">
 
                                         <button type="submit" class="btn btn-success w-100 mt-2"

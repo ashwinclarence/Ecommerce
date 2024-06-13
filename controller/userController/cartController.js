@@ -2,6 +2,7 @@ const cartSchema = require('../../model/cartSchema')
 const productSchema = require('../../model/productSchema')
 const couponSchema = require('../../model/couponSchema')
 
+
 // render the cart with items in the cart
 const cart = async (req, res) => {
     try {
@@ -17,6 +18,7 @@ const cart = async (req, res) => {
 
 
         if (cart) {
+
             // find the total price of cart items
             cart.items.forEach((ele) => {
                 // if the product have discount then find the total price after making a discount from the actual price
@@ -233,6 +235,7 @@ const incrementProduct = async (req, res) => {
 
         const cart = await cartSchema.findOne({ userID: req.session.user }).populate('items.productID')
 
+        // filter out the current product from cart.items
         const productCart = cart.items.filter((ele) => {
             if (ele.productID.id === productID) {
                 return ele
@@ -240,6 +243,9 @@ const incrementProduct = async (req, res) => {
         })
 
         productCart[0].productCount += 1;
+        if(productCart[0].productCount>productCart[0].productID.productQuantity){
+            return res.status(404).json({error:`Only ${productCart[0].productID.productQuantity} items left`})
+        }
 
 
         let totalPrice = 0

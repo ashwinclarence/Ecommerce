@@ -28,6 +28,7 @@
         position: relative;
         transition: .1s ease-in-out;
     }
+
     .product-box:hover {
         scale: .98;
     }
@@ -63,13 +64,14 @@
         z-index: 10;
     }
 
-    .product-new-arrival-box{
+    .product-new-arrival-box {
         position: absolute;
         top: -10px;
         right: 10px;
         width: 20px;
     }
-    .product-new-arrival-box img{
+
+    .product-new-arrival-box img {
         width: 50px;
         height: 50px;
         object-fit: contain;
@@ -116,11 +118,13 @@
         height: 50vh;
         width: 100%;
     }
-    .product-description-box{
+
+    .product-description-box {
         text-decoration: none;
         color: #000000;
     }
-    .like-btn{
+
+    .like-btn {
         display: none;
         scale: 1.5;
     }
@@ -145,48 +149,51 @@
 
                         <!-- if the product is added which one day then new arrival banner is shown on top of the product box -->
                         <% } %>
-                        <% if (new Date(product.createdAt).getTime() > (Date.now() - (3 * 24 * 60 * 60 * 1000))) { %>
-                            <div class="product-new-arrival-box">
-                                <img src="../../image/newbanner.png" alt="">
-                            </div>
-                            <% } %>
-
-                                <!-- image of product which is stored in uploads folder -->
-                                <div class="product-image-box">
-                                    <img src="/<%= product.productImage[0] %>" loading="lazy" />
-
-
-                                    <!-- product review -->
-                                    <h6 class="product-star-rating">
-                                        4.5 <span class="product-star-icon">&starf;</span>
-                                    </h6>
+                            <% if (new Date(product.createdAt).getTime()> (Date.now() - (3 * 24 * 60 * 60 * 1000))) { %>
+                                <div class="product-new-arrival-box">
+                                    <img src="../../image/newbanner.png" alt="">
                                 </div>
-                                <!-- product description with text overflow as ... -->
-                                <a href="/user/product-view/<%= product.id %>" class="product-description-box">
-                                    <h6 class="product-text-row">
-                                        <%= product.productBrand %>
-                                    </h6>
-                                    <p class="product-name product-text-row">
-                                        <%= product.productName %>
-                                    </p>
-                                    <h5 class="product-price">
-                                        <i class="fa-solid fa-indian-rupee-sign product-text-row"></i>
-                                        <%= product.productPrice.toLocaleString() %>
-                                    </h5>
-                                </a>
-                                <div>
-                                    <!-- <hr> -->
-                                    <div class="d-flex flex-row-reverse gap-3">
-                                        <button onclick="addToWishlist('<%= product.id %>')" class="btn btn-sm" ><i class="fa-solid fa-heart"></i></button>
-                                        <button onclick="addToCart('<%= product.id %>','<%= product.productPrice %>')" class="btn btn-sm "><i class="fa-solid fa-cart-shopping"></i></button>
+                                <% } %>
+
+                                    <!-- image of product which is stored in uploads folder -->
+                                    <div class="product-image-box">
+                                        <img src="/<%= product.productImage[0] %>" loading="lazy" />
+
+
+                                        <!-- product review -->
+                                        <h6 class="product-star-rating">
+                                            4.5 <span class="product-star-icon">&starf;</span>
+                                        </h6>
+                                    </div>
+                                    <!-- product description with text overflow as ... -->
+                                    <a href="/user/product-view/<%= product.id %>" class="product-description-box">
+                                        <h6 class="product-text-row">
+                                            <%= product.productBrand %>
+                                        </h6>
+                                        <p class="product-name product-text-row">
+                                            <%= product.productName %>
+                                        </p>
+                                        <h5 class="product-price">
+                                            <i class="fa-solid fa-indian-rupee-sign product-text-row"></i>
+                                            <%= product.productPrice.toLocaleString() %>
+                                        </h5>
+                                    </a>
+                                    <div>
+                                        <!-- <hr> -->
+                                        <div class="d-flex flex-row-reverse gap-3">
+                                            <button onclick="addToWishlist('<%= product.id %>')" class="btn btn-sm"><i
+                                                    class="fa-solid fa-heart"></i></button>
+                                            <button
+                                                onclick="addToCart('<%= product.id %>','<%= product.productPrice %>')"
+                                                class="btn btn-sm "><i class="fa-solid fa-cart-shopping"></i></button>
+                                        </div>
+
+                                        <!-- product availability -->
+                                        <% if(product.productQuantity<=0){ %>
+                                            <h6 class="product-availability">Product Out of stock</h6>
+                                            <% } %>
                                     </div>
 
-                                    <!-- product availability -->
-                                    <% if(product.productQuantity<=0){ %>
-                                        <h6 class="product-availability">Product Out of stock</h6>
-                                        <% } %>
-                                </div>
-                                
 
                 </div>
 
@@ -201,67 +208,70 @@
 
 <script>
 
-    
-        // fetch to add products to cart from wish list 
-        function addToCart(productsId,price){
-        
-        const URL=`/user/add-to-cart/${productsId}/?price=${price}`
 
-        fetch(URL,{
-            method:"POST",
-            headers:{
-                "content-Type":"application/JSON",
+    // fetch to add products to cart from wish list 
+    function addToCart(productsId, price) {
+
+        const URL = `/user/add-to-cart/${productsId}/?price=${price}`
+
+        fetch(URL, {
+            method: "POST",
+            headers: {
+                "content-Type": "application/JSON",
             },
-        }).then((res)=>{
-            if(res.ok){
+        }).then((res) => {
+            if (res.ok) {
                 Swal.fire({
-                    icon:"success",
-                    title:"Product added to cart",
-                    showConfirmButton:false,
-                    timer:700,
-                }).then(()=>{
+                    icon: "success",
+                    title: "Product added to cart",
+                    showConfirmButton: false,
+                    timer: 700,
+                }).then(() => {
                     // window.location.reload()
                 })
             }
             return res.json(); // Return JSON data
-        }).then((data)=>{
+        }).then((data) => {
 
-            console.log(data);
-            if(data.error){
-                Swal.fire({
-                    icon:"error",
-                    title:`Cannot add product on cart`,
-                    text:data.error
-                })
+            if (data.error) {
+                // Swal.fire({
+                //     icon: "error",
+                //     title: `Cannot add product on cart`,
+                //     text: data.error
+                // })
+                const notyf = new Notyf({ duration: 9000, });
+                notyf.error(data.error)
+                console.log(data.error);
             }
-        }).catch((err)=>{
-              console.log(`Error on adding product to cart ${err}`);
+        }).catch((err) => {
+            console.log(`Error on adding product to cart ${err}`);
         })
     }
 
 
-    function addToWishlist(productID){
-        const URL=`/user/add-wishlist/${productID}`
-        fetch(URL,{
-            method:'get',
-        }).then((Response)=>{
-            if(Response.ok){
+    // function to add product to wishlist
+    function addToWishlist(productID) {
+        const URL = `/user/add-wishlist/${productID}`
+        fetch(URL, {
+            method: 'get',
+        }).then((Response) => {
+            if (Response.ok) {
                 Swal.fire({
-                    icon:"success",
-                    title:"Product added to wishlist",
-                    showConfirmButton:false,
-                    timer:700,
+                    icon: "success",
+                    title: "Product added to wishlist",
+                    showConfirmButton: false,
+                    timer: 700,
                 })
-            }else{
+            } else {
                 Swal.fire({
-                    icon:"success",
-                    title:"Product added to wishlist",
-                    showConfirmButton:false,
-                    timer:700,
+                    icon: "success",
+                    title: "Product added to wishlist",
+                    showConfirmButton: false,
+                    timer: 700,
                 })
             }
         })
     }
 
-    
+
 </script>
