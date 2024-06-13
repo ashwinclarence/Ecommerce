@@ -45,8 +45,13 @@ const editOrder = async (req, res) => {
 
         const order = await orderSchema.findById(orderID)
 
-       
+    // change the order status 
         order.orderStatus= productDeliveryStatusEnum[orderStatus]
+
+        // if the order status is delivered then set the delivery date
+        if(order.orderStatus==="Delivered"){
+            order.deliveryDate=new Date()
+        }
 
         await order.save()
 
