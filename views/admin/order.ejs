@@ -90,6 +90,7 @@
                     </tr>
                 </thead>
                 <tbody>
+                    <% if(orderDetails.length!=0){ %>
                     <% orderDetails.forEach((ele,index)=>{ %>
                         <tr>
                             <th scope="row" class="text-center">
@@ -105,30 +106,38 @@
                                 <%= ele.paymentMethod %>
                             </td>
                             <td>
-                               <span class="badge"><%= ele.orderStatus %></span> 
+                                <span class="badge">
+                                    <%= ele.orderStatus %>
+                                </span>
                             </td>
                             <td>&#8377;<%= ele.totalPrice.toLocaleString() %>
                             </td>
                             <td class="text-center">
-                                <a href="/admin/view-order/<%= ele._id %>" id="view-order-button" class="btn" >
+                                <a href="/admin/view-order/<%= ele._id %>" id="view-order-button" class="btn">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </a>
 
                             </td>
                         </tr>
                         <% }) %>
+                        <% }else { %>
+                            <tr>
+                                <th colspan="7" class="text-center p-5 text-secondary">No Order Placed yet</th>
+                            </tr>
+                        <% } %>
                 </tbody>
             </table>
         </div>
     </div>
-   
+
     <%- include('footer') %>
 
-       
-    <script>
-        const orderStatusBadge = document.querySelectorAll('.badge')
 
-        orderStatusBadge.forEach((badge) => {
+        <script>
+
+            // change the badge color of order status
+            const orderStatusBadge = document.querySelectorAll('.badge')
+            orderStatusBadge.forEach((badge) => {
                 if (badge.innerHTML.trim().toLocaleLowerCase() === "cancelled") {
                     badge.classList.add('badge-danger')
                 }
@@ -139,11 +148,14 @@
                     badge.classList.add('badge-warning')
                 }
                 if (badge.innerHTML.trim().toLocaleLowerCase() === "pending") {
-                    badge.classList.add('badge-info')
+                    badge.classList.add('badge-secondary')
                 }
                 if (badge.innerHTML.trim().toLocaleLowerCase() === "confirmed") {
                     badge.classList.add('badge-primary')
                 }
+                if (badge.innerHTML.trim().toLocaleLowerCase() === "shipping") {
+                    badge.classList.add('badge-info')
+                }
             })
 
-    </script>
+        </script>

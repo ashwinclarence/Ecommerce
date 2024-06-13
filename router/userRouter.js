@@ -64,6 +64,7 @@ user.post('/update-profile',checkUserSession,profileController.updateProfile)
 user.get('/orders',checkUserSession,orderController.order)
 user.get('/cancelled-orders',checkUserSession,orderController.cancelledOrder)
 user.post('/cancel-order/:orderID',checkUserSession,orderController.cancelledOrderPost)
+user.post('/return-order/:orderID',checkUserSession,orderController.returnOrderPost)
 
 // wallet
 user.get('/wallet',checkUserSession,orderController.walletRender)

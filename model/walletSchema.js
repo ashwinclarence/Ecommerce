@@ -8,10 +8,10 @@ const schema=new mongoose.Schema({
         type:Number,
         default:0
     },
-    orderID:{
+    orderID:[{
         type:mongoose.Schema.Types.ObjectId,
         ref:"order"
-    }
+    }]
 },{timestamps:true})
 
 module.exports=mongoose.model('wallet',schema)

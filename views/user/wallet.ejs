@@ -155,20 +155,20 @@
                 Profile</a>
             <a href="/user/orders" class="nav-link ms-4 "><i class="fa-solid fa-truck-moving"></i> Orders</a>
             <a href="/user/cancelled-orders" class="nav-link ms-4"><i class="fa-solid fa-ban"></i> Cancelled Orders</a>
-            <a href="/user/wallet" class="nav-link ms-4 active" ><i class="fa-solid fa-wallet"></i> Wallet</a>
+            <a href="/user/wallet" class="nav-link ms-4 active"><i class="fa-solid fa-wallet"></i> Wallet</a>
 
         </nav>
         <div class="row">
             <!-- left side overall stats-->
             <div class="col-xl-3">
-                
+
                 <div class="col-md-12">
                     <div class="card-counter success">
                         <i class="fa-solid fa-wallet"></i>
                         <span class="count-numbers">&#8377; <%= walletBalance %></span>
                         <span class="count-name">Wallet Balance</span>
                     </div>
-                </div> 
+                </div>
             </div>
 
             <!-- right side orders list  -->
@@ -176,35 +176,49 @@
                 <table class="table">
                     <thead class="table-primary">
                         <tr>
-                          <th scope="col">Sl no</th>
-                          <th scope="col">Order Date</th>
-                          <th scope="col">Order ID</th>
-                          <th scope="col">Status</th>
-                          <th scope="col">Total</th>
+                            <th colspan="5" class="text-secondary text-center p-4">Transaction history</th>
                         </tr>
+                        <tr>
+                            <th scope="col">Sl no</th>
+                            <th scope="col">Order Date</th>
+                            <th scope="col">Order ID</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Total</th>
+                        </tr>
+
                     </thead>
-                <% if(orderDetails.length!=0){ %>
-                    <% orderDetails.forEach((ele,index)=> { %>
+                    <% if(orderDetails.length!=0){ %>
+                        <% orderDetails.forEach((ele,index)=> { %>
                             <tbody>
                                 <tr>
-                                    <th scope="row" class="py-3"><%= index+1 %></th>
-                                    <td class="py-3">  <%= ele.createdAt.toDateString() %></td>
-                                    <td class="py-3"> <%= ele._id %></td>
-                                    <td class="py-3"> <%= ele.orderStatus %></td>
-                                    <td >&#8377; <%= ele.totalPrice %></td>
+                                    <th scope="row" class="py-3">
+                                        <%= index+1 %>
+                                    </th>
+                                    <td class="py-3">
+                                        <%= ele.createdAt.toDateString() %>
+                                    </td>
+                                    <td class="py-3">
+                                        <%= ele._id %>
+                                    </td>
+                                    <td class="py-3">
+                                        <%= ele.orderStatus %>
+                                    </td>
+                                    <td class="py-3">&#8377; <%= ele.totalPrice %>
+                                    </td>
                                 </tr>
                             </tbody>
-                        
-                        <% }) %>
-                    <% } else { %>
-                    <tbody>
-                        <tr>
-                            <td colspan="5"  class="p-5">No wallet transactions</td>
-                        </tr>
-                    </tbody>
-                <% } %>
+
+                            <% }) %>
+                                <% } else { %>
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="5" class="p-5 text-center text-secondary">No wallet
+                                                transactions</td>
+                                        </tr>
+                                    </tbody>
+                                    <% } %>
                 </table>
-                                    <!-- end card -->
+                <!-- end card -->
 
             </div>
         </div>
@@ -218,9 +232,9 @@
                     <h2 class="text-center mb-5">Reason for cancelling</h2>
                     <form action="/user/cancel-order/" method="post" id="cancel-order-form">
                         <div class="form-group">
-                            <textarea class="form-control" id="reason-for-cancel" rows="5"
-                                name="cancelReason" placeholder="please provide the reason for cancelling the order"></textarea>
-                            <label for="reason-for-cancel" class="cancel-form-validate text-danger" ></label>
+                            <textarea class="form-control" id="reason-for-cancel" rows="5" name="cancelReason"
+                                placeholder="please provide the reason for cancelling the order"></textarea>
+                            <label for="reason-for-cancel" class="cancel-form-validate text-danger"></label>
                         </div>
                         <div class="form-group text-center">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

@@ -6,18 +6,13 @@ const profileView = async (req, res) => {
 
         // find the user details using the user's email
         const userDetail = await userSchema.findById(req.session.user)
-        const wallet=await walletSchema.findOne({userID:req.session.user})
-
 
         // if user data is not available by any chance then redirect to home page with an alert message
-        if (userDetail === null) {
+        if (!userDetail) {
             req.flash('errorMessage', 'Apologies, we encountered an issue while loading the user data. Please try again later.')
             return res.redirect('/user/home')
         }
-
-        // if user data is available then redirect to user profile page
-        res.render('user/profile', { title: "Profile", alertMessage: req.flash('errorMessage'), user: req.session.user, userDetail ,wallet:wallet.balance})
-
+        res.render('user/profile', { title: "Profile", alertMessage: req.flash('errorMessage'), user: req.session.user, userDetail })
 
     } catch (err) {
         console.log(`Error during profile page render ${err}`);
@@ -26,23 +21,23 @@ const profileView = async (req, res) => {
 
 
 // update the user profile
-const updateProfile=async (req,res)=>{
+const updateProfile = async (req, res) => {
     try {
 
         // get the form data
-        const userName=req.body.name;
-        const phone=req.body.phone;
+        const userName = req.body.name;
+        const phone = req.body.phone;
 
         // update the user details
-        const profileUpdate=await userSchema.findByIdAndUpdate(req.session.user,{name:userName,phone:phone})
+        const profileUpdate = await userSchema.findByIdAndUpdate(req.session.user, { name: userName, phone: phone })
 
-        if(profileUpdate){
-            req.flash('errorMessage','Profile updated');
-        }else{
-            req.flash("errorMessage",'Error during updating the user profile please try again')
+        if (profileUpdate) {
+            req.flash('errorMessage', 'Profile updated');
+        } else {
+            req.flash("errorMessage", 'Error during updating the user profile please try again')
         }
         res.redirect("/user/profile")
-        
+
     } catch (err) {
         console.log(`Error during updating the user profile ${err}`);
     }
@@ -61,24 +56,24 @@ const addAddress = async (req, res) => {
             areaAddress: req.body.addressArea,
             landmark: req.body.addressLandmark
         }
-        
-    
+
+
         // get current user data from collection
         const user = await userSchema.findById(req.session.user)
-        
+
         // if maximum address size reached then redirect to login page
         if (user.address.length > 3) {
             req.flash("errorMessage", "Maximum Address limit Reached")
             return res.redirect('/user/profile')
         }
-      
-        
+
+
         // Add the new address to the user's address array
         user.address.push(userAddress);
         // Save the updated user document
         await user.save();
 
-        req.flash('errorMessage',"Address added")
+        req.flash('errorMessage', "Address added")
         res.redirect('/user/profile')
 
     } catch (err) {
@@ -106,7 +101,7 @@ const editAddressPost = async (req, res) => {
         user.address[addressIndex] = userAddress
         await user.save();
 
-         req.flash('errorMessage','user address edited')
+        req.flash('errorMessage', 'user address edited')
         res.redirect('/user/profile')
 
     } catch (err) {

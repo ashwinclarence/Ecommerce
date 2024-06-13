@@ -90,13 +90,13 @@ const cancelledOrderPost = async (req, res) => {
                 await newWallet.save()
             }
             // const userDetails = await userSchema.findByIdAndUpdate(req.session.user, { $inc: { wallet: orderDetails.totalPrice } })
-        } 
+        }
 
         if (orderDetails) {
             req.flash('errorMessage', 'Your order has been successfully cancelled. If you need any assistance, please contact our customer support team. Thank you.')
             res.redirect('/user/cancelled-orders')
         } else {
-            req.flash('errorMessage', 'We apologize, but your product is not eligible for return at this time. If you have any questions or need further assistance, please contact our customer support team')
+            req.flash('errorMessage', 'We apologize, but your product is not eligible for cancel at this time. If you have any questions or need further assistance, please contact our customer support team')
             res.redirect('/user/orders')
         }
 
@@ -106,15 +106,66 @@ const cancelledOrderPost = async (req, res) => {
 }
 
 
+// return the order using POST
+const returnOrderPost = async (req, res) => {
+    try {
+        const orderID = req.params.orderID;
+
+        // update the order details as cancelled orders
+        const orderDetails = await orderSchema.findByIdAndUpdate(orderID, { orderStatus: 'Returned', isCancelled: true })
+
+
+        // if the order is other than COD then add the payment to the wallet
+        if (orderDetails.paymentMethod != 'Cash on delivery') {
+            // check if user has a wallet before
+            const wallet = await walletSchema.findOne({ userID: req.session.user })
+
+            // if the user has a wallet then update the balance 
+            if (wallet) {
+                wallet.balance += orderDetails.totalPrice
+                wallet.orderID.push(orderDetails._id)
+
+                // save the changes 
+                await wallet.save()
+            } else {
+                // if the user didn't have a wallet then create a new one
+                const newWallet = new walletSchema({
+                    userID: req.session.user,
+                    balance: orderDetails.totalPrice,
+                    orderID: orderDetails._id,
+                })
+
+                // save the new wallet
+                await newWallet.save()
+            }
+            // const userDetails = await userSchema.findByIdAndUpdate(req.session.user, { $inc: { wallet: orderDetails.totalPrice } })
+        }
+
+        if (orderDetails) {
+            req.flash('errorMessage', 'Your order has been successfully return. If you need any assistance, please contact our customer support team. Thank you.')
+            res.redirect('/user/cancelled-orders')
+        } else {
+            req.flash('errorMessage', 'We apologize, but your product is not eligible for return at this time. If you have any questions or need further assistance, please contact our customer support team')
+            res.redirect('/user/orders')
+        }
+    } catch (err) {
+        console.log(`Error on returning the order POST ${err}`);
+    }
+}
+
 // wallet render
 const walletRender = async (req, res) => {
     try {
 
-        const wallet = await walletSchema.findOne({userID:req.session.user})
+        const wallet = await walletSchema.findOne({ userID: req.session.user })
+        let walletBalance = 0
 
-        const walletBalance = wallet.balance
+        // if wallet is there then show the valet amount
+        if (wallet) {
+            walletBalance = wallet.balance
+        }
+        const orderDetails = await orderSchema.find({ userID: req.session.user, paymentMethod:{$in:["Razor pay",'Wallet']}, orderStatus: { $in: ["Cancelled", "Returned"] } }).sort({ createdAt: -1 })
 
-        const orderDetails = await orderSchema.find({ userID: req.session.user, paymentMethod: "Razor pay", orderStatus: { $in: ["Cancelled", "Returned"] } }).sort({ createdAt: -1 })
 
         res.render('user/wallet', { title: "wallet", alertMessage: req.flash('errorMessage'), user: req.session.user, walletBalance, orderDetails })
 
@@ -127,5 +178,6 @@ module.exports = {
     order,
     cancelledOrder,
     cancelledOrderPost,
-    walletRender
+    returnOrderPost,
+    walletRender,
 }

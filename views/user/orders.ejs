@@ -275,13 +275,13 @@
                                         <div class="order-actions-top">
                                             <h6>
                                                 <% if(ele.orderStatus==='Delivered' ){ %>
-                                                    <button class="btn btn-danger btn-sm">
+                                                    <button class="btn btn-danger btn-sm" onclick="returnOrder('<%= ele._id %>')">
                                                         Return order
                                                     </button>
                                                     <button class="btn btn-warning btn-sm">
                                                         Add Review
                                                     </button>
-                                                    <% }else if(ele.orderStatus==='Pending' ||
+                                                    <% }else if(ele.orderStatus==='Shipping' ||
                                                         ele.orderStatus==='Confirmed' ) {%>
                                                         <button class="btn btn-danger btn-sm"
                                                             onclick="cancelOrder('<%= ele._id %>')">
@@ -307,6 +307,7 @@
         <!-- end row -->
     </div>
 
+    <!-- modal for cancel order -->
     <div class="modal fade" id="cancelOrderModal" tabindex="-1" aria-labelledby="cancelOrderModal" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
@@ -321,6 +322,29 @@
                         <div class="form-group text-center">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-success">Confirm Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- modal for return order -->
+    <div class="modal fade" id="returnOrderModal" tabindex="-1" aria-labelledby="returnOrderModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-body p-5">
+                    <h2 class="text-center mb-5">Reason for Returning the Order</h2>
+                    <form action="/user/return-order/" method="post" id="return-order-form">
+                        <div class="form-group">
+                            <textarea class="form-control" id="reason-for-cancel" rows="5"
+                                name="returnReason" placeholder="please provide the reason for returning the order"></textarea>
+                            <label for="reason-for-cancel" class="cancel-form-validate text-danger" ></label>
+                        </div>
+                        <div class="form-group text-center">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-success">Confirm Return</button>
                         </div>
                     </form>
                 </div>
@@ -352,6 +376,32 @@
                         myModal.show();
 
                         cancelOrderForm.action = `/user/cancel-order/${orderID}`
+
+
+                    }
+                })
+            }
+
+
+            // function for cancelling the order
+            const returnOrderForm = document.getElementById('return-order-form')
+            function returnOrder(orderID) {
+
+                Swal.fire({
+                    icon: "question",
+                    title: "Return the order",
+                    text: "Are you sure want to return the order?",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes, return it !",
+                    cancelButtonText: "No"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                        // open the modal for cancel order
+                        const myModal = new bootstrap.Modal(document.getElementById('returnOrderModal'));
+                        myModal.show();
+
+                        returnOrderForm.action = `/user/return-order/${orderID}`
 
 
                     }
