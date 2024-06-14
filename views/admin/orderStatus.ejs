@@ -247,22 +247,23 @@
             const orderStatusBadge = document.querySelectorAll('.badge')
             orderStatusBadge.forEach((badge) => {
                 if (badge.innerHTML.trim().toLocaleLowerCase() === "cancelled") {
-                    badge.classList.add('badge-danger')
+                    badge.classList.add('bg-danger')
                 }
                 if (badge.innerHTML.trim().toLocaleLowerCase() === "delivered") {
-                    badge.classList.add('badge-success')
+                    badge.classList.add('bg-success')
                 }
                 if (badge.innerHTML.trim().toLocaleLowerCase() === "returned") {
-                    badge.classList.add('badge-warning')
+                    badge.classList.add('bg-warning')
+                    badge.classList.add('text-dark')
                 }
                 if (badge.innerHTML.trim().toLocaleLowerCase() === "pending") {
-                    badge.classList.add('badge-secondary')
+                    badge.classList.add('bg-secondary')
                 }
                 if (badge.innerHTML.trim().toLocaleLowerCase() === "confirmed") {
-                    badge.classList.add('badge-primary')
+                    badge.classList.add('bg-primary')
                 }
                 if (badge.innerHTML.trim().toLocaleLowerCase() === "shipping") {
-                    badge.classList.add('badge-info')
+                    badge.classList.add('bg-info')
                 }
             })
 

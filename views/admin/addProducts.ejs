@@ -7,90 +7,13 @@
         min-height: 100vh;
     }
 
-    .add-product-container form {
-        margin-bottom: 5rem;
-    }
-
-    .product-form-top {
-        display: flex;
-        flex-direction: row;
-        margin-bottom: 3rem;
-        flex-wrap: wrap;
-
-    }
-
-    .product-form-bottom {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        align-items: center;
-        gap: 3rem;
-
-    }
-
-    .product-form-left {
-        display: flex;
-        flex-direction: column;
-        width: 50%;
-        margin-top: 3rem;
-        align-items: center;
-    }
-
-    .product-form-right {
-        display: flex;
-        flex-direction: column;
-        width: 50%;
-        margin-top: 3rem;
-        align-items: center;
-    }
-
-    .product-form-left input,
-    .product-form-right input {
-        border: 1px solid #c5c5c5;
-        outline: none;
-        padding: 10px;
-        border-radius: 10px;
-        width: 90%;
-        margin-bottom: 1rem;
-    }
-    .product-form-left label,
-    .product-form-right label {
-        width: 90%;
-    }
-
-    /* remove the increment and decrement arrows in input type number */
-    input[type="number"]::-webkit-inner-spin-button,
-    input[type="number"]::-webkit-outer-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
-
-    #product-description {
-        border: 1px solid #c5c5c5;
-        outline: none;
-        padding: 10px;
-        width: 90%;
-        border-radius: 10px;
-        resize: vertical;
-        min-height: 200px;
-    }
-
-
-
-    #product-category {
-        border: 1px solid #c5c5c5;
-        outline: none;
-        padding: 10px;
-        border-radius: 10px;
-        width: 90%;
-    }
-
     #product-image-preview {
         display: flex;
         flex-direction: row;
         justify-content: space-evenly;
         flex-wrap: wrap;
         width: 90%;
+        margin: 1rem auto;
     }
 
     .product-image-box {
@@ -99,7 +22,6 @@
         border: 1px solid #c5c5c5;
         border-radius: 10px;
         overflow: hidden;
-
     }
 
     .preview-img {
@@ -117,12 +39,11 @@
         outline: none;
     }
 
-    .btn {
-        min-width: 150px;
+    #product-description {
+        resize: vertical;
+        min-height: 200px;
     }
 </style>
-
-
 
 <%- include('navbar') %>
 
@@ -132,75 +53,82 @@
         </div>
         <form action="/admin/add-product" method="post" enctype="multipart/form-data" id="add-product-form">
 
-            <div class="product-form-top">
+            <div class="row">
+                <div class="col-lg-6 mt-3 ">
+                    <div class="mb-3">
+                        <label for="productName" class="form-label">Product Name</label>
+                        <input type="text" class="form-control" id="productName" name="productName"
+                            maxlength="100">
+                        <div class="validateLabel text-danger"></div>
+                    </div>
 
-                <div class="product-form-left">
+                    <div class="mb-3">
+                        <label for="productPrice" class="form-label">Product Price</label>
+                        <input type="number" class="form-control" id="productPrice" name="productPrice"
+                           max="100000">
+                        <div class="validateLabel text-danger"></div>
+                    </div>
 
-                    <!-- input for product name -->
-                    <label for="productName">Product Name</label>
-                    <input type="text" name="productName" placeholder="Excepted min 3 characters" minlength="3" maxlength="100" required>
+                    <div class="mb-3">
+                        <label for="productQuantity" class="form-label">Product Quantity</label>
+                        <input type="number" class="form-control" id="productQuantity" name="productQuantity"
+                            max="100000">
+                        <div class="validateLabel text-danger"></div>
+                    </div>
 
-                    <!-- input for product price -->
-                    <label for="productPrice">Product Price</label>
-                    <input type="number" name="productPrice" placeholder="Price is expected between 1 to 100000" min="1" max="100000" required>
+                    <div class="mb-3">
+                        <label for="productDiscount" class="form-label">Product Discount in percentage</label>
+                        <input type="number" class="form-control" id="productDiscount" name="productDiscount" max="100">
+                        <div class="validateLabel text-danger"></div>
+                    </div>
 
-                    <!-- input for product quantity -->
-                    <label for="productQuantity">Product Quantity</label>
-                    <input type="number" name="productQuantity" placeholder="Quantity is expected between 1 to 100000" min="1" max="100000" required>
-                   
-                    <!-- input for product discount -->
-                    <label for="productDiscount">Product Discount in percentage</label>
-                    <input type="number" name="productDiscount" placeholder="0 if discount is not available" min="0" max="100" required>
-
-                    <!-- input for select category this category is from backend -->
-                    <label for="productCategory">Product Category </label>
-                    <select name="productCategory" id="product-category" required>
-                        <option value="" selected disabled>Select a category</option>
-                        <% productCategory.forEach((category)=> { %>
-                            <option value="<%= category.categoryName %>">
-                                <%= category.categoryName %>
-                            </option>
-                            <% }) %>
-                    </select>
-
+                    <div class="mb-3">
+                        <label for="productCategory" class="form-label">Product Category</label>
+                        <select class="form-select" id="product-category" name="productCategory">
+                            <option value="" selected disabled>Select a category</option>
+                            <% productCategory.forEach((category)=> { %>
+                                <option value="<%= category.categoryName %>">
+                                    <%= category.categoryName %>
+                                </option>
+                                <% }) %>
+                        </select>
+                        <div class="validateLabel text-danger"></div>
+                    </div>
                 </div>
-                <div class="product-form-right">
 
-                    <!-- input for product brand -->
-                    <label for="productBrand">Product Brand</label>
-                    <input type="text" name="productBrand" placeholder="Excepted min 3 characters" minlength="3" maxlength="30" required>
+                <div class="col-lg-6 mt-3">
+                    <div class="mb-3">
+                        <label for="productBrand" class="form-label">Product Brand</label>
+                        <input type="text" class="form-control" id="productBrand" name="productBrand"
+                            maxlength="30">
+                        <div class="validateLabel text-danger"></div>
+                    </div>
 
-                    <!-- input for product description -->
-                    <label for="productDescription">Product Description</label>
-                    <textarea name="productDescription" placeholder="Excepted min 10 characters" id="product-description" minlength="10" maxlength="500"
-                        required></textarea>
-
+                    <div class="mb-3">
+                        <label for="productDescription" class="form-label">Product Description</label>
+                        <textarea class="form-control" id="product-description" name="productDescription"
+                           maxlength="500"></textarea>
+                        <div class="validateLabel text-danger"></div>
+                    </div>
                 </div>
             </div>
-            <div class="product-form-bottom">
 
-                <!-- input file for image upload but the button is display is set as none -->
-                <input type="file" id="product-image-upload" name="productImage" accept="image/png, image/jpeg" multiple 
+            <div class="text-center mt-4">
+                <input type="file" id="product-image-upload" name="productImage" accept="image/png, image/jpeg" multiple
                     class="d-none">
-
-                <!-- using the label the image is uploaded -->
-                <label for="product-image-upload" class="btn btn-warning">
+                <label for="product-image-upload" class="btn btn-warning ">
                     <i class="fas fa-upload"></i> &nbsp; Choose Images
                 </label>
-
-                <!-- the product preview will generate based on what we select -->
-                <div id="product-image-preview"></div>
-
-
-                <!-- the form submission and cancel buttons -->
-                <div>
-                    <a href="/admin/products" class="btn btn-secondary">Cancel</a>
-                    <button class="btn btn-success" type="submit">Add Product</button>
-                </div>
+                <div id="product-image-preview" class="mt-3"></div>
             </div>
 
+            <div class="text-center mt-4">
+                <a href="/admin/products" class="btn btn-secondary w-25">Cancel</a>
+                <button class="btn btn-success w-25" type="submit">Add Product</button>
+            </div>
         </form>
     </div>
+
 
     <%- include('footer') %>
 
@@ -216,65 +144,70 @@
             const productDiscount = document.getElementsByName('productDiscount')[0];
             const productDescription = document.getElementsByName('productDescription')[0];
             const productCategory = document.getElementsByName('productCategory')[0];
+            const validateDiv = document.querySelectorAll('.validateLabel')
 
 
 
+
+            // validation for adding new product
             addProductForm.addEventListener('submit', (e) => {
                 e.preventDefault()
 
+                validateDiv.forEach((div) => {
+                    div.innerHTML = ""
+                })
 
 
                 let isValid = true
-                let errorMessage = ""
 
-                if (document.getElementById('product-image-upload').value==='') {
-                    errorMessage="Product image should not be empty";
+                if (document.getElementById('product-image-upload').value === '') {
                     isValid = false;
+                    Swal.fire({
+                        title: "Invalid Inputs",
+                        text: "Product image should not be empty",
+                        icon: "error",
+                        showConfirmButton: false,
+                        timer: 800
+                    })
                 }
-                if (productName.value.trim() === "" || productName.value.length<=0 || !isNaN(productName.value)) {
-                    errorMessage="Product Name should not be empty";
+                if (productName.value.trim() === "" || productName.value.length < 3 || !isNaN(productName.value)) {
+                    document.getElementsByClassName('validateLabel')[0].innerHTML = "Please provide a valid product name (min 3 characters).";
                     isValid = false;
                 }
 
-                if (isNaN(productPrice.value) || parseFloat(productPrice.value) <= 0) {
-                    errorMessage='Product Price must be greater than zero and it should not contain any alphabets'
+                if (isNaN(productPrice.value) || parseFloat(productPrice.value) <= 0 || productPrice.value.length<1) {
+                    document.getElementsByClassName('validateLabel')[1].innerHTML = "Please provide a valid price (between 1 and 100000).";
                     isValid = false;
                 }
 
-                if (isNaN(productQuantity.value) || parseInt(productQuantity.value) <= 0) {
-                    errorMessage='Product quality should be a number and it must be greater than zero'
+                if (isNaN(productQuantity.value) || parseInt(productQuantity.value) <= 0 || productQuantity.value.length<1) {
+                    document.getElementsByClassName('validateLabel')[2].innerHTML = "Please provide a valid quantity (between 1 and 100000).";
                     isValid = false;
                 }
-                
-                if (productCategory.value === null) {
-                    errorMessage='Product category is cannot be empty'
+
+                if (isNaN(productDiscount.value) || parseInt(productDiscount.value) < 0 || parseInt(productDiscount.value) > 100 || productDiscount.value.length===0) {
+                    document.getElementsByClassName('validateLabel')[3].innerHTML = "Please provide a valid discount (between 0 and 100).";
+                    isValid = false;
+                }
+                if (productCategory.value === null || productCategory.value==="") {
+                    document.getElementsByClassName('validateLabel')[4].innerHTML = "Please select a category.";
                     isValid = false
                 }
 
-                if (isNaN(productDiscount.value) || parseInt(productDiscount.value) < 0 || parseInt(productDiscount.value)>100) {
-                    errorMessage='Product quality should be a number and it must be greater than zero'
-                    isValid = false;
-                }
 
-                if (productBrand.value.trim() === '' || productBrand.value.length<=0 || !isNaN(productBrand.value)) {
-                    errorMessage='Product Brand cannot be empty'
+                if (productBrand.value.trim() === '' || productBrand.value.length <= 0 || !isNaN(productBrand.value)) {
+                    document.getElementsByClassName('validateLabel')[5].innerHTML = "Please provide a valid brand (min 3 characters).";
                     isValid = false
                 }
 
                 if (productDescription.value.length <= 10 || productDescription.value.length > 500 || productDescription.value.trim === "") {
-                    errorMessage='Product description must be between 10 to 80 word '
+                    document.getElementsByClassName('validateLabel')[6].innerHTML = "Please provide a valid description (min 10 characters).";
                     isValid = false
                 }
 
-               if(isValid===false){
-                Swal.fire({
-                    title:"Invalid Inputs",
-                    text:errorMessage,
-                    icon:"error"
-                })
-               }else{
-                addProductForm.submit()
-               }
+                if (isValid) {
+                    addProductForm.submit()
+                }
             })
 
 

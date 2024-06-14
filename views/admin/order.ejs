@@ -72,29 +72,29 @@
 
 
 
-    <div class="admin-customers-container container">
-        <div class="user-search-box">
-            <h3>Orders</h3>
-        </div>
-        <div class="mt-5 table-responsive">
-            <table class="table">
-                <thead class="table-primary">
-                    <tr>
-                        <th scope="col" class="text-center py-3">sl.no</th>
-                        <th scope="col" class="py-3">Order ID</th>
-                        <th scope="col" class="py-3">Ordered Date</th>
-                        <th scope="col" class="py-3">Payment Method</th>
-                        <th scope="col" class="py-3">Status</th>
-                        <th scope="col" class="py-3">Price</th>
-                        <th scope="col" class="text-center py-3">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% if(orderDetails.length!=0){ %>
-                    <% orderDetails.forEach((ele,index)=>{ %>
+<div class="admin-customers-container container">
+    <div class="user-search-box">
+        <h3>Orders</h3>
+    </div>
+    <div class="mt-5 table-responsive">
+        <table class="table">
+            <thead class="table-primary">
+                <tr>
+                    <th scope="col" class="text-center py-3">sl.no</th>
+                    <th scope="col" class="py-3">Order ID</th>
+                    <th scope="col" class="py-3">Ordered Date</th>
+                    <th scope="col" class="py-3">Payment Method</th>
+                    <th scope="col" class="py-3">Status</th>
+                    <th scope="col" class="py-3">Price</th>
+                    <th scope="col" class="text-center py-3">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if(orderDetails.length != 0) { %>
+                    <% orderDetails.forEach((ele, index) => { %>
                         <tr>
                             <th scope="row" class="text-center">
-                                <%= index+1 %>
+                                <%= index + 1 %>
                             </th>
                             <td class="product-name-td">
                                 <%= ele._id %>
@@ -110,25 +110,23 @@
                                     <%= ele.orderStatus %>
                                 </span>
                             </td>
-                            <td>&#8377;<%= ele.totalPrice.toLocaleString() %>
-                            </td>
+                            <td>&#8377;<%= ele.totalPrice.toLocaleString() %></td>
                             <td class="text-center">
                                 <a href="/admin/view-order/<%= ele._id %>" id="view-order-button" class="btn">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </a>
-
                             </td>
                         </tr>
-                        <% }) %>
-                        <% }else { %>
-                            <tr>
-                                <th colspan="7" class="text-center p-5 text-secondary">No Order Placed yet</th>
-                            </tr>
-                        <% } %>
-                </tbody>
-            </table>
-        </div>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <th colspan="7" class="text-center p-5 text-secondary">No Order Placed yet</th>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
     </div>
+</div>
 
     <%- include('footer') %>
 
@@ -139,22 +137,23 @@
             const orderStatusBadge = document.querySelectorAll('.badge')
             orderStatusBadge.forEach((badge) => {
                 if (badge.innerHTML.trim().toLocaleLowerCase() === "cancelled") {
-                    badge.classList.add('badge-danger')
+                    badge.classList.add('bg-danger')
                 }
                 if (badge.innerHTML.trim().toLocaleLowerCase() === "delivered") {
-                    badge.classList.add('badge-success')
+                    badge.classList.add('bg-success')
                 }
                 if (badge.innerHTML.trim().toLocaleLowerCase() === "returned") {
-                    badge.classList.add('badge-warning')
+                    badge.classList.add('bg-warning')
+                    badge.classList.add('text-dark')
                 }
                 if (badge.innerHTML.trim().toLocaleLowerCase() === "pending") {
-                    badge.classList.add('badge-secondary')
+                    badge.classList.add('bg-secondary')
                 }
                 if (badge.innerHTML.trim().toLocaleLowerCase() === "confirmed") {
-                    badge.classList.add('badge-primary')
+                    badge.classList.add('bg-primary')
                 }
                 if (badge.innerHTML.trim().toLocaleLowerCase() === "shipping") {
-                    badge.classList.add('badge-info')
+                    badge.classList.add('bg-info')
                 }
             })
 

@@ -3,7 +3,7 @@
         width: 200px;
     }
 
-    .form-white.input-group>.form-control:focus {
+    .form-white .input-group>.form-control:focus {
         border-color: #000000;
         box-shadow: inset 0 0 0 1px #000000;
     }
@@ -18,17 +18,20 @@
     }
 </style>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
-    <div class="container-fluid p-3 mx-5">
+<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom p-4">
+    <div class="container">
         <a class="navbar-brand" href="/admin/dashboard">
             <img src="../../image/logo.png" alt="" class="logo">
         </a>
-     
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <form class="mx-5">
                 <div class="input-group" style="width: 350px;">
-                    <input type="search" class="form-control rounded" placeholder="Search anything..."
-                        aria-label="Search" aria-describedby="search-addon" />
+                    <input type="search" class="form-control rounded" placeholder="Search anything..." aria-label="Search"
+                        aria-describedby="search-addon" />
                 </div>
             </form>
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
@@ -50,22 +53,15 @@
                 <li class="nav-item">
                     <a href="/admin/coupons" class="nav-link">Coupons</a>
                 </li>
-             
+            </ul>
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a href="/admin/logout" class="nav-link"><i class="fas fa-power-off"></i></a>
+                </li>
             </ul>
         </div>
-        <ul class="navbar-nav d-flex flex-row ms-auto me-3">
-            
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <i class="fas fa-bars"></i>
-            </button>
-            <li class="nav-item ms-4">
-                <a href="/admin/logout" class="nav-link"><i class="fa-solid fa-power-off"></i></a>
-            </li>
-        </ul>
     </div>
 </nav>
-
 
 
 <%- include('alert') %>

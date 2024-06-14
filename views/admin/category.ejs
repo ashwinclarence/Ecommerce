@@ -64,179 +64,139 @@
 
 
 
-    <div class="admin-customers-container container">
-        <div class="category-search-box">
-            <h3>Category</h3>
-            <!-- button trigger for modal to add new category -->
-            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#new-category-modal">Add
-                New Category <i class="fa-solid fa-plus"></i></button>
-        </div>
-
-
-        <!-- Modal for adding new category -->
-        <div class="modal fade " id="new-category-modal" tabindex="-1" role="dialog"
-            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header d-flex justify-content-between">
-                        <h5 class="modal-title " id="exampleModalLongTitle">Add New Category</h5>
-                        <span type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <i class="bi bi-x-lg"></i>
-                        </span>
-                    </div>
-                    <div class="modal-body p-5">
-
-
-
-                        <form action="/admin/category" method="post" class="admin-category-form mt-4">
-                            <input type="text" name="newCategory" placeholder="Enter new category" id="new-category"
-                                minlength="3" maxlength="30" required>
-
-                            <button class="btn btn-success mt-4" id="new-category-btn">Add category</button>
-                        </form>
-                        <span type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false"
-                            aria-controls="collapseExample">
-                            Criteria <i class="fa-solid fa-caret-down"></i>
-                        </span>
-                        <div class="collapse" id="collapseExample">
-                            <div class="mt-4 category-criteria">
-                                <small>Minium 3 words</small>
-                                <small>Maximum 30 words</small>
-                                <small>Should not contain special charters</small>
-                                <small>should not only contain white spaces</small>
-                            </div>
-                        </div>
-
-
-
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- end of Modal for adding new category -->
-
-
-        <!-- Modal for editing category -->
-        <div class="modal fade " id="edit-category-modal" tabindex="-1" role="dialog"
-            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header d-flex justify-content-between">
-                        <h5 class="modal-title " id="exampleModalLongTitle">Edit Category</h5>
-                        <span type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <i class="bi bi-x-lg"></i>
-                        </span>
-                    </div>
-                    <div class="modal-body p-5">
-
-                        <!-- form for adding new category -->
-
-                        <form action="/admin/edit-category" method="post" class="admin-edit-category-form mt-4">
-                            <input type="text" name="editCategory" id="modal-category-edit" minlength="3" maxlength="30"
-                                required>
-
-                            <button class="btn btn-warning mt-4" id="edit-category-btn">Edit category</button>
-                        </form>
-                        <span type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false"
-                            aria-controls="collapseExample">
-                            Criteria <i class="fa-solid fa-caret-down"></i>
-                        </span>
-                        <div class="collapse" id="collapseExample">
-                            <div class="mt-4 category-criteria">
-                                <small>Minium 3 words</small>
-                                <small>Maximum 30 words</small>
-                                <small>Should not contain special charters</small>
-                                <small>should not only contain white spaces</small>
-                            </div>
-                        </div>
-
-
-
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-
-        <div class="mt-5 table-responsive">
-            <table class="table ">
-                <thead class="table-primary">
-                    <!-- <tr>
-                            <th colspan="5" class="text-center p-4">sl.no</th>
-                        </tr> -->
-                    <tr>
-                        <th scope="col" class="text-center py-3">sl.no</th>
-                        <th scope="col" class="py-3">Category</th>
-                        <th scope="col" class="py-3">Added On</th>
-                        <th scope="col" class="py-3">Updated On</th>
-                        <th scope="col" class="py-3">Status</th>
-                        <th scope="col" class="text-center py-3">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% category.forEach((category,index)=>{%>
-                        <tr>
-                            <th scope="row" class="text-center">
-                                <%= index+1 %>
-                            </th>
-                            <td>
-                                <%= category.categoryName %>
-                            </td>
-                            <td>
-                                <%= category.createdAt.toLocaleDateString() %>
-                            </td>
-                            <td>
-                                <%= category.updatedAt.toLocaleDateString() %>
-                            </td>
-                            <td>
-                                <% if(category.isActive){ %>
-                                    <b style="color: green;">ACTIVE</b>
-
-                                    <% } else { %>
-                                        <b style="color: red;">INACTIVE</b>
-
-                                        <% } %>
-                            </td>
-
-                            <td class="text-center">
-                                <button type="button" class="btn edit-category" data-toggle="modal"
-                                    data-target="#edit-category-modal" data-categoryID="<%= category.id %>"
-                                    data-category=" <%= category.categoryName %>">
-                                    <i class="fa-solid fa-pen-to-square"></i></button>
-
-                                <% if(category.isActive){ %>
-
-                                    <button class="btn category-unhide" data-categoryID="<%= category.id %>">
-                                        <i class="fa-solid fa-lock-open"></i>
-                                    </button>
-
-                                    <% } else { %>
-                                        <button class="btn category-hide" data-categoryID="<%= category.id %>">
-                                            <i class="fa-solid fa-lock"></i>
-                                        </button>
-
-                                        <% } %>
-
-                                            <button class="btn category-delete" data-categoryID="<%= category.id %>">
-                                                <i class="fa-regular fa-trash-can"></i></button>
-
-                            </td>
-                        </tr>
-                        <% })%>
-                            <% if(category.length===0){ %>
-                                <tr>
-                                    <th colspan="6" class="text-center text-secondary p-5">No category</th>
-                                </tr>
-                                <% }%>
-                </tbody>
-            </table>
-        </div>
-
+<div class="admin-customers-container container">
+    <div class="category-search-box">
+        <h3>Category</h3>
+        <!-- button trigger for modal to add new category -->
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#new-category-modal">Add
+            New Category <i class="fa-solid fa-plus"></i></button>
     </div>
+    <div class="mt-5 table-responsive">
+        <table class="table ">
+            <thead class="table-primary">
+                <tr>
+                    <th scope="col" class="text-center py-3">sl.no</th>
+                    <th scope="col" class="py-3">Category</th>
+                    <th scope="col" class="py-3">Added On</th>
+                    <th scope="col" class="py-3">Updated On</th>
+                    <th scope="col" class="py-3">Status</th>
+                    <th scope="col" class="text-center py-3">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% category.forEach((category, index) => { %>
+                    <tr>
+                        <th scope="row" class="text-center">
+                            <%= index + 1 %>
+                        </th>
+                        <td>
+                            <%= category.categoryName %>
+                        </td>
+                        <td>
+                            <%= category.createdAt.toLocaleDateString() %>
+                        </td>
+                        <td>
+                            <%= category.updatedAt.toLocaleDateString() %>
+                        </td>
+                        <td>
+                            <% if (category.isActive) { %>
+                                <b class="badge bg-success">ACTIVE</b>
+                            <% } else { %>
+                                <b class="badge bg-danger">INACTIVE</b>
+                            <% } %>
+                        </td>
+                        <td class="text-center">
+                            <button type="button" class="btn edit-category" data-bs-toggle="modal"
+                                data-bs-target="#edit-category-modal" data-categoryID="<%= category.id %>"
+                                data-category="<%= category.categoryName %>">
+                                <i class="fa-solid fa-pen-to-square"></i></button>
+                            <% if (category.isActive) { %>
+                                <button class="btn category-unhide" data-categoryID="<%= category.id %>">
+                                    <i class="fa-solid fa-lock-open"></i>
+                                </button>
+                            <% } else { %>
+                                <button class="btn category-hide" data-categoryID="<%= category.id %>">
+                                    <i class="fa-solid fa-lock"></i>
+                                </button>
+                            <% } %>
+                            <button class="btn category-delete" data-categoryID="<%= category.id %>">
+                                <i class="fa-regular fa-trash-can"></i></button>
+                        </td>
+                    </tr>
+                <% }) %>
+                <% if (category.length === 0) { %>
+                    <tr>
+                        <th colspan="6" class="text-center text-secondary p-5">No category</th>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
 
+<%- include('footer') %>
 
-    <%- include('footer') %>
+<!-- Modal for adding new category -->
+<div class="modal fade" id="new-category-modal" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between">
+                <h5 class="modal-title" id="exampleModalLongTitle">Add New Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-5">
+                <form action="/admin/category" method="post" class="admin-category-form mt-4">
+                    <input type="text" name="newCategory" placeholder="Enter new category" id="new-category"
+                        minlength="3" maxlength="30" required>
+                    <button class="btn btn-success mt-4" id="new-category-btn">Add category</button>
+                </form>
+                <button class="btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample"
+                    aria-expanded="false" aria-controls="collapseExample">
+                    Criteria <i class="fa-solid fa-caret-down"></i>
+                </button>
+                <div class="collapse" id="collapseExample">
+                    <div class="mt-4 category-criteria">
+                        <small>Minimum 3 words</small>
+                        <small>Maximum 30 words</small>
+                        <small>Should not contain special characters</small>
+                        <small>Should not only contain white spaces</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end of Modal for adding new category -->
+
+<!-- Modal for editing category -->
+<div class="modal fade" id="edit-category-modal" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between">
+                <h5 class="modal-title" id="exampleModalLongTitle">Edit Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-5">
+                <form action="/admin/edit-category" method="post" class="admin-edit-category-form mt-4">
+                    <input type="text" name="editCategory" id="modal-category-edit" minlength="3" maxlength="30" required>
+                    <button class="btn btn-warning mt-4" id="edit-category-btn">Edit category</button>
+                </form>
+                <button class="btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample"
+                    aria-expanded="false" aria-controls="collapseExample">
+                    Criteria <i class="fa-solid fa-caret-down"></i>
+                </button>
+                <div class="collapse" id="collapseExample">
+                    <div class="mt-4 category-criteria">
+                        <small>Minimum 3 words</small>
+                        <small>Maximum 30 words</small>
+                        <small>Should not contain special characters</small>
+                        <small>Should not only contain white spaces</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 
