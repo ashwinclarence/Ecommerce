@@ -52,83 +52,7 @@
         border-radius: 1rem;
     }
 
-    /* counter */
-    .card-counter {
-        box-shadow: 2px 2px 10px #DADADA;
-        margin: 5px;
-        padding: 20px 10px;
-        background-color: #fff;
-        height: 100px;
-        border-radius: 5px;
-        transition: .3s linear all;
-    }
 
-    .card-counter:hover {
-        box-shadow: 4px 4px 20px #DADADA;
-        transition: .3s linear all;
-    }
-
-    .card-counter.primary {
-        background-color: #007bff;
-        color: #FFF;
-    }
-
-    .card-counter.danger {
-        background-color: #ef5350;
-        color: #FFF;
-    }
-
-    .card-counter.success {
-        background-color: #66bb6a;
-        color: #FFF;
-    }
-
-    .card-counter.info {
-        background-color: #26c6da;
-        color: #FFF;
-    }
-
-    .card-counter i {
-        font-size: 5em;
-        opacity: 0.2;
-    }
-
-    .card-counter .count-numbers {
-        position: absolute;
-        right: 35px;
-        top: 20px;
-        font-size: 32px;
-        display: block;
-    }
-
-    .card-counter .count-name {
-        position: absolute;
-        right: 35px;
-        top: 65px;
-        font-style: italic;
-        text-transform: capitalize;
-        opacity: 0.5;
-        display: block;
-        font-size: 18px;
-    }
-
-    .nav-borders .nav-link.active {
-        color: #0061f2;
-        border-bottom-color: #0061f2;
-    }
-
-    .nav-borders .nav-link {
-        color: #69707a;
-        border-bottom-width: 0.125rem;
-        border-bottom-style: solid;
-        border-bottom-color: transparent;
-        padding-top: 0.5rem;
-        padding-bottom: 0.5rem;
-        padding-left: 0;
-        padding-right: 0;
-        margin-left: 1rem;
-        margin-right: 1rem;
-    }
 
     .order-container {
         position: relative;
@@ -139,6 +63,62 @@
         position: absolute;
         top: 0;
         right: 0;
+    }
+
+    .add-review-button {
+        cursor: pointer;
+    }
+
+
+    /* modal for adding review */
+    .rating {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: center
+    }
+
+    .rating>input {
+        display: none
+    }
+
+    .rating>label {
+        position: relative;
+        width: 1em;
+        font-size: 30px;
+        font-weight: 300;
+        color: #FFD600;
+        cursor: pointer
+    }
+
+    .rating>label::before {
+        content: "\2605";
+        position: absolute;
+        opacity: 0
+    }
+
+    .rating>label:hover:before,
+    .rating>label:hover~label:before {
+        opacity: 1 !important
+    }
+
+    .rating>input:checked~label:before {
+        opacity: 1
+    }
+
+    .rating:hover>input:checked~label:before {
+        opacity: 0.4
+    }
+
+    .buttons {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    #review-feedback {
+        min-height: 200px;
     }
 </style>
 
@@ -213,7 +193,7 @@
                                                     <%= product.brand %>
                                                 </h5>
                                                 <h5 class="text-truncate font-size-18"><a
-                                                        href="/user/product-view/<%= product.productID %>"
+                                                        href="/user/product-view/<%= product.productID.id %>"
                                                         class="text-dark">
                                                         <%= product.productName %>
                                                     </a></h5>
@@ -226,6 +206,13 @@
                                                         <%= product.price %>
                                                     </b>
                                                 </p>
+                                                <% if(ele.orderStatus==='Delivered' ){ %>
+                                                    <b class="add-review-button text-warning"
+                                                        onclick="addReview('<%= product.productID.id %>','<%= product.productName %>')"
+                                                        title="add review to the product">
+                                                        Add Review
+                                                    </b>
+                                                    <% } %>
                                             </div>
                                         </div>
 
@@ -275,11 +262,9 @@
                                         <div class="order-actions-top">
                                             <h6>
                                                 <% if(ele.orderStatus==='Delivered' ){ %>
-                                                    <button class="btn btn-danger btn-sm" onclick="returnOrder('<%= ele._id %>')">
+                                                    <button class="btn btn-danger btn-sm"
+                                                        onclick="returnOrder('<%= ele._id %>')">
                                                         Return order
-                                                    </button>
-                                                    <button class="btn btn-warning btn-sm">
-                                                        Add Review
                                                     </button>
                                                     <% }else if(ele.orderStatus==='Shipping' ||
                                                         ele.orderStatus==='Confirmed' ) {%>
@@ -315,12 +300,12 @@
                     <h2 class="text-center mb-5">Reason for cancelling</h2>
                     <form action="/user/cancel-order/" method="post" id="cancel-order-form">
                         <div class="form-group">
-                            <textarea class="form-control" id="reason-for-cancel" rows="5"
-                                name="cancelReason" placeholder="please provide the reason for cancelling the order"></textarea>
-                            <label for="reason-for-cancel" class="cancel-form-validate text-danger" ></label>
+                            <textarea class="form-control" id="reason-for-cancel" rows="5" name="cancelReason"
+                                placeholder="please provide the reason for cancelling the order"></textarea>
+                            <label for="reason-for-cancel" class="cancel-form-validate text-danger"></label>
                         </div>
                         <div class="form-group text-center">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-secondary " data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-success">Confirm Cancel</button>
                         </div>
                     </form>
@@ -338,9 +323,9 @@
                     <h2 class="text-center mb-5">Reason for Returning the Order</h2>
                     <form action="/user/return-order/" method="post" id="return-order-form">
                         <div class="form-group">
-                            <textarea class="form-control" id="reason-for-cancel" rows="5"
-                                name="returnReason" placeholder="please provide the reason for returning the order"></textarea>
-                            <label for="reason-for-cancel" class="cancel-form-validate text-danger" ></label>
+                            <textarea class="form-control" id="reason-for-cancel" rows="5" name="returnReason"
+                                placeholder="please provide the reason for returning the order"></textarea>
+                            <label for="reason-for-cancel" class="cancel-form-validate text-danger"></label>
                         </div>
                         <div class="form-group text-center">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -348,6 +333,39 @@
                         </div>
                     </form>
                 </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- modal for add review -->
+    <div class="modal fade" id="add-review-modal" tabindex="-1" aria-labelledby="add-review-modal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header ">
+                    <p class="mb-1 w-100  text-center" id="review-product-name"></p>
+                </div>
+                <form class="modal-body rate  w-100 p-5" id="add-review-form" method="post">
+                    <h6 class="mb-0 text-center">Rate the product</h6>
+                    <div class="rating"> <input type="radio" name="rating" value="5" id="5"><label for="5">☆</label>
+                        <input type="radio" name="rating" value="4" id="4"><label for="4">☆</label> <input type="radio"
+                            name="rating" value="3" id="3"><label for="3">☆</label> <input type="radio" name="rating"
+                            value="2" id="2"><label for="2">☆</label> <input type="radio" name="rating" value="1"
+                            id="1"><label for="1">☆</label>
+                    </div>
+                    <div class=" my-4">
+                        <textarea class="form-control" placeholder="Add your feedback about the product" rows="6"
+                            id="review-feedback" name="reviewFeedback"></textarea>
+                        <label for="review-feedback" class="text-danger" id="review-validate-label"></label>
+                    </div>
+                    <div class="buttons">
+                        <button type="button" class="btn btn-dark w-25" data-bs-dismiss="modal">Close</button>
+                        <button class="btn btn-warning w-25" type="submit">Submit</button>
+
+                    </div>
+                </form>
+
             </div>
         </div>
     </div>
@@ -420,5 +438,84 @@
                     cancelOrderForm.submit()
                 }
             })
+
+
+
+            // Function to add review for the delivered product
+            function addReview(productID, productName) {
+                // Open the modal for adding a review
+                const myModal = new bootstrap.Modal(document.getElementById('add-review-modal'));
+                document.getElementById('review-product-name').innerHTML = productName;
+                document.getElementById('add-review-form').action = `/user/add-review/${productID}`;
+                myModal.show();
+            }
+
+            // Review form submission
+            const reviewDescription = document.getElementById('review-feedback')
+            const addReviewForm = document.getElementById('add-review-form');
+            addReviewForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                document.getElementById('review-validate-label').innerHTML = ''
+                let radioChecked = false;
+                let validateReview = true
+
+                // Validate the review star
+                document.getElementsByName('rating').forEach((radio) => {
+                    if (radio.checked) {
+                        radioChecked = true;
+                    }
+                });
+
+                // fire an alert with no stars selected
+                if (radioChecked === false) {
+                    const notyf = new Notyf();
+                    notyf.error({
+                        message: "Select a star value for adding review",
+                        duration: 5000,
+                    });
+                }
+
+                // check the description is valid or not
+                if (reviewDescription.value.trim() === 0 || reviewDescription.value.length < 10 || reviewDescription.value.length > 200) {
+                    validateReview = false
+                    document.getElementById('review-validate-label').innerHTML = "Please add a feedback with min of 10 and max of 200 character"
+                }
+
+                // if form is valid then proceed with adding review
+                if (radioChecked) {
+                    let form = e.target;
+                    let action = form.action;
+
+                    let formData = new URLSearchParams(new FormData(form)).toString();
+                    fetch(action, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded"
+                        },
+                        body: formData
+                    }).then((res) => {
+                        return res.json();
+                    }).then((data) => {
+                       if(data.success){
+                        Swal.fire({
+                            icon:"success",
+                            title:"Product review added",
+                            showConfirmButton:false,
+                            timer:800
+                        }).then(()=>{
+                            window.location.reload()
+                        })
+                       }
+                    }).catch((err) => {
+                        const notyf = new Notyf();
+                        notyf.error({
+                            message: 'Cannot add review at the moment please try again later',
+                            duration: 5000,
+                        });
+                    });
+                }
+            });
+
 
         </script>
