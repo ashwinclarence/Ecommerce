@@ -30,7 +30,7 @@
     td {
         overflow: hidden;
         text-overflow: ellipsis;
-        text-align: center;
+        /* text-align: center; */
     }
 
     .add-new-product {
@@ -68,7 +68,7 @@
             <h3>Products</h3>
             <a href="/admin/add-product" class="btn btn-primary">Add Product <i class="fa-solid fa-plus"></i></a>
 
-           
+
         </div>
         <div class="mt-5 table-responsive">
             <table class="table">
@@ -129,9 +129,9 @@
                 </tbody>
             </table>
         </div>
+        <%- include('pagination') %>
     </div>
-
-
+    
 
 
     <%- include('footer') %>
@@ -225,7 +225,8 @@
                                     Swal.fire({
                                         icon: "success",
                                         title: "Product Deleted",
-                                        showConfirmButton: true,
+                                        showConfirmButton: false,
+                                        timer:1000,
                                     }).then((result) => {
                                         if (result) {
                                             window.location.reload()

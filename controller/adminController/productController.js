@@ -1,22 +1,63 @@
 const categorySchema = require("../../model/categorySchema")
 const productSchema = require('../../model/productSchema')
-const multer = require('../../middleware/multer')
 const fs = require('fs')
 
 
 
 // render the product page
+// const products = async (req, res) => {
+//     try { 
+
+//        // pagination values
+//        const productsPerPage = 10;
+//        const currentPage = req.query.page || 0
+
+//         const products = await productSchema.find().skip(currentPage * productsPerPage).limit(productsPerPage).sort({createdAt:-1})
+//         const totalProduct=await productSchema.find().countDocuments()
+//         const pageNumber=totalProduct/12
+
+//         res.render('admin/products', { title: "Product list", products, alertMessage: req.flash('errorMessage') ,pageNumber})
+//     } catch (err) {
+//         console.log(`Error on rendering product page ${err}`);
+//     }
+
+
+// }
+
+
 const products = async (req, res) => {
     try {
-        const products = await productSchema.find().sort({createdAt:-1})
+        const productsPerPage = 10;  // Number of products per page
+        const currentPage = parseInt(req.query.page) || 1;  // Current page from query parameter, default to 1
 
-        res.render('admin/products', { title: "Product list", products, alertMessage: req.flash('errorMessage') })
+        const skip = (currentPage - 1) * productsPerPage;
+
+        // Query products for the current page
+        const products = await productSchema.find()
+            .skip(skip)
+            .limit(productsPerPage)
+            .sort({ createdAt: -1 });
+
+        // Count total number of products
+        const totalProducts = await productSchema.countDocuments();
+
+        // Calculate total number of pages
+        const pageNumber = Math.ceil(totalProducts / productsPerPage);
+
+        res.render('admin/products', {
+            title: "Product list",
+            products,
+            alertMessage: req.flash('errorMessage'),
+            pageNumber,
+            currentPage  // Send currentPage to highlight the current page in pagination
+        });
     } catch (err) {
         console.log(`Error on rendering product page ${err}`);
+        // Handle error, possibly render an error page
+        res.status(500).send('Internal Server Error');
     }
+};
 
-
-}
 
 
 // render the add product page
@@ -40,17 +81,15 @@ const addProduct = async (req, res) => {
 
 }
 
-// multer as a middleware for multiple image upload
-// the maximum size is set as 4 
-const multerMiddle = multer.array("productImage", 4)
+ 
 
 
 // add product to the database
 const addProductPost = async (req, res) => {
     try {
 
-        // get the image array from the file upload
         const imageArray = []
+        // get the image array from the file upload
 
         req.files.forEach((img) => {
             imageArray.push(img.path)
@@ -236,10 +275,10 @@ module.exports = {
     products,
     addProduct,
     addProductPost,
-    multerMiddle,
     editProduct,
     editProductPost,
     productInactive,
     productActive,
     productDelete,
 }
+

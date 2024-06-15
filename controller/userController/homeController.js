@@ -61,7 +61,7 @@ const home = async (req, res) => {
         }
         // sort based on the product added date
         else {
-            products.sort((a, b) => a.createdAt - b.createdAt)
+            products.sort((a, b) => b.createdAt - a.createdAt)
         }
 
         // added limit products on a page 

@@ -8,7 +8,7 @@ const orderController=require('../controller/adminController/orderController')
 const couponController=require('../controller/adminController/couponController')
 // checkAdminSession is a middleware that checks session of the admin
 const checkAdminSession=require('../middleware/adminSession')
-
+const upload=require('../middleware/multer')
 
 
 // login
@@ -43,9 +43,9 @@ admin.get('/delete-category/:id',checkAdminSession, adminCategoryController.dele
 // product management
 admin.get('/products',checkAdminSession, productController.products);
 admin.get('/add-product',checkAdminSession,productController.addProduct)
-admin.post('/add-product',productController.multerMiddle,productController.addProductPost)
+admin.post('/add-product',upload.array('productImage',4),productController.addProductPost)
 admin.get('/edit-product/:id',checkAdminSession,productController.editProduct)
-admin.post('/edit-product/:id',productController.multerMiddle,productController.editProductPost)
+admin.post('/edit-product/:id',upload.array("productImage", 4),productController.editProductPost)
 admin.get('/product-inactive/:id',checkAdminSession,productController.productInactive)
 admin.get('/product-active/:id',checkAdminSession,productController.productActive)
 admin.delete('/delete-product/:id',checkAdminSession,productController.productDelete)

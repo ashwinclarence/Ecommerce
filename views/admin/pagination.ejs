@@ -1,0 +1,16 @@
+
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+        <!-- <li class="page-item">
+            <a class="page-link" href="?page=<%= pageNumber > 1 ? pageNumber - 1 : 1 %>" <% if (currentPage <= 1) { %>disabled<% } %>>Previous</a>
+        </li> -->
+        <% for(let i = 1; i <= pageNumber; i++) { %> 
+            <li class="page-item">
+                <a class="page-link" href="?page=<%= i %>" <% if (i === currentPage) { %>class="active"<% } %>><%= i %></a>
+            </li>
+        <% } %>
+        <!-- <li class="page-item">
+            <a class="page-link" href="?page=<%= parseInt(currentPage) + 1 %>" <% if (currentPage >= pageNumber) { %>class="disabled"<% } %>>Next</a>
+        </li> -->
+    </ul>
+</nav>
