@@ -88,10 +88,10 @@
         align-items: center;
         width: 100%;
     }
-    #alert-for-COD{
+
+    #alert-for-COD {
         display: none;
     }
-   
 </style>
 
 
@@ -399,29 +399,29 @@
                             <input class="form-check-input payment-method-cod" type="radio" name="paymentMethod"
                                 id="payment-method-cod" value="0" />
                             <div class="form-check-label payment-flex" for="payment-method-cod">
-                                <span>Cash On Delivery </span>
-                             
+                                <span class="">Cash On Delivery </span>
+                                <label for="payment-method-cod" class="badge bg-danger" id="alert-for-COD">Available for
+                                    below 1000 RS</label>
                             </div>
-                            <label for="payment-method-cod" class="mt-2 alert alert-danger" role="alert" id="alert-for-COD">COD is only for orders below 1000 RS</label>
                         </div>
                         <!-- second radio -->
                         <div class="form-check mt-3 ">
                             <input class="form-check-input payment-method-cod" type="radio" name="paymentMethod"
-                                id="payment-method-cod" value="1" />
-                            <div class="form-check-label payment-flex" for="payment-method-cod">
+                                id="payment-method-razorpay" value="1" />
+                            <div class="form-check-label payment-flex" for="payment-method-razorpay">
                                 <span>Razorpay</span>
                             </div>
                         </div>
                         <div class="form-check mt-3 ">
                             <input class="form-check-input payment-method-cod" type="radio" name="paymentMethod"
-                                id="payment-method-cod" value="2" />
-                            <div class="form-check-label payment-flex" for="payment-method-cod">
+                                id="payment-method-wallet" value="2" />
+                            <div class="form-check-label payment-flex" for="payment-method-wallet">
                                 <span>Wallet</span>
+                                <label for="payment-method-wallet" class=" text-success" role="alert">&#8377; <%= wallet
+                                        %> available</label>
+                                <input type="number" id="wallet-hidden" value="<%= wallet %>" hidden>
                             </div>
                         </div>
-                       
-                                   
-                    
                     </div>
                 </div>
                 <div class="card top-0 border-1 mt-5">
@@ -443,26 +443,27 @@
                                     <span>Shipping</span> <span>Free</span>
                                 </div>
                                 <% } %>
-
                                     <hr>
                                     <div class="d-flex justify-content-between mb-4 small">
                                         <span>TOTAL</span> <strong class="text-dark">&#8377;<%=
                                                 (cartDetails.payableAmount).toLocaleString() %></strong>
-                                                <input type="text" id="hidden-total" value="<%= cartDetails.payableAmount %>" hidden>
+                                        <input type="text" id="hidden-total" value="<%= cartDetails.payableAmount %>"
+                                            hidden>
                                     </div>
                                     <div class="form-check mb-1 small">
-                            <input class="form-check-input" type="checkbox" value="" id="tnc">
-                            <label class="form-check-label" for="tnc">
-                                I agree to the <a href="#">terms and conditions</a>
-                            </label>
-                        </div>
-                        <div class="form-check mb-3 small">
-                            <input class="form-check-input" type="checkbox" value="" id="subscribe">
-                            <label class="form-check-label" for="subscribe">
-                                Get emails about product updates and events. If you change your mind, you can
-                                unsubscribe at any time. <a href="#">Privacy Policy</a>
-                            </label>
-                        </div>
+                                        <input class="form-check-input" type="checkbox" value="" id="tnc">
+                                        <label class="form-check-label" for="tnc">
+                                            I agree to the <a href="#">terms and conditions</a>
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-3 small">
+                                        <input class="form-check-input" type="checkbox" value="" id="subscribe">
+                                        <label class="form-check-label" for="subscribe">
+                                            Get emails about product updates and events. If you change your mind, you
+                                            can
+                                            unsubscribe at any time. <a href="#">Privacy Policy</a>
+                                        </label>
+                                    </div>
                                     <form action="" method="post" id="place-order-form">
 
                                         <button type="submit" class="btn btn-success w-100 mt-2"
@@ -505,6 +506,8 @@
             })
 
 
+
+
             //order placement using fetch
             // onclick event for place order button
             const orderPlacementBtn = document.getElementById('place-order-btn')
@@ -521,7 +524,6 @@
                         text: "Please selected a valid address",
                     })
                 }
-                console.log(paymentMode);
 
                 // validation for payment method
                 if (paymentMode === undefined) {
@@ -531,6 +533,20 @@
                         title: "Invalid Payment method",
                         text: "Please selected a payment method",
                     })
+                }
+
+
+                // check if wallet is selected and wallet balance is sufficient for the order
+                if (paymentMode === 2) {
+                    const walletBalance = document.getElementById('wallet-hidden').value
+                    if (Number(walletBalance) < Number(totalPayableAmount)) {
+                        validated = false
+                        Swal.fire({
+                            icon: "warning",
+                            title: "Insufficient Balance ",
+                            text: `Wallet only have ${walletBalance} Rs available`,
+                        })
+                    }
                 }
 
 
@@ -601,6 +617,16 @@
                 const orderPlacementForm = document.getElementById('place-order-form')
                 // if the user select the payment as cash on delivery
                 if (validated && paymentMode === 0) {
+                    const URL = `/user/place-order/${addressIndex}/${paymentMode}`
+                    orderPlacementForm.action = URL
+                    orderPlacementForm.submit()
+                }
+
+
+
+                // end of fetch for order placing using cash on delivery
+                // if the user select the payment as cash on delivery
+                if (validated && paymentMode === 2) {
                     const URL = `/user/place-order/${addressIndex}/${paymentMode}`
                     orderPlacementForm.action = URL
                     orderPlacementForm.submit()
@@ -801,11 +827,12 @@
 
             // cash on delivery only for order below 1000rs
 
-            const totalPayableAmount=document.getElementById('hidden-total').value
-            if(Number(totalPayableAmount)>1000){
-                document.getElementById('payment-method-cod').disabled=true
-                document.getElementById('alert-for-COD').style.display="block"
+            const totalPayableAmount = document.getElementById('hidden-total').value
+            if (Number(totalPayableAmount) > 1000) {
+                document.getElementById('payment-method-cod').disabled = true
+                document.getElementById('alert-for-COD').style.display = "block"
             }
+
 
 
 

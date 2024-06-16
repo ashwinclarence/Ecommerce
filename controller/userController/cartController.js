@@ -1,6 +1,7 @@
 const cartSchema = require('../../model/cartSchema')
 const productSchema = require('../../model/productSchema')
 const couponSchema = require('../../model/couponSchema')
+const userSchema = require('../../model/userSchema')
 
 
 // render the cart with items in the cart
@@ -243,8 +244,8 @@ const incrementProduct = async (req, res) => {
         })
 
         productCart[0].productCount += 1;
-        if(productCart[0].productCount>productCart[0].productID.productQuantity){
-            return res.status(404).json({error:`Only ${productCart[0].productID.productQuantity} items left`})
+        if (productCart[0].productCount > productCart[0].productID.productQuantity) {
+            return res.status(404).json({ error: `Only ${productCart[0].productID.productQuantity} items left` })
         }
 
 
@@ -381,8 +382,18 @@ const applyCoupon = async (req, res) => {
             return res.status(404).json({ error: "cannot find the coupon id" })
         }
 
+        // get the user details
+        const userDetails = await userSchema.findById(req.session.user)
 
-        const coupon = await couponSchema.findById(couponID)
+
+        const coupon = await couponSchema.findById(couponID).populate('appliedUsers')
+
+        // check the user already purchase the coupon
+        for (const user of coupon.appliedUsers) {
+            if (user.id === req.session.user) {
+                return res.status(404).json({ error: "Coupon already Applied" })
+            }
+        }
 
         // check coupon is still active 
         if (!coupon.isActive || coupon.expiryDate < new Date()) {
@@ -391,7 +402,7 @@ const applyCoupon = async (req, res) => {
 
         const cart = await cartSchema.findOne({ userID: req.session.user })
 
-
+        // check the minimum purchase limit reached
         if (cart.payableAmount < coupon.minAmount) {
             return res.status(404).json({ error: "Minimum purchase limit not reached. Please add more items to your cart." })
         }
@@ -400,9 +411,14 @@ const applyCoupon = async (req, res) => {
         // find the total price after minus the coupon discount amount from total price from cart 
         let totalAmountAfterCoupon = cart.payableAmount - coupon.discount
 
-         // save the coupon id in the cart
+        // save the coupon discount amount in the cart
         cart.couponDiscount = coupon.discount
+        cart.couponID=couponID
         await cart.save()
+
+        // update the coupon with purchased user details
+        coupon.appliedUsers.push(userDetails._id)
+        await coupon.save()
 
         return res.status(200).json({
             message: "Coupon Applied",
@@ -418,15 +434,30 @@ const applyCoupon = async (req, res) => {
 }
 
 
+// remove the coupon that is already selected
 const removeCoupon = async (req, res) => {
     try {
 
         const cart = await cartSchema.findOne({ userID: req.session.user })
+        const couponID=cart.couponID
 
         // remove anything that exist in cart coupon discount
         if (cart.couponDiscount) {
-            cart.couponDiscount = null
+            cart.couponDiscount = 0
+            cart.couponID=null
             await cart.save()
+
+            // remove the applied user fromm the coupon
+            const coupon = await couponSchema.findById(couponID).populate('appliedUsers')
+            const newAppliedUser=coupon.appliedUsers.filter((ele)=>{
+                if(ele.id!=req.session.user){
+                    return ele
+                }
+            })
+
+            coupon.appliedUsers=newAppliedUser
+            await coupon.save()
+
         }
 
         return res.status(200).json({
@@ -442,8 +473,7 @@ const removeCoupon = async (req, res) => {
 
 const proceedCheckout = async (req, res) => {
     try {
-        const cart = await cartSchema.findOne({ userID: req.session.user }).populate('couponDiscount')
-
+        const cart = await cartSchema.findOne({ userID: req.session.user })
         if (cart.couponDiscount) {
             cart.payableAmount -= cart.couponDiscount.discount
             await cart.save()
@@ -453,7 +483,7 @@ const proceedCheckout = async (req, res) => {
 
 
     } catch (err) {
-        console.log(err);
+        console.log(`Error on proceed to checkout page ${err}`);
     }
 }
 

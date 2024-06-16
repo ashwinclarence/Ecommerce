@@ -22,7 +22,7 @@ const schema = new mongoose.Schema({
     },
     appliedUsers:{
         type: [mongoose.Schema.Types.ObjectId],
-        ref: 'User', 
+        ref: 'user', 
         default: [], 
     }
 }, { timestamps: true });

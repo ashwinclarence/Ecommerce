@@ -2,10 +2,10 @@ const cartSchema = require("../../model/cartSchema")
 const userSchema = require("../../model/userSchema")
 const orderSchema = require('../../model/orderSchema')
 const productSchema = require("../../model/productSchema")
+const walletSchema = require('../../model/walletSchema')
 const mongoose = require('mongoose')
 const Razorpay = require('razorpay')
 const dotenv = require('dotenv').config()
-
 
 
 
@@ -27,6 +27,9 @@ const checkout = async (req, res) => {
 
         // Get the address section from the userAddress
         const addressData = userAddress.address;
+
+        // get the wallet balance of the user
+        const wallet = await walletSchema.findOne({ userID: req.session.user })
 
         // Get all cart items
         const cartDetails = await cartSchema.findOne({ userID: req.session.user }).populate("items.productID");
@@ -50,6 +53,7 @@ const checkout = async (req, res) => {
             cartItems,
             cartDetails,
             user: userAddress,
+            wallet: wallet.balance,
             alertMessage: req.flash('errorMessage')
         });
 
@@ -71,7 +75,7 @@ const placeOrder = async (req, res) => {
         const addressIndex = req.params.address
         const paymentMode = parseInt(req.params.payment)
         let paymentId = ""
-        
+
         // check if selected payment method is razor pay or not
         if (paymentMode === 1) {
             // order details when razor pay is selected
@@ -79,14 +83,14 @@ const placeOrder = async (req, res) => {
             const razorpay_order_id = req.body.razorpay_order_id
             const razorpay_signature = req.body.razorpay_signature
             paymentId = req.body.razorpay_payment_id
-            
+
             // verify the payment
             // const instance = new Razorpay({ key_id: process.env.RAZORPAY_KEY_ID, key_secret: process.env.RAZORPAY_KEY_SECRET })
 
             // let { validatePaymentVerification, validateWebhookSignature } = require('./dist/utils/razorpay-utils');
             // validatePaymentVerification({ "order_id": razorpayOrderId, "payment_id": razorpayPaymentId }, signature, secret);
-            }
-            
+        }
+
 
         const cartItems = await cartSchema.findOne({ userID: req.session.user }).populate('items.productID')
         const paymentDetails = [
@@ -98,7 +102,7 @@ const placeOrder = async (req, res) => {
         const products = []
         let totalQuantity = 0
 
-        
+
         cartItems.items.forEach((ele) => {
 
             // add each products details in the cart to an array called products
@@ -118,10 +122,6 @@ const placeOrder = async (req, res) => {
         // find the user details 
         const userDetails = await userSchema.findById(req.session.user)
 
-
-
-
-
         // add a new order 
         const newOrder = new orderSchema({
             userID: req.session.user,
@@ -138,8 +138,9 @@ const placeOrder = async (req, res) => {
             paymentMethod: paymentDetails[paymentMode],
             orderStatus: "Confirmed",
             paymentId: paymentId,
-            couponDiscount:cartItems.couponDiscount
+            couponDiscount: cartItems.couponDiscount
         })
+
 
         // Start a session for transaction
         const session = await mongoose.startSession();
@@ -147,6 +148,23 @@ const placeOrder = async (req, res) => {
 
         // Save the new order
         await newOrder.save();
+
+
+        // if payment mode is wallet then reduce the amount from wallet
+        if (paymentMode === 2) {
+            // reduce the wallet amount if payment mode is wallet
+            const wallet = await walletSchema.findOne({ userID: req.session.user })
+
+            // check the payable amount is in the wallet
+            if(wallet.balance<cartItems.payableAmount){
+                req.flash("errorMessage","Insufficient balance in the wallet please choose another payment option")
+                return res.redirect('/user/checkout')
+            }
+
+            // if there is enough balance in the cart the continue
+            wallet.balance -= cartItems.payableAmount
+            await wallet.save()
+        }
 
         // Reduce the number of products purchased from the product stock
         for (const ele of cartItems.items) {

@@ -58,6 +58,7 @@ const dashboard = async (req, res) => {
 
         // get the order details from order collection (
         const orderDetails = await orderSchema.find().populate('products.productID').sort({ createdAt: -1 })
+        const orderDetailsProfit = await orderSchema.find({isCancelled:false}).populate('products.productID').sort({ createdAt: -1 })
 
         // current date
         const currentDate = new Date();
@@ -66,7 +67,7 @@ const dashboard = async (req, res) => {
         const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
 
         // daily report
-        const dailyReport = orderDetails.reduce((acc, ele) => {
+        const dailyReport = orderDetailsProfit.reduce((acc, ele) => {
             if (new Date(ele.createdAt) >= startOfToday) {
                 return acc + ele.totalPrice;
             }
@@ -74,7 +75,7 @@ const dashboard = async (req, res) => {
         }, 0);
 
         // weekly report
-        const weeklyReport = orderDetails.reduce((acc, ele) => {
+        const weeklyReport = orderDetailsProfit.reduce((acc, ele) => {
             if (new Date(ele.createdAt) >= startOfWeek) {
                 return acc + ele.totalPrice;
             }
@@ -82,7 +83,7 @@ const dashboard = async (req, res) => {
         }, 0);
 
         // monthly report
-        const monthlyReport = orderDetails.reduce((acc, ele) => {
+        const monthlyReport = orderDetailsProfit.reduce((acc, ele) => {
             if (new Date(ele.createdAt) >= startOfMonth) {
                 return acc + ele.totalPrice;
             }
@@ -90,16 +91,16 @@ const dashboard = async (req, res) => {
         }, 0);
 
         // overall sales
-        const overallSalesAmount=orderDetails.reduce((acc,ele)=>{
+        const overallSalesAmount=orderDetailsProfit.reduce((acc,ele)=>{
             return acc+ele.totalPrice
         },0)
 
         //overall sales count
-        const overallSalesCount=orderDetails.length
+        const overallSalesCount=orderDetailsProfit.length
 
 
         // overall discount
-        const overallDiscount=orderDetails.reduce((acc,ele)=>{
+        const overallDiscount=orderDetailsProfit.reduce((acc,ele)=>{
             return acc+ele.couponDiscount
         },0)
 

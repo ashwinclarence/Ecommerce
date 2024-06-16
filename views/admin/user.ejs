@@ -2,7 +2,8 @@
     .admin-customers-container {
         min-height: 100vh;
     }
-    .user-heading-box h3{
+
+    .user-heading-box h3 {
         font-family: "Proza Libre", sans-serif;
 
     }
@@ -15,7 +16,7 @@
         color: red;
         cursor: pointer;
     }
-    
+
     .block-user-btn {
         color: green;
         cursor: pointer;
@@ -29,64 +30,74 @@
 
 
     <div class="admin-customers-container container pt-5">
-        <div class="user-heading-box">
-            <h3>Customers</h3>
-        </div>
-        <div class="mt-5 table-responsive">
-            <table class="table ">
-                <thead class="table-primary">
-                    <tr>
-                        <th scope="col" class="text-center py-3">sl.no</th>
-                        <th scope="col" class="py-3">Name</th>
-                        <th scope="col" class="py-3">Email Address</th>
-                        <th scope="col" class="py-3">Phone Number</th>
-                        <th scope="col" class="text-center py-3">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% users.forEach((user,index)=>{%>
-                        <tr >
-                            <th scope="row" class="text-center">
-                                <%= index+1 %>
-                            </th>
-                            <td>
-                                <%= user.name %>
-                            </td>
-                            <td>
-                                <%= user.email %>
-                            </td>
-                            <td>
-                                <%= user.phone %>
-                            </td>
+        <div class="row">
+            <div class="user-heading-box col-md-8">
+                <h3>Customers</h3>
+            </div>
+            <div class="col-md-4">
+                <div class="card-counter secondary">
+                    <i class="fa-solid fa-dollar-sign"></i>
+                    <span class="count-numbers">
+                      
+                    </span>
+                    <span class="count-name">Overall Sales Count</span>
+                </div>
+            </div>
+            <div class=" col-md-12 mt-5 table-responsive">
+                <table class="table ">
+                    <thead class="table-primary">
+                        <tr>
+                            <th scope="col" class="text-center py-3">sl.no</th>
+                            <th scope="col" class="py-3">Name</th>
+                            <th scope="col" class="py-3">Email Address</th>
+                            <th scope="col" class="py-3">Phone Number</th>
+                            <th scope="col" class="text-center py-3">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% users.forEach((user,index)=>{%>
+                            <tr>
+                                <th scope="row" class="text-center">
+                                    <%= index+1 %>
+                                </th>
+                                <td>
+                                    <%= user.name %>
+                                </td>
+                                <td>
+                                    <%= user.email %>
+                                </td>
+                                <td>
+                                    <%= user.phone %>
+                                </td>
 
-                            <td class="text-center"> 
+                                <td class="text-center">
 
-                                <!-- <button class="btn" data-userID="<%= user.id %>">
+                                    <!-- <button class="btn" data-userID="<%= user.id %>">
                                     <i class="fa-solid fa-eye"></i>
                                 </button> -->
-                                <% if(user.isBlocked){%>
+                                    <% if(user.isBlocked){%>
 
-                                    <button class="btn unblock-user-btn" data-userID="<%= user.id %>">
-                                        <i class="fa-solid fa-user-large-slash"></i>
-                                    </button>
-
-                                    <% } else { %>
-
-                                        <button class="btn block-user-btn" data-userID="<%= user.id %>" >
-                                      <i class="fa-solid fa-user-large"></i>
+                                        <button class="btn unblock-user-btn" data-userID="<%= user.id %>">
+                                            <i class="fa-solid fa-user-large-slash"></i>
                                         </button>
 
-                                        <% } %>
+                                        <% } else { %>
 
-                            </td>
-                        </tr>
-                        <% })%>
-                </tbody>
-            </table>
+                                            <button class="btn block-user-btn" data-userID="<%= user.id %>">
+                                                <i class="fa-solid fa-user-large"></i>
+                                            </button>
+
+                                            <% } %>
+
+                                </td>
+                            </tr>
+                            <% })%>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
-    
 
     <%- include('footer') %>
 
