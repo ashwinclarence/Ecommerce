@@ -4,6 +4,16 @@ const walletSchema = require('../../model/walletSchema')
 const reviewSchema = require('../../model/reviewSchema')
 const mongoose = require('mongoose');
 const productSchema = require("../../model/productSchema");
+const PDFDocument = require("pdfkit-table");
+const fs = require('fs');
+const path = require('path')
+
+
+
+
+
+
+
 // order detail page render
 const order = async (req, res) => {
     try {
@@ -168,7 +178,7 @@ const addReview = async (req, res) => {
         const product = await productSchema.findById(productID)
         const productObjectId = product._id
 
-        
+
         // Find existing review for the product
         const review = await reviewSchema.findOne({ productID: productObjectId });
 
@@ -228,29 +238,122 @@ const walletRender = async (req, res) => {
 
 
         // get the order details of the order purchased using razor pay or wallet which is cancelled or returned
-       const walletOrderDetails= orderDetails.filter((ele)=>{
-            if(ele.paymentMethod ==="Razor pay" || ele.paymentMethod==="Wallet"){
-                if(ele.orderStatus==="Cancelled" || ele.orderStatus==='Returned'){
+        const walletOrderDetails = orderDetails.filter((ele) => {
+            if (ele.paymentMethod === "Razor pay" || ele.paymentMethod === "Wallet") {
+                if (ele.orderStatus === "Cancelled" || ele.orderStatus === 'Returned') {
                     return ele
                 }
             }
         })
         // get the order details which the payment method is wallet
-        const walletPurchaseOrderDetails=orderDetails.filter((ele)=>{
-            if(ele.paymentMethod==='Wallet'){
+        const walletPurchaseOrderDetails = orderDetails.filter((ele) => {
+            if (ele.paymentMethod === 'Wallet') {
                 return ele
             }
         })
-        const walletOrderTransactions=walletOrderDetails.concat(walletPurchaseOrderDetails)
-        
-        walletOrderTransactions.sort((a,b)=>b.createdAt-a.createdAt)
+        const walletOrderTransactions = walletOrderDetails.concat(walletPurchaseOrderDetails)
 
-        res.render('user/wallet', { title: "wallet", alertMessage: req.flash('errorMessage'), user: req.session.user, walletBalance, orderDetails:walletOrderTransactions })
+        walletOrderTransactions.sort((a, b) => b.createdAt - a.createdAt)
+
+        res.render('user/wallet', { title: "wallet", alertMessage: req.flash('errorMessage'), user: req.session.user, walletBalance, orderDetails: walletOrderTransactions })
 
     } catch (err) {
         console.log(`Error on rendering the wallet page ${err}`);
     }
 }
+
+
+// download the invoice of the order
+const downloadInvoice = async (req, res) => {
+    try {
+        const orderID = req.params.orderID;
+
+        // Get the order details from order collection
+        const orderDetails = await orderSchema.findById(orderID).populate('products.productID');
+
+        const doc = new PDFDocument();
+        const filename = `Cleat Craft Invoice ${Date.now()}.pdf`;
+
+        res.setHeader("Content-Disposition", `attachment; filename=${filename}`);
+        res.setHeader("Content-Type", "application/pdf");
+
+        doc.pipe(res);
+
+        // Add header aligned to center 
+        doc.font("Helvetica-Bold").fontSize(36).text("Cleat Craft", { align: "center", margin: 10 });
+        doc.font("Helvetica-Bold").fillColor("grey").fontSize(8).text("Empowering your game with elite football footwear", { align: "center", margin: 10 });
+        doc.moveDown();
+
+        doc.fontSize(10).fillColor("blue").text(`Invoice #${orderID}`);
+        doc.moveDown();
+        doc.moveDown();
+
+        // Add total sales report
+        doc.fillColor("black").text(`Total products: ${orderDetails.products.length}`);
+        doc.fontSize(10).fillColor("red").text(`Total Amount: Rs ${orderDetails.totalPrice.toLocaleString()}`);
+        doc.moveDown();
+
+        doc.fontSize(10).fillColor("black").text(`Payment method: ${orderDetails.paymentMethod}`);
+        doc.text(`Order Date: ${orderDetails.createdAt.toDateString()}`);
+        doc.moveDown();
+        doc.moveDown();
+
+        // Add address details of the company
+        doc.fontSize(10).fillColor("black").text(`Address: Trivandrum, Shangumugham`);
+        doc.text(`Pincode: 789589`);
+        doc.text(`Phone: 987 121 120`);
+        doc.moveDown();
+        doc.moveDown();
+
+        doc.fontSize(12).text(`Invoice.`, { align: "center", margin: 10 });
+        doc.moveDown();
+
+        const tableData = {
+            headers: [
+                "Product Name",
+                "Quantity",
+                "Price",
+                "Discount",
+                "Total"
+            ],
+            rows: orderDetails.products.map((product) => {
+                return [
+                    product?.productName,
+                    product?.quantity,
+                    `Rs ${product?.price}`,
+                    `${product?.discount} %`,
+                    `Rs ${(product.price * (1 - product.discount / 100) * product.quantity).toFixed(2)}`
+                ]
+            }),
+        };
+
+        // Customize the appearance of the table
+        await doc.table(tableData, {
+            prepareHeader: () => doc.font("Helvetica-Bold").fontSize(10),
+            prepareRow: (row, i) => doc.font("Helvetica").fontSize(8),
+            hLineColor: '#b2b2b2', // Horizontal line color
+            vLineColor: '#b2b2b2', // Vertical line color
+            textMargin: 2, // Margin between text and cell border
+        });
+
+
+        doc.moveDown();
+        doc.moveDown();
+        doc.moveDown();
+        doc.moveDown();
+        doc.fontSize(12).text(`Thank You.`, { align: "center", margin: 10 });
+        doc.moveDown();
+
+
+        // Finalize the PDF document
+        doc.end();
+
+    } catch (err) {
+        console.log(`Error on downloading the invoice pdf ${err}`);
+        res.status(500).send('Error generating invoice');
+    }
+};
+
 
 module.exports = {
     order,
@@ -259,4 +362,5 @@ module.exports = {
     returnOrderPost,
     addReview,
     walletRender,
+    downloadInvoice,
 }

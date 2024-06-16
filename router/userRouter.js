@@ -66,6 +66,7 @@ user.get('/cancelled-orders',checkUserSession,orderController.cancelledOrder)
 user.post('/cancel-order/:orderID',checkUserSession,orderController.cancelledOrderPost)
 user.post('/return-order/:orderID',checkUserSession,orderController.returnOrderPost)
 user.post('/add-review/:productID',checkUserSession,orderController.addReview)
+user.post('/invoice/:orderID',checkUserSession,orderController.downloadInvoice)
 
 // wallet
 user.get('/wallet',checkUserSession,orderController.walletRender)

@@ -194,7 +194,7 @@
                                                 </h5>
                                                 <h5 class="text-truncate font-size-18"><a
                                                         href="/user/product-view/<%= product.productID.id %>"
-                                                        class="text-dark">
+                                                        class="text-dark" title="<%= product.productName %>">
                                                         <%= product.productName %>
                                                     </a></h5>
 
@@ -203,16 +203,18 @@
                                                         <%= product.quantity %>
                                                     </b>
                                                 <p class="mb-0 mt-1">Price : <b>
-                                                        <%= product.price %>
+                                                        &#8377; <%= product.price %>
                                                     </b>
                                                 </p>
+                                               
                                                 <% if(ele.orderStatus==='Delivered' ){ %>
-                                                    <b class="add-review-button text-warning"
+                                                    <span class="add-review-button badge bg-warning text-dark mt-1"
                                                         onclick="addReview('<%= product.productID.id %>','<%= product.productName %>')"
                                                         title="add review to the product">
                                                         Add Review
-                                                    </b>
+                                                    </span>
                                                     <% } %>
+
                                             </div>
                                         </div>
 
@@ -221,40 +223,51 @@
                                     <% }) %>
                                         <div>
                                             <div class="row">
-                                                <div class="col-md-3">
-                                                    <div class="mt-3 text-center">
+                                                <div class="col-md-4">
+                                                    <div class="mt-3 ">
                                                         <p class="text-muted mb-2">Order Placed</p>
                                                         <h6 class="mb-0 mt-2"><span class="text-muted ">
                                                                 <%= ele.createdAt.toDateString() %>
                                                                     </h5>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-3">
-                                                    <div class="mt-3 text-center">
+                                                <div class="col-md-5">
+                                                    <div class="mt-3 ">
                                                         <p class="text-muted mb-2">Order ID</p>
                                                         <h6 class="mb-0 mt-2"><span class="text-muted ">
                                                                 <%= ele._id %>
                                                                     </h5>
                                                     </div>
                                                 </div>
+
                                                 <div class="col-md-3">
-                                                    <div class="mt-3 text-center">
-                                                        <p class="text-muted mb-2">Shipping Address</p>
-                                                        <h6 class="mb-0 mt-2"><span class="text-muted ">
-                                                                <%= ele.address.contactName %>
-                                                                    </h5>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="mt-3 text-center">
+                                                    <div class="mt-3">
                                                         <p class="text-muted mb-2">Order Status</p>
                                                         <h6 class="mb-0 mt-2"><span class="text-muted ">
                                                                 <%= ele.orderStatus %>
                                                                     </h5>
                                                     </div>
                                                 </div>
-
-
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-9">
+                                                    <div class="mt-3 ">
+                                                        <p class=" text-muted mb-2">Shipping Address</p>
+                                                        <h6 class="mb-0 mt-2"><span class="text-muted ">
+                                                                <%= ele.address.homeAddress %> , <%=
+                                                                        ele.address.areaAddress %> , Pin: <%=
+                                                                            ele.address.pincode %>
+                                                                            </h5>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="mt-3 ">
+                                                        <button class="btn btn-dark"
+                                                    onclick="downloadInvoice('<%= ele._id %>')">
+                                                    Invoice <i class="fa-solid fa-download"></i>
+                                                </button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -497,16 +510,16 @@
                     }).then((res) => {
                         return res.json();
                     }).then((data) => {
-                       if(data.success){
-                        Swal.fire({
-                            icon:"success",
-                            title:"Product review added",
-                            showConfirmButton:false,
-                            timer:800
-                        }).then(()=>{
-                            window.location.reload()
-                        })
-                       }
+                        if (data.success) {
+                            Swal.fire({
+                                icon: "success",
+                                title: "Product review added",
+                                showConfirmButton: false,
+                                timer: 800
+                            }).then(() => {
+                                window.location.reload()
+                            })
+                        }
                     }).catch((err) => {
                         const notyf = new Notyf();
                         notyf.error({
@@ -516,6 +529,35 @@
                     });
                 }
             });
+
+            // download the invoice
+            function downloadInvoice(orderID) {
+                const URL = `/user/invoice/${orderID}`
+                fetch(URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }).then((res) => {
+                    if (res.ok) {
+                        return res.blob();
+                    }
+                    throw new Error('Network response was not ok.');
+                })
+                    .then((blob) => {
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.style.display = 'none';
+                        a.href = url;
+                        a.download = `report-${Date.now()}.pdf`;
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+                    }).catch((err)=>{
+                        console.log(err);
+                    })
+
+            }
 
 
         </script>
