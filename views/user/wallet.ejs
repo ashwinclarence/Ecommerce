@@ -152,14 +152,12 @@
             const incrementDiv = document.createElement('i');
             incrementDiv.classList.add('fa-solid', 'fa-up-long', 'text-success');
             order.appendChild(incrementDiv);
-            order.style.color="green"
         }
         
         if (paymentMethod === "Wallet") {
             const decrementDiv = document.createElement('i');
             decrementDiv.classList.add('fa-solid', 'fa-down-long', 'text-danger');
             order.appendChild(decrementDiv);
-            order.style.color="red"
         }
     });
 
