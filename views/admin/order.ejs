@@ -76,6 +76,44 @@
     <div class="user-search-box">
         <h3>Orders</h3>
     </div>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card-counter orange">
+                <i class="fa-solid fa-boxes-stacked"></i>
+                <span class="count-numbers">
+                    <%= totalProducts %>
+                </span>
+                <span class="count-name">Total Orders</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card-counter info">
+                <i class="fa-solid fa-dolly"></i>       
+                <span class="count-numbers">
+                    <%= blockedProducts %>
+                </span>
+                <span class="count-name">Confirmed  Orders</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card-counter success">
+                <i class="fa-solid fa-box-archive"></i>
+                <span class="count-numbers">
+                    <%= totalProducts-blockedProducts %>
+                </span>
+                <span class="count-name">Delivered Orders</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card-counter danger">
+                <i class="fa-solid fa-dolly"></i>       
+                <span class="count-numbers">
+                    <%= blockedProducts %>
+                </span>
+                <span class="count-name">Cancelled Orders</span>
+            </div>
+        </div>
+    </div>
     <div class="mt-5 table-responsive">
         <table class="table">
             <thead class="table-primary">
@@ -125,6 +163,7 @@
                 <% } %>
             </tbody>
         </table>
+        <%- include('pagination') %>
     </div>
 </div>
 

@@ -54,11 +54,21 @@ const loginPost = (req, res) => {
 const dashboard = async (req, res) => {
     try {
 
+        const dataPerPage = 10;  // Number of products per page
+        const currentPage = parseInt(req.query.page) || 1;  // Current page from query parameter, default to 1
 
+        const skip = (currentPage - 1) * dataPerPage;
 
-        // get the order details from order collection (
-        const orderDetails = await orderSchema.find().populate('products.productID').sort({ createdAt: -1 })
+        // order schema for frontend order table
+        const orderDetails = await orderSchema.find().populate('products.productID') .skip(skip).limit(dataPerPage).sort({ createdAt: -1 })
+
+        // orderSchema for calculations
         const orderDetailsProfit = await orderSchema.find({isCancelled:false}).populate('products.productID').sort({ createdAt: -1 })
+
+        const totalCollections = await orderSchema.countDocuments();
+
+        // Calculate total number of pages
+        const pageNumber = Math.ceil(totalCollections / dataPerPage);
 
         // current date
         const currentDate = new Date();
@@ -149,7 +159,9 @@ const dashboard = async (req, res) => {
             overallDiscount,
             dailySalesArray,
             dailyArray,
-            monthlySalesArray 
+            monthlySalesArray,
+            pageNumber,
+            currentPage 
         })
 
 

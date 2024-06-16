@@ -7,12 +7,16 @@ const couponSchema = require('../../model/couponSchema')
 // render the coupons page 
 const coupons = async (req, res) => {
     try {
+        const productsPerPage = 10;  // Number of products per page
+        const currentPage = parseInt(req.query.page) || 1;  // Current page from query parameter, default to 1
+
+        const skip = (currentPage - 1) * productsPerPage;
 
         // search coupon 
         const couponSearch=req.query.search || "";
 
         // get all coupons available
-        const coupon = await couponSchema.find({couponName:{$regex:couponSearch,$options:'i'}}).sort({createdAt:-1})
+        const coupon = await couponSchema.find({couponName:{$regex:couponSearch,$options:'i'}}).skip(skip).limit(productsPerPage).sort({createdAt:-1})
 
         res.render('admin/coupons', { title: "Coupons",coupon, alertMessage: req.flash('errorMessage') })
 

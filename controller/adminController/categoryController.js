@@ -7,21 +7,38 @@ const categorySchema = require('../../model/categorySchema')
 // render the category page with search using regex
 const category = async (req, res) => {
 
-  
-        try {
 
-            const categorySearch = req.query.categorySearch || '';
+    try {
+        const dataPerPage = 10;  // Number of products per page
+        const currentPage = parseInt(req.query.page) || 1;  // Current page from query parameter, default to 1
 
-            const category = await categorySchema.find({ categoryName: { $regex: categorySearch, $options: 'i' } }).sort({createdAt:-1})
+        const skip = (currentPage - 1) * dataPerPage;
 
-            res.render('admin/category', { title: "Category list", category ,alertMessage:req.flash('errorMessage')})
+        const categorySearch = req.query.categorySearch || '';
 
-        } catch (err) {
-            console.log(`Error during category listing ${err}`);
-        }
+        const category = await categorySchema.find({ categoryName: { $regex: categorySearch, $options: 'i' } }).skip(skip).limit(dataPerPage).sort({ createdAt: -1 })
+
+        const totalCollections = category.length
+
+        // Calculate total number of pages
+        const pageNumber = Math.ceil(totalCollections / dataPerPage);
+
+        // find the total blocked categories
+        let blockedCategory=0
+        category.forEach((ele)=>{
+            if(ele.isActive===false){
+                blockedCategory++
+            }
+        })
+
+        res.render('admin/category', { title: "Category list", category,pageNumber,currentPage,blockedCategory, alertMessage: req.flash('errorMessage') })
+
+    } catch (err) {
+        console.log(`Error during category listing ${err}`);
+    }
 
 
-  
+
 }
 
 
@@ -32,8 +49,8 @@ const newCategoryPost = async (req, res) => {
 
         // get the new category name and trim unwanted white spaces
         let categoryName = req.body.newCategory;
-        categoryName=categoryName.trim();
-        categoryName=categoryName.toLowerCase()
+        categoryName = categoryName.trim();
+        categoryName = categoryName.toLowerCase()
 
 
         // category entered in the form
@@ -50,7 +67,7 @@ const newCategoryPost = async (req, res) => {
         // if category is not present then add the new category to the collection
         if (checkCategory === null) {
             await categorySchema.insertMany(category).then(() => {
-                req.flash('errorMessage','New category has been added');
+                req.flash('errorMessage', 'New category has been added');
                 console.log(`New Category added`);
                 res.redirect('/admin/category')
             }).catch((err) => {
@@ -61,7 +78,7 @@ const newCategoryPost = async (req, res) => {
         } else {
 
             // send and error message that the category is already present
-            req.flash('errorMessage','Product already present');
+            req.flash('errorMessage', 'Product already present');
             res.redirect('/admin/category')
         }
 
@@ -75,16 +92,16 @@ const newCategoryPost = async (req, res) => {
 
 const editCategory = async (req, res) => {
     try {
-       
-            // category id from the URL
-            const categoryID = req.params.id;
-            const category = await categorySchema.findById(categoryID);
-            if (category != null) {
-                res.render('admin/editCategory', { title: category.categoryName, category, alertMessage:req.flash('errorMessage') })
-            } else {
-                req.flash('errorMessage','An unexpected error occurred while editing the category. Please attempt the operation again.');
-                res.redirect('/admin/category')
-            }
+
+        // category id from the URL
+        const categoryID = req.params.id;
+        const category = await categorySchema.findById(categoryID);
+        if (category != null) {
+            res.render('admin/editCategory', { title: category.categoryName, category, alertMessage: req.flash('errorMessage') })
+        } else {
+            req.flash('errorMessage', 'An unexpected error occurred while editing the category. Please attempt the operation again.');
+            res.redirect('/admin/category')
+        }
 
     } catch (err) {
         console.log(`Error during category updating ${err}`);
@@ -95,24 +112,24 @@ const editCategory = async (req, res) => {
 // edit category and update the category collection
 const editCategoryPost = async (req, res) => {
     try {
-        
+
         const categoryID = req.params.id;
 
         // get the new category name from the form and trim unwanted white spaces 
-        let editCategory=req.body.editCategory
-        editCategory=editCategory.trim()
+        let editCategory = req.body.editCategory
+        editCategory = editCategory.trim()
         // convert the category to lowercase
-        editCategory=editCategory.toLowerCase()
+        editCategory = editCategory.toLowerCase()
 
         // check whether category is already present in the collection
-        const checkCategory= await categorySchema.findOne({categoryName:editCategory})
+        const checkCategory = await categorySchema.findOne({ categoryName: editCategory })
 
-        if(checkCategory==null){
+        if (checkCategory == null) {
             await categorySchema.findByIdAndUpdate(categoryID, { categoryName: editCategory })
-            req.flash('errorMessage','Success: Category update successfully')
+            req.flash('errorMessage', 'Success: Category update successfully')
             res.redirect('/admin/category')
-        }else{
-            req.flash('errorMessage','Warning: Category already exists. Please ensure no duplicates are being added.')
+        } else {
+            req.flash('errorMessage', 'Warning: Category already exists. Please ensure no duplicates are being added.')
             res.redirect('/admin/category')
         }
 
@@ -161,27 +178,27 @@ const unHideCategory = async (req, res) => {
 
 
 // delete category 
-const deleteCategory=async(req,res)=>{
-    try{
-        const categoryID=req.params.id
+const deleteCategory = async (req, res) => {
+    try {
+        const categoryID = req.params.id
 
-        const deleteCategory= await categorySchema.findByIdAndDelete(categoryID)
-        
-        if(deleteCategory!=null){
-            req.flash('errorMessage','Category has been successfully deleted')
+        const deleteCategory = await categorySchema.findByIdAndDelete(categoryID)
+
+        if (deleteCategory != null) {
+            req.flash('errorMessage', 'Category has been successfully deleted')
             res.redirect('/admin/category')
-        }else{
-            req.flash('errorMessage','Error: Unable to delete the category.')
+        } else {
+            req.flash('errorMessage', 'Error: Unable to delete the category.')
             res.redirect('/admin/category')
         }
 
-    }catch(err){
+    } catch (err) {
         console.log(`Error during deleting the category ${err}`);
     }
 }
 
 
-module.exports={
+module.exports = {
     category,
     newCategoryPost,
     editCategory,

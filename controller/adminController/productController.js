@@ -39,17 +39,27 @@ const products = async (req, res) => {
             .sort({ createdAt: -1 });
 
         // Count total number of products
-        const totalProducts = await productSchema.countDocuments();
+        const totalProducts = await productSchema.find();
 
         // Calculate total number of pages
-        const pageNumber = Math.ceil(totalProducts / productsPerPage);
+        const pageNumber = Math.ceil(totalProducts.length / productsPerPage);
+
+        // find the blocked products count
+        let blockedProducts=0
+        totalProducts.forEach((ele)=>{
+            if(ele.isActive===false){
+                blockedProducts++
+            }
+        })
 
         res.render('admin/products', {
             title: "Product list",
             products,
             alertMessage: req.flash('errorMessage'),
             pageNumber,
-            currentPage  // Send currentPage to highlight the current page in pagination
+            currentPage,
+            totalProducts:totalProducts.length,
+            blockedProducts  // Send currentPage to highlight the current page in pagination
         });
     } catch (err) {
         console.log(`Error on rendering product page ${err}`);

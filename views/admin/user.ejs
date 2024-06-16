@@ -30,17 +30,35 @@
 
 
     <div class="admin-customers-container container pt-5">
+        <div class="user-heading-box col-md-4">
+            <h3>Customers</h3>
+        </div>
         <div class="row">
-            <div class="user-heading-box col-md-8">
-                <h3>Customers</h3>
+            <div class="col-md-4">
+                <div class="card-counter orange">
+                    <i class="fa-solid fa-users"></i>
+                    <span class="count-numbers">
+                        <%= users.length %>
+                    </span>
+                    <span class="count-name">Total Customers</span>
+                </div>
             </div>
             <div class="col-md-4">
-                <div class="card-counter secondary">
-                    <i class="fa-solid fa-dollar-sign"></i>
+                <div class="card-counter success">
+                    <i class="fa-solid fa-user-check"></i>
                     <span class="count-numbers">
-                      
+                        <%= users.length-blockedUser %>
                     </span>
-                    <span class="count-name">Overall Sales Count</span>
+                    <span class="count-name">Unblocked Customers</span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card-counter danger">
+                    <i class="fa-solid fa-user-large-slash"></i>
+                    <span class="count-numbers">
+                        <%= blockedUser %>
+                    </span>
+                    <span class="count-name">Blocked Customers</span>
                 </div>
             </div>
             <div class=" col-md-12 mt-5 table-responsive">
@@ -55,6 +73,8 @@
                         </tr>
                     </thead>
                     <tbody>
+                        
+                        <% if(users.length!=0){%>
                         <% users.forEach((user,index)=>{%>
                             <tr>
                                 <th scope="row" class="text-center">
@@ -92,8 +112,14 @@
                                 </td>
                             </tr>
                             <% })%>
+                            <% }else{%>
+                                <tr>
+                                    <th colspan="5" class="p-5">No Users registered yet</th>
+                                </tr>
+                            <% }%>
                     </tbody>
                 </table>
+                <%- include('pagination') %>
             </div>
         </div>
     </div>

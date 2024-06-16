@@ -67,8 +67,35 @@
         <div class="user-header-box">
             <h3>Products</h3>
             <a href="/admin/add-product" class="btn btn-primary">Add Product <i class="fa-solid fa-plus"></i></a>
-
-
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card-counter orange">
+                    <i class="fa-solid fa-boxes-stacked"></i>
+                    <span class="count-numbers">
+                        <%= totalProducts %>
+                    </span>
+                    <span class="count-name">Total Customers</span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card-counter success">
+                    <i class="fa-solid fa-box-archive"></i>
+                    <span class="count-numbers">
+                        <%= totalProducts-blockedProducts %>
+                    </span>
+                    <span class="count-name">Unblocked Customers</span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card-counter danger">
+                    <i class="fa-solid fa-dolly"></i>       
+                    <span class="count-numbers">
+                        <%= blockedProducts %>
+                    </span>
+                    <span class="count-name">Blocked Customers</span>
+                </div>
+            </div>
         </div>
         <div class="mt-5 table-responsive">
             <table class="table">

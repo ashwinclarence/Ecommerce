@@ -6,14 +6,39 @@ const orderSchema = require("../../model/orderSchema");
 // render the order page 
 const order = async (req, res) => {
     try {
+        const productsPerPage = 10;  // Number of products per page
+        const currentPage = parseInt(req.query.page) || 1;  // Current page from query parameter, default to 1
+
+        const skip = (currentPage - 1) * productsPerPage;
 
         const orderSearch=req.query.search;
 
         // get the order details from order collection (
-        const orderDetails = await orderSchema.find().populate('products.productID').sort({createdAt:-1})
+        const orderDetails = await orderSchema.find().populate('products.productID').skip(skip).limit(productsPerPage).sort({createdAt:-1})
+
+        // Count total number of products
+        const totalProducts = await orderSchema.find();
+
+        // Calculate total number of pages
+        const pageNumber = Math.ceil(totalProducts.length / productsPerPage);
+
+        // find the blocked products count
+        let blockedProducts=0
+        totalProducts.forEach((ele)=>{
+            if(ele.isActive===false){
+                blockedProducts++
+            }
+        })
 
      
-        res.render('admin/order', { title: "Order list", orderDetails, alertMessage: req.flash('errorMessage') })
+        res.render('admin/order', { title: "Order list", 
+            alertMessage: req.flash('errorMessage'), 
+            orderDetails,
+            pageNumber,
+            currentPage,
+            totalProducts:totalProducts.length, 
+            blockedProducts
+        })
     } catch (err) {
         console.log(`Error on rendering the admin order page ${err}`);
     }
