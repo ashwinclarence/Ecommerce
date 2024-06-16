@@ -33,10 +33,25 @@ const cart = async (req, res) => {
                     totalPriceWithoutDiscount += (ele.productID.productPrice * ele.productCount)
                 }
             })
-            // // remove anything that exist in cart coupon discount
+        
+            // remove anything that exist in cart coupon discount
+            const couponID = cart.couponID;
             if (cart.couponDiscount) {
-                cart.couponDiscount = null
+                cart.couponDiscount = 0
+                cart.couponID = null
                 await cart.save()
+
+                // remove the applied user fromm the coupon
+                const coupon = await couponSchema.findById(couponID).populate('appliedUsers')
+                const newAppliedUser = coupon.appliedUsers.filter((ele) => {
+                    if (ele.id != req.session.user) {
+                        return ele
+                    }
+                })
+
+                coupon.appliedUsers = newAppliedUser
+                await coupon.save()
+
             }
 
             // if the totalPrice and payable amount in the cart and the calculated total price is different then update the collection with the new values
@@ -413,7 +428,7 @@ const applyCoupon = async (req, res) => {
 
         // save the coupon discount amount in the cart
         cart.couponDiscount = coupon.discount
-        cart.couponID=couponID
+        cart.couponID = couponID
         await cart.save()
 
         // update the coupon with purchased user details
@@ -439,23 +454,23 @@ const removeCoupon = async (req, res) => {
     try {
 
         const cart = await cartSchema.findOne({ userID: req.session.user })
-        const couponID=cart.couponID
+        const couponID = cart.couponID
 
         // remove anything that exist in cart coupon discount
         if (cart.couponDiscount) {
             cart.couponDiscount = 0
-            cart.couponID=null
+            cart.couponID = null
             await cart.save()
 
             // remove the applied user fromm the coupon
             const coupon = await couponSchema.findById(couponID).populate('appliedUsers')
-            const newAppliedUser=coupon.appliedUsers.filter((ele)=>{
-                if(ele.id!=req.session.user){
+            const newAppliedUser = coupon.appliedUsers.filter((ele) => {
+                if (ele.id != req.session.user) {
                     return ele
                 }
             })
 
-            coupon.appliedUsers=newAppliedUser
+            coupon.appliedUsers = newAppliedUser
             await coupon.save()
 
         }
@@ -471,11 +486,19 @@ const removeCoupon = async (req, res) => {
     }
 }
 
+
+// before checkout validate the cart and discount the amount if coupon is added 
 const proceedCheckout = async (req, res) => {
     try {
         const cart = await cartSchema.findOne({ userID: req.session.user })
+
+        // if the cart is empty then don't allow to checkout
+        if(cart.payableAmount<=0){
+            req.flash("errorMessage",'Add some products in cart to proceed to checkout')
+            return res.redirect('/user/home')
+        }
         if (cart.couponDiscount) {
-            cart.payableAmount -= cart.couponDiscount.discount
+            cart.payableAmount -= cart.couponDiscount
             await cart.save()
         }
 
