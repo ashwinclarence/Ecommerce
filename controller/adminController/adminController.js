@@ -66,6 +66,31 @@ const dashboard = async (req, res) => {
         const startOfWeek = new Date(currentDate.setDate(currentDate.getDate() - currentDate.getDay()));
         const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
 
+       // daily sales array (array of sales per day)
+       const dailySalesArray = [];
+       const dailyArray = [];
+       let dayIterator = new Date(currentDate); // start from today
+       while (dayIterator >= startOfMonth) {
+           const dayStart = new Date(dayIterator.setHours(0, 0, 0, 0));
+           const dayEnd = new Date(dayIterator.setHours(23, 59, 59, 999));
+           const dayTotal = orderDetailsProfit.reduce((acc, ele) => {
+               const eleDate = new Date(ele.createdAt);
+               if (eleDate >= dayStart && eleDate <= dayEnd) {
+                   return acc + ele.totalPrice;
+               }
+               return acc;
+           }, 0);
+           dailySalesArray.push( dayTotal );
+           dailyArray.push(new Date(dayStart).getDate())
+           dayIterator.setDate(dayIterator.getDate() - 1); // move to the previous day
+       }
+
+       const monthlySalesArray = new Array(12).fill(0); // Initialize array with 12 zeros
+        orderDetailsProfit.forEach(order => {
+            const month = new Date(order.createdAt).getMonth(); // Get the month (0-11)
+            monthlySalesArray[month] += order.totalPrice; // Add the order's totalPrice to the corresponding month
+        });
+        
         // daily report
         const dailyReport = orderDetailsProfit.reduce((acc, ele) => {
             if (new Date(ele.createdAt) >= startOfToday) {
@@ -100,13 +125,32 @@ const dashboard = async (req, res) => {
 
 
         // overall discount
-        const overallDiscount=orderDetailsProfit.reduce((acc,ele)=>{
+        let overallDiscount=orderDetailsProfit.reduce((acc,ele)=>{
             return acc+ele.couponDiscount
         },0)
 
+        // find the discounts in each order
+        const productDiscount=orderDetailsProfit.reduce((acc,ele)=>{
+            for(const product of ele.products){
+                return acc+(((product.price/100)*product.discount)*product.quantity)
+            }
+        },0)
+        overallDiscount+=productDiscount
 
-
-        res.render('admin/dashboard', { title: "Admin Dashboard", alertMessage: req.flash('errorMessage'), dailyReport, weeklyReport, monthlyReport, orderDetails,overallSalesAmount,overallSalesCount,overallDiscount })
+       
+        res.render('admin/dashboard', { title: "Admin Dashboard", 
+            alertMessage: req.flash('errorMessage'), 
+            dailyReport, 
+            weeklyReport, 
+            monthlyReport, 
+            orderDetails,
+            overallSalesAmount,
+            overallSalesCount,
+            overallDiscount,
+            dailySalesArray,
+            dailyArray,
+            monthlySalesArray 
+        })
 
 
     } catch (err) {
@@ -130,7 +174,7 @@ const generateCustomSales = async (req, res) => {
         end.setHours(23, 59, 59, 999); // Set end time to the end of the day
 
         // Fetch orders within the specified date range
-        const orders = await orderSchema.find({ createdAt: { $gte: start, $lte: end } });
+        const orders = await orderSchema.find({ createdAt: { $gte: start, $lte: end },isCancelled:false });
 
         // Calculate total sales
         const sale = orders.reduce((acc, order) => acc + order.totalPrice, 0);

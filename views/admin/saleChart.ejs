@@ -1,0 +1,96 @@
+<!-- Canvas element where the chart will be rendered -->
+<div class="container my-5">
+    <h5>Monthly sales report</h5>
+    <canvas id="lineChartDaily" class="py-5"></canvas>
+    <h5>Yearly sales report</h5>
+    <canvas id="lineChartMonthly" class="py-5"></canvas>
+</div>
+
+<!-- Script to render the chart -->
+<script>
+
+    // array 
+
+    const dailySale="<%= dailySalesArray %>"
+    const dailySaleArray=dailySale.split(',')
+    const dailyArray="<%= dailyArray %>"
+    const dailyArrayConvert=dailyArray.split(',')
+    const monthlySale="<%= monthlySalesArray %>"
+    const monthlySalesArray=monthlySale.split(',')
+    // Ensure the script runs after the DOM is fully loaded
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get the context of the canvas element we want to select
+        var ctx = document.getElementById('lineChartDaily').getContext('2d');
+
+        // Create a new Chart object
+        var myLineChart = new Chart(ctx, {
+            type: 'line', // Specify the chart type
+            data: {
+                labels: dailyArrayConvert,
+                datasets: [{
+                    label: `Monthly sale Report`, // Name the dataset
+                    fill: true, //  fill under the line
+                    borderColor: 'red', // Line color
+                    data: dailySaleArray // Data points
+                }]
+            },
+            options: {
+                responsive: true, // Make the chart responsive
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Months'
+                        }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Sales'
+                        }
+                    }
+                }
+            }
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get the context of the canvas element we want to select
+        var ctx = document.getElementById('lineChartMonthly').getContext('2d');
+
+        // Create a new Chart object
+        var myLineChart = new Chart(ctx, {
+            type: 'line', // Specify the chart type
+            data: {
+                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                datasets: [{
+                    label: `Yearly sale Report ${new Date().getFullYear()}`, // Name the dataset
+                    fill: true, //  fill under the line
+                    borderColor: 'orange', // Line color
+                    data: monthlySalesArray // Data points
+                }]
+            },
+            options: {
+                responsive: true, // Make the chart responsive
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Months'
+                        }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Sales'
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
