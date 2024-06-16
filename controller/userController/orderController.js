@@ -219,14 +219,33 @@ const walletRender = async (req, res) => {
         const wallet = await walletSchema.findOne({ userID: req.session.user })
         let walletBalance = 0
 
-        // if wallet is there then show the valet amount
+        // if wallet is there then show the wallet amount
         if (wallet) {
             walletBalance = wallet.balance
         }
-        const orderDetails = await orderSchema.find({ userID: req.session.user, paymentMethod: { $in: ["Razor pay", 'Wallet'] }, orderStatus: { $in: ["Cancelled", "Returned"] } }).sort({ createdAt: -1 })
+        // const orderDetails = await orderSchema.find({ userID: req.session.user, paymentMethod: { $in: ["Razor pay", 'Wallet'] }, orderStatus: { $in: ["Cancelled", "Returned"] } }).sort({ createdAt: -1 })
+        const orderDetails = await orderSchema.find({ userID: req.session.user }).sort({ createdAt: -1 })
 
 
-        res.render('user/wallet', { title: "wallet", alertMessage: req.flash('errorMessage'), user: req.session.user, walletBalance, orderDetails })
+        // get the order details of the order purchased using razor pay or wallet which is cancelled or returned
+       const walletOrderDetails= orderDetails.filter((ele)=>{
+            if(ele.paymentMethod ==="Razor pay" || ele.paymentMethod==="Wallet"){
+                if(ele.orderStatus==="Cancelled" || ele.orderStatus==='Returned'){
+                    return ele
+                }
+            }
+        })
+        // get the order details which the payment method is wallet
+        const walletPurchaseOrderDetails=orderDetails.filter((ele)=>{
+            if(ele.paymentMethod==='Wallet'){
+                return ele
+            }
+        })
+        const walletOrderTransactions=walletOrderDetails.concat(walletPurchaseOrderDetails)
+        
+        walletOrderTransactions.sort((a,b)=>b.createdAt-a.createdAt)
+
+        res.render('user/wallet', { title: "wallet", alertMessage: req.flash('errorMessage'), user: req.session.user, walletBalance, orderDetails:walletOrderTransactions })
 
     } catch (err) {
         console.log(`Error on rendering the wallet page ${err}`);

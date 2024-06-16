@@ -51,7 +51,6 @@
         border: 1px solid #eff0f2;
         border-radius: 1rem;
     }
-
 </style>
 
 
@@ -115,8 +114,11 @@
                                     <td class="py-3">
                                         <%= ele.orderStatus %>
                                     </td>
-                                    <td class="py-3">&#8377; <%= ele.totalPrice %>
+                                    <td class="py-3 wallet-amount" data-purchase="<%= ele.orderStatus %>"
+                                        data-payment="<%= ele.paymentMethod %>" data-price="<%= ele.totalPrice %>">
+                                        &#8377; <%= ele.totalPrice %>
                                     </td>
+                                  
                                 </tr>
                             </tbody>
 
@@ -130,75 +132,36 @@
                                     </tbody>
                                     <% } %>
                 </table>
-                <!-- end card -->
-
-            </div>
-        </div>
-        <!-- end row -->
-    </div>
-
-    <div class="modal fade" id="cancelOrderModal" tabindex="-1" aria-labelledby="cancelOrderModal" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-body p-5">
-                    <h2 class="text-center mb-5">Reason for cancelling</h2>
-                    <form action="/user/cancel-order/" method="post" id="cancel-order-form">
-                        <div class="form-group">
-                            <textarea class="form-control" id="reason-for-cancel" rows="5" name="cancelReason"
-                                placeholder="please provide the reason for cancelling the order"></textarea>
-                            <label for="reason-for-cancel" class="cancel-form-validate text-danger"></label>
-                        </div>
-                        <div class="form-group text-center">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-success">Confirm Cancel</button>
-                        </div>
-                    </form>
-                </div>
             </div>
         </div>
     </div>
+
 
     <%- include('footer') %>
 
 
         <script>
 
-            // function for cancelling the order
-            const cancelOrderForm = document.getElementById('cancel-order-form')
-            function cancelOrder(orderID) {
+    const walletAmount = document.querySelectorAll('.wallet-amount');
 
-                Swal.fire({
-                    icon: "question",
-                    title: "Cancel the order",
-                    text: "Are you sure want to cancel the order?",
-                    showCancelButton: true,
-                    confirmButtonText: "Yes, cancel it !",
-                    cancelButtonText: "No"
-                }).then((result) => {
-                    if (result.isConfirmed) {
+    walletAmount.forEach((order) => {
+        const orderStatus = order.getAttribute('data-purchase');
+        const paymentMethod = order.getAttribute('data-payment');
 
-                        // open the modal for cancel order
-                        const myModal = new bootstrap.Modal(document.getElementById('cancelOrderModal'));
-                        myModal.show();
+        if (orderStatus === 'Returned' || orderStatus === 'Cancelled') {
+            const incrementDiv = document.createElement('i');
+            incrementDiv.classList.add('fa-solid', 'fa-up-long', 'text-success');
+            order.appendChild(incrementDiv);
+            order.style.color="green"
+        }
+        
+        if (paymentMethod === "Wallet") {
+            const decrementDiv = document.createElement('i');
+            decrementDiv.classList.add('fa-solid', 'fa-down-long', 'text-danger');
+            order.appendChild(decrementDiv);
+            order.style.color="red"
+        }
+    });
 
-                        cancelOrderForm.action = `/user/cancel-order/${orderID}`
-
-
-                    }
-                })
-            }
-
-            const reasonForCancel = document.getElementById('reason-for-cancel')
-            cancelOrderForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                document.getElementsByClassName('cancel-form-validate')[0].innerHTML = ""
-
-                if (reasonForCancel.value.trim() === 0 || reasonForCancel.value.length > 100 || reasonForCancel.value.length < 10) {
-
-                    document.getElementsByClassName('cancel-form-validate')[0].innerHTML = "Please provide a reason between 10 and 100 characters"
-                } else {
-                    cancelOrderForm.submit()
-                }
-            })
 
         </script>
