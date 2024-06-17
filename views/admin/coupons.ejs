@@ -156,7 +156,8 @@
     <div class="admin-customers-container container">
         <div class="user-search-box">
             <h3>Coupons</h3>
-            <button type="button" class="btn btn-success" data-toggle="modal" data-target=".add-new-coupon-modal">Add
+            <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                data-bs-target=".add-new-coupon-modal">Add
                 Coupons <i class="fa-solid fa-plus"></i></button>
         </div>
         <!-- modal for adding new coupon -->
@@ -189,7 +190,7 @@
                             <label for="expiryDate" class="validateCoupon"></label>
                         </div>
                         <div class="text-center">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </div>
 
@@ -235,7 +236,10 @@
                                 <input type="text" name="newMinPurchase" id="new-purchase" class="form-control">
                                 <label for="new-purchase" class="editValidateCoupon"></label>
                             </div>
-                            <button class="btn btn-success">Save Changes</button>
+                            <div class="text-center">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button class="btn btn-success">Save Changes</button>
+                            </div>
                         </form>
                     </div>
 
@@ -286,7 +290,7 @@
                                 </td>
                                 <td class="text-center">
                                     <button class="btn edit-coupon-btn" title="Edit the coupon" type="button"
-                                        data-toggle="modal" data-target=".edit-coupon-modal"
+                                        data-bs-toggle="modal" data-bs-target=".edit-coupon-modal"
                                         data-couponID="<%= coupon.id %>" data-name="<%= coupon.couponName %>"
                                         data-code="<%= coupon.couponCode %>" data-discount="<%= coupon.discount %>"
                                         data-expiryDate="<%= coupon.expiryDate %>"
@@ -304,22 +308,23 @@
                                                 <i class="fa-solid fa-square-check"></i>
                                             </button>
                                             <% } %>
-                                                <button class="btn text-danger delete-coupon"  data-couponID="<%= coupon.id %>">
+                                                <button class="btn text-danger delete-coupon"
+                                                    data-couponID="<%= coupon.id %>">
                                                     <i class="fa-regular fa-trash-can"></i>
                                                 </button>
                                 </td>
                             </tr>
 
                             <% }) %>
-                            <% }else{ %>
-                                <tr>
-                                    <th colspan="8" class="p-5 text-secondary">No coupons added yet </th>
-                                </tr>
-                                <% } %>
-                                
-                            </tbody>
-                        </table>
-                        <%- include('pagination') %>
+                                <% }else{ %>
+                                    <tr>
+                                        <th colspan="8" class="p-5 text-secondary">No coupons added yet </th>
+                                    </tr>
+                                    <% } %>
+
+                </tbody>
+            </table>
+            <%- include('pagination') %>
         </div>
     </div>
 
@@ -368,6 +373,11 @@
                 if (!isAtLeastOneDayAfterToday(expiredDate.value) || expiredDate.value.trim() === '') {
                     formValid = false
                     document.getElementsByClassName('validateCoupon')[3].innerHTML = "Invalid Expiry Date"
+                }
+                if (discountAmount.value >= minPurchase.value) {
+                    formValid = false
+                    document.getElementsByClassName('validateCoupon')[1].innerHTML = "Discount amount must be lower than minimum purchase"
+                    document.getElementsByClassName('validateCoupon')[2].innerHTML = "Minimum purchase must be higher than discount amount"
                 }
 
                 if (formValid) {
@@ -456,6 +466,11 @@
                     formValid = false
                     document.getElementsByClassName('editValidateCoupon')[2].innerHTML = "Invalid Minimum Purchase Amount"
                 }
+                if (Number(newDiscount.value) >= Number(newPurchase.value)) {
+                    formValid = false
+                    document.getElementsByClassName('editValidateCoupon')[1].innerHTML = "Discount amount must be lower than minimum purchase"
+                    document.getElementsByClassName('editValidateCoupon')[2].innerHTML = "Minimum purchase must be higher than discount amount"
+                }
 
                 if (formValid) {
                     editCouponForm.submit()
@@ -475,7 +490,7 @@
                         icon: "question",
                         title: "Block the Coupon",
                         text: "Are you sure want to block the coupon",
-                        showCancelButton:true,
+                        showCancelButton: true,
                     }).then((result) => {
                         if (result.isConfirmed) {
 
@@ -495,7 +510,7 @@
                                     Swal.fire({
                                         icon: "success",
                                         title: "Coupon blocked",
-                                        text:data.message,
+                                        text: data.message,
                                         showConfirmButton: false,
                                         timer: 800
                                     }).then(() => {
@@ -504,11 +519,11 @@
                                 }
 
                                 // if error then show the error Message
-                                if(data.error){
+                                if (data.error) {
                                     Swal.fire({
                                         icon: "error",
                                         title: "Error",
-                                        text:data.error,
+                                        text: data.error,
                                         showConfirmButton: false,
                                         timer: 800
                                     }).then(() => {
@@ -542,7 +557,7 @@
                         icon: "question",
                         title: "Un-Block the Coupon",
                         text: "Are you sure want to un-block the coupon",
-                        showCancelButton:true,
+                        showCancelButton: true,
                     }).then((result) => {
                         if (result.isConfirmed) {
 
@@ -562,7 +577,7 @@
                                     Swal.fire({
                                         icon: "success",
                                         title: "Coupon unblocked",
-                                        text:data.message,
+                                        text: data.message,
                                         showConfirmButton: false,
                                         timer: 800
                                     }).then(() => {
@@ -571,11 +586,11 @@
                                 }
 
                                 // if error then show the error Message
-                                if(data.error){
+                                if (data.error) {
                                     Swal.fire({
                                         icon: "error",
                                         title: "Error",
-                                        text:data.error,
+                                        text: data.error,
                                         showConfirmButton: false,
                                         timer: 800
                                     }).then(() => {
@@ -608,7 +623,7 @@
                         icon: "question",
                         title: "Delete the Coupon",
                         text: "Are you sure want to delete the coupon",
-                        showCancelButton:true,
+                        showCancelButton: true,
                     }).then((result) => {
                         if (result.isConfirmed) {
 
@@ -628,7 +643,7 @@
                                     Swal.fire({
                                         icon: "success",
                                         title: "Coupon deleted",
-                                        text:data.message,
+                                        text: data.message,
                                         showConfirmButton: false,
                                         timer: 800
                                     }).then(() => {
@@ -637,11 +652,11 @@
                                 }
 
                                 // if error then show the error Message
-                                if(data.error){
+                                if (data.error) {
                                     Swal.fire({
                                         icon: "error",
                                         title: "Error",
-                                        text:data.error,
+                                        text: data.error,
                                         showConfirmButton: false,
                                         timer: 800
                                     }).then(() => {
