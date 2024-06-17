@@ -492,11 +492,20 @@ const proceedCheckout = async (req, res) => {
     try {
         const cart = await cartSchema.findOne({ userID: req.session.user })
 
+        
+        
         // if the cart is empty then don't allow to checkout
         if(cart.payableAmount<=0){
             req.flash("errorMessage",'Add some products in cart to proceed to checkout')
             return res.redirect('/user/home')
         }
+        // check is there a need to add shipping charge
+        if(cart.payableAmount<500){
+            cart.payableAmount+=50;
+            await cart.save()
+        }
+        
+        // if there is coupon added in the cart then reduce the amount
         if (cart.couponDiscount) {
             cart.payableAmount -= cart.couponDiscount
             await cart.save()

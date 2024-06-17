@@ -290,6 +290,7 @@ const downloadInvoice = async (req, res) => {
 
         // Add total sales report
         doc.fillColor("black").text(`Total products: ${orderDetails.products.length}`);
+        doc.fillColor("black").text(`Shipping Charge: ${orderDetails.totalPrice<500?"RS 50":"Free"}`);
         doc.fontSize(10).fillColor("red").text(`Total Amount: Rs ${orderDetails.totalPrice.toLocaleString()}`);
         doc.moveDown();
 
