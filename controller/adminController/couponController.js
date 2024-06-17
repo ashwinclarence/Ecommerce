@@ -7,18 +7,32 @@ const couponSchema = require('../../model/couponSchema')
 // render the coupons page 
 const coupons = async (req, res) => {
     try {
-        const productsPerPage = 10;  // Number of products per page
+        const dataPerPage = 10;  // Number of products per page
         const currentPage = parseInt(req.query.page) || 1;  // Current page from query parameter, default to 1
 
-        const skip = (currentPage - 1) * productsPerPage;
+        const skip = (currentPage - 1) * dataPerPage;
 
         // search coupon 
         const couponSearch=req.query.search || "";
 
         // get all coupons available
-        const coupon = await couponSchema.find({couponName:{$regex:couponSearch,$options:'i'}}).skip(skip).limit(productsPerPage).sort({createdAt:-1})
+        const coupon = await couponSchema.find({couponName:{$regex:couponSearch,$options:'i'}}).skip(skip).limit(dataPerPage).sort({createdAt:-1})
 
-        res.render('admin/coupons', { title: "Coupons",coupon, alertMessage: req.flash('errorMessage') })
+        
+        const totalCollections = coupon.length
+
+        // Calculate total number of pages
+        const pageNumber = Math.ceil(totalCollections / dataPerPage);
+
+        // // find the total blocked categories
+        // let blockedCategory=0
+        // category.forEach((ele)=>{
+        //     if(ele.isActive===false){
+        //         blockedCategory++
+        //     }
+        // })
+
+        res.render('admin/coupons', { title: "Coupons",coupon,currentPage,pageNumber, alertMessage: req.flash('errorMessage') })
 
     } catch (err) {
         console.log(`Error on rendering coupon page ${err}`);

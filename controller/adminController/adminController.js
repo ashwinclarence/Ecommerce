@@ -50,109 +50,94 @@ const loginPost = (req, res) => {
 }
 
 
-// rendering the dashboard page
 const dashboard = async (req, res) => {
     try {
-
         const dataPerPage = 10;  // Number of products per page
         const currentPage = parseInt(req.query.page) || 1;  // Current page from query parameter, default to 1
-
         const skip = (currentPage - 1) * dataPerPage;
 
-        // order schema for frontend order table
-        const orderDetails = await orderSchema.find().populate('products.productID') .skip(skip).limit(dataPerPage).sort({ createdAt: -1 })
+        // Fetching order details for the frontend order table
+        const orderDetails = await orderSchema.find()
+            .populate('products.productID')
+            .skip(skip)
+            .limit(dataPerPage)
+            .sort({ createdAt: -1 });
 
-        // orderSchema for calculations
-        const orderDetailsProfit = await orderSchema.find({isCancelled:false,orderStatus:{$nin:'Pending'}}).populate('products.productID').sort({ createdAt: -1 })
+        // Fetching order details for calculations
+        const orderDetailsProfit = await orderSchema.find({ isCancelled: false, orderStatus: { $nin: 'Pending' } })
+            .populate('products.productID')
+            .sort({ createdAt: -1 });
 
+        // Total number of orders
         const totalCollections = await orderSchema.countDocuments();
 
-        // Calculate total number of pages
+        // Calculate total number of pages for pagination
         const pageNumber = Math.ceil(totalCollections / dataPerPage);
 
-        // current date
+        // Current date
         const currentDate = new Date();
+        // Start of today, week, and month
         const startOfToday = new Date(currentDate.setHours(0, 0, 0, 0));
-        const startOfWeek = new Date(currentDate.setDate(currentDate.getDate() - currentDate.getDay()));
+        const startOfWeek = new Date(currentDate);
+        startOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
         const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
 
-       // daily sales array (array of sales per day)
-       const dailySalesArray = [];
-       const dailyArray = [];
-       let dayIterator = new Date(currentDate); // start from today
-       while (dayIterator >= startOfMonth) {
-           const dayStart = new Date(dayIterator.setHours(0, 0, 0, 0));
-           const dayEnd = new Date(dayIterator.setHours(23, 59, 59, 999));
-           const dayTotal = orderDetailsProfit.reduce((acc, ele) => {
-               const eleDate = new Date(ele.createdAt);
-               if (eleDate >= dayStart && eleDate <= dayEnd) {
-                   return acc + ele.totalPrice;
-               }
-               return acc;
-           }, 0);
-           dailySalesArray.push( dayTotal );
-           dailyArray.push(new Date(dayStart).getDate())
-           dayIterator.setDate(dayIterator.getDate() - 1); // move to the previous day
-       }
+        // Arrays for daily sales and daily array
+        const dailySalesArray = [];
+        const dailyArray = [];
 
-       const monthlySalesArray = new Array(12).fill(0); // Initialize array with 12 zeros
+        // Iterate over days starting from today to start of the month
+        let dayIterator = new Date(currentDate);
+        while (dayIterator >= startOfMonth) {
+            const dayStart = new Date(dayIterator);
+            dayStart.setHours(0, 0, 0, 0);
+            const dayEnd = new Date(dayIterator);
+            dayEnd.setHours(23, 59, 59, 999);
+
+            const dayTotal = orderDetailsProfit.reduce((acc, ele) => {
+                const eleDate = new Date(ele.createdAt);
+                if (eleDate >= dayStart && eleDate <= dayEnd) {
+                    return acc + ele.totalPrice;
+                }
+                return acc;
+            }, 0);
+
+            dailySalesArray.push(dayTotal);
+            dailyArray.push(dayStart.getDate());
+
+            dayIterator.setDate(dayIterator.getDate() - 1); // Move to the previous day
+        }
+
+        // Monthly sales array
+        const monthlySalesArray = new Array(12).fill(0); // Initialize array with 12 zeros
         orderDetailsProfit.forEach(order => {
-            const month = new Date(order.createdAt).getMonth(); // Get the month (0-11)
-            monthlySalesArray[month] += order.totalPrice; // Add the order's totalPrice to the corresponding month
+            const month = new Date(order.createdAt).getMonth();
+            monthlySalesArray[month] += order.totalPrice;
         });
-        
-        // daily report
-        const dailyReport = orderDetailsProfit.reduce((acc, ele) => {
-            if (new Date(ele.createdAt) >= startOfToday) {
-                return acc + ele.totalPrice;
-            }
-            return acc;
+
+        // Calculate daily, weekly, and monthly reports
+        const dailyReport = calculateReport(orderDetailsProfit, startOfToday);
+        const weeklyReport = calculateReport(orderDetailsProfit, startOfWeek);
+        const monthlyReport = calculateReport(orderDetailsProfit, startOfMonth);
+
+        // Overall sales amount and count
+        const overallSalesAmount = orderDetailsProfit.reduce((acc, ele) => acc + ele.totalPrice, 0);
+        const overallSalesCount = orderDetailsProfit.length;
+
+        // Overall discount calculation
+        let overallDiscount = orderDetailsProfit.reduce((acc, ele) => acc + ele.couponDiscount, 0);
+        overallDiscount += orderDetailsProfit.reduce((acc, ele) => {
+            return acc + ele.products.reduce((prodAcc, product) => {
+                return prodAcc + (((product.price / 100) * product.discount) * product.quantity);
+            }, 0);
         }, 0);
 
-        // weekly report
-        const weeklyReport = orderDetailsProfit.reduce((acc, ele) => {
-            if (new Date(ele.createdAt) >= startOfWeek) {
-                return acc + ele.totalPrice;
-            }
-            return acc;
-        }, 0);
-
-        // monthly report
-        const monthlyReport = orderDetailsProfit.reduce((acc, ele) => {
-            if (new Date(ele.createdAt) >= startOfMonth) {
-                return acc + ele.totalPrice;
-            }
-            return acc;
-        }, 0);
-
-        // overall sales
-        const overallSalesAmount=orderDetailsProfit.reduce((acc,ele)=>{
-            return acc+ele.totalPrice
-        },0)
-
-        //overall sales count
-        const overallSalesCount=orderDetailsProfit.length
-
-
-        // overall discount
-        let overallDiscount=orderDetailsProfit.reduce((acc,ele)=>{
-            return acc+ele.couponDiscount
-        },0)
-
-        // find the discounts in each order
-        const productDiscount=orderDetailsProfit.reduce((acc,ele)=>{
-            for(const product of ele.products){
-                return acc+(((product.price/100)*product.discount)*product.quantity)
-            }
-        },0)
-        overallDiscount+=productDiscount
-
-       
-        res.render('admin/dashboard', { title: "Admin Dashboard", 
-            alertMessage: req.flash('errorMessage'), 
-            dailyReport, 
-            weeklyReport, 
-            monthlyReport, 
+        res.render('admin/dashboard', {
+            title: "Admin Dashboard",
+            alertMessage: req.flash('errorMessage'),
+            dailyReport,
+            weeklyReport,
+            monthlyReport,
             orderDetails,
             overallSalesAmount,
             overallSalesCount,
@@ -161,15 +146,27 @@ const dashboard = async (req, res) => {
             dailyArray,
             monthlySalesArray,
             pageNumber,
-            currentPage 
-        })
-
+            currentPage
+        });
 
     } catch (err) {
         console.log(`Error during admin dashboard render ${err}`);
+        // Handle error response
+        res.status(500).send('Internal Server Error');
     }
-
 }
+
+// Helper function to calculate report based on start date
+function calculateReport(orderDetailsProfit, startDate) {
+    return orderDetailsProfit.reduce((acc, ele) => {
+        if (new Date(ele.createdAt) >= startDate) {
+            return acc + ele.totalPrice;
+        }
+        return acc;
+    }, 0);
+}
+
+
 
 // generate custom sales report using fetch
 const generateCustomSales = async (req, res) => {
