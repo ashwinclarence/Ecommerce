@@ -178,127 +178,174 @@
             <div class="col-xl-9">
                 <% if(orderDetails.length!=0){ %>
                     <% orderDetails.forEach((ele,index)=> { %>
-                        <div class="card border shadow-none order-container">
-                            <div class="card-body">
+                        <% if(ele.orderStatus!='Pending' ){ %>
 
-                                <% ele.products.forEach((product,index)=> { %>
+                            <div class="card border shadow-none order-container">
+                                <div class="card-body">
 
-                                    <div class="d-flex align-items-start ">
-                                        <div class="me-4">
-                                            <img src="../../<%= product.productImage %>" class="avatar-lg rounded">
+                                    <% ele.products.forEach((product,index)=> { %>
+
+                                        <div class="d-flex align-items-start ">
+                                            <div class="me-4">
+                                                <img src="../../<%= product.productImage %>" class="avatar-lg rounded">
+                                            </div>
+                                            <div class="flex-grow-1 align-self-center overflow-hidden">
+                                                <div>
+                                                    <h5 class="text-truncate font-size-18">
+                                                        <%= product.brand %>
+                                                    </h5>
+                                                    <h5 class="text-truncate font-size-18"><a
+                                                            href="/user/product-view/<%= product.productID.id %>"
+                                                            class="text-dark" title="<%= product.productName %>">
+                                                            <%= product.productName %>
+                                                        </a></h5>
+
+
+                                                    <p class="mb-0 mt-1">Quantity : <b>
+                                                            <%= product.quantity %>
+                                                        </b>
+                                                    <p class="mb-0 mt-1">Price : <b>
+                                                            &#8377; <%= product.price %>
+                                                        </b>
+                                                    </p>
+
+                                                    <% if(ele.orderStatus==='Delivered' ){ %>
+                                                        <span class="add-review-button badge bg-warning text-dark mt-1"
+                                                            onclick="addReview('<%= product.productID.id %>','<%= product.productName %>')"
+                                                            title="add review to the product">
+                                                            Add Review
+                                                        </span>
+                                                        <% } %>
+
+                                                </div>
+                                            </div>
+
                                         </div>
-                                        <div class="flex-grow-1 align-self-center overflow-hidden">
+                                        <hr>
+                                        <% }) %>
                                             <div>
-                                                <h5 class="text-truncate font-size-18">
-                                                    <%= product.brand %>
-                                                </h5>
-                                                <h5 class="text-truncate font-size-18"><a
-                                                        href="/user/product-view/<%= product.productID.id %>"
-                                                        class="text-dark" title="<%= product.productName %>">
-                                                        <%= product.productName %>
-                                                    </a></h5>
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <div class="mt-3 ">
+                                                            <p class="text-muted mb-2">Order Placed</p>
+                                                            <h6 class="mb-0 mt-2"><span class="text-muted ">
+                                                                    <%= ele.createdAt.toDateString() %>
+                                                                        </h5>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <div class="mt-3 ">
+                                                            <p class="text-muted mb-2">Order ID</p>
+                                                            <h6 class="mb-0 mt-2"><span class="text-muted ">
+                                                                    <%= ele._id %>
+                                                                        </h5>
+                                                        </div>
+                                                    </div>
 
-
-                                                <p class="mb-0 mt-1">Quantity : <b>
-                                                        <%= product.quantity %>
-                                                    </b>
-                                                <p class="mb-0 mt-1">Price : <b>
-                                                        &#8377; <%= product.price %>
-                                                    </b>
-                                                </p>
-                                               
-                                                <% if(ele.orderStatus==='Delivered' ){ %>
-                                                    <span class="add-review-button badge bg-warning text-dark mt-1"
-                                                        onclick="addReview('<%= product.productID.id %>','<%= product.productName %>')"
-                                                        title="add review to the product">
-                                                        Add Review
-                                                    </span>
-                                                    <% } %>
-
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                    <hr>
-                                    <% }) %>
-                                        <div>
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    <div class="mt-3 ">
-                                                        <p class="text-muted mb-2">Order Placed</p>
-                                                        <h6 class="mb-0 mt-2"><span class="text-muted ">
-                                                                <%= ele.createdAt.toDateString() %>
-                                                                    </h5>
+                                                    <div class="col-md-3">
+                                                        <div class="mt-3">
+                                                            <p class="text-muted mb-2">Order Status</p>
+                                                            <h6 class="mb-0 mt-2"><span class="text-muted ">
+                                                                    <%= ele.orderStatus %>
+                                                                        </h5>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-5">
-                                                    <div class="mt-3 ">
-                                                        <p class="text-muted mb-2">Order ID</p>
-                                                        <h6 class="mb-0 mt-2"><span class="text-muted ">
-                                                                <%= ele._id %>
-                                                                    </h5>
+                                                <div class="row">
+                                                    <div class="col-md-9">
+                                                        <div class="mt-3 ">
+                                                            <p class=" text-muted mb-2">Shipping Address</p>
+                                                            <h6 class="mb-0 mt-2"><span class="text-muted ">
+                                                                    <%= ele.address.homeAddress %> , <%=
+                                                                            ele.address.areaAddress %> , Pin: <%=
+                                                                                ele.address.pincode %>
+                                                                                </h5>
+                                                        </div>
                                                     </div>
-                                                </div>
-
-                                                <div class="col-md-3">
-                                                    <div class="mt-3">
-                                                        <p class="text-muted mb-2">Order Status</p>
-                                                        <h6 class="mb-0 mt-2"><span class="text-muted ">
-                                                                <%= ele.orderStatus %>
-                                                                    </h5>
+                                                    <div class="col-md-3">
+                                                        <div class="mt-3 ">
+                                                            <button class="btn btn-dark"
+                                                                onclick="downloadInvoice('<%= ele._id %>')">
+                                                                Invoice <i class="fa-solid fa-download"></i>
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-md-9">
-                                                    <div class="mt-3 ">
-                                                        <p class=" text-muted mb-2">Shipping Address</p>
-                                                        <h6 class="mb-0 mt-2"><span class="text-muted ">
-                                                                <%= ele.address.homeAddress %> , <%=
-                                                                        ele.address.areaAddress %> , Pin: <%=
-                                                                            ele.address.pincode %>
-                                                                            </h5>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="mt-3 ">
-                                                        <button class="btn btn-dark"
-                                                    onclick="downloadInvoice('<%= ele._id %>')">
-                                                    Invoice <i class="fa-solid fa-download"></i>
-                                                </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
 
-                                        <!-- order action button on the top of the orders container -->
-                                        <div class="order-actions-top">
-                                            <h6>
-                                                <% if(ele.orderStatus==='Delivered' ){ %>
-                                                    <button class="btn btn-danger btn-sm"
-                                                        onclick="returnOrder('<%= ele._id %>')">
-                                                        Return order
-                                                    </button>
-                                                    <% }else if(ele.orderStatus==='Shipping' ||
-                                                        ele.orderStatus==='Confirmed' ) {%>
+                                            <!-- order action button on the top of the orders container -->
+                                            <div class="order-actions-top">
+                                                <h6>
+                                                    <% if(ele.orderStatus==='Delivered' ){ %>
                                                         <button class="btn btn-danger btn-sm"
-                                                            onclick="cancelOrder('<%= ele._id %>')">
-                                                            Cancel order
+                                                            onclick="returnOrder('<%= ele._id %>')">
+                                                            Return order
                                                         </button>
-                                                        <% }%>
-                                            </h6>
-                                        </div>
+                                                        <% }else if(ele.orderStatus==='Shipping' ||
+                                                            ele.orderStatus==='Confirmed' ) {%>
+                                                            <button class="btn btn-danger btn-sm"
+                                                                onclick="cancelOrder('<%= ele._id %>')">
+                                                                Cancel order
+                                                            </button>
+                                                            <% }%>
+                                                </h6>
+                                            </div>
 
 
+                                </div>
                             </div>
-                        </div>
-                        <% }) %>
-                            <% } else { %>
-                                <div class="row text-center">
-                                    <h2 class="no-order-prompt">No orders available yet </h2>
+
+                            <!-- if the oder is pending -->
+                            <% }else{ %>
+                                <div class="card border shadow-none order-container bg-light">
+                                    <div class="card-body">
+
+                                        <% ele.products.forEach((product,index)=> { %>
+
+                                            <div class="d-flex align-items-start ">
+                                                <div class="me-4">
+                                                    <img src="../../<%= product.productImage %>"
+                                                        class="avatar-lg rounded">
+                                                </div>
+                                                <div class="flex-grow-1 align-self-center overflow-hidden">
+                                                    <div>
+                                                        <h5 class="text-truncate font-size-18">
+                                                            <%= product.brand %>
+                                                        </h5>
+                                                        <h5 class="text-truncate font-size-18"><a
+                                                                href="/user/product-view/<%= product.productID.id %>"
+                                                                class="text-dark" title="<%= product.productName %>">
+                                                                <%= product.productName %>
+                                                            </a></h5>
+
+
+                                                        <p class="mb-0 mt-1">Quantity : <b>
+                                                                <%= product.quantity %>
+                                                            </b>
+                                                        <p class="mb-0 mt-1">Price : <b>
+                                                                &#8377; <%= product.price %>
+                                                            </b>
+                                                        </p>
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <% }) %>
+                                            <hr>
+                                            <button class="btn btn-success btn-sm">Proceed with payment</button>
+                                            <button class="btn btn-danger btn-sm"
+                                                onclick="removeOrder('<%= ele._id %>')">Remove the order</button>
+                                    </div>
                                 </div>
                                 <% } %>
-                                    <!-- end card -->
+                                    <% }) %>
+                                        <% } else { %>
+                                            <div class="row text-center">
+                                                <h2 class="no-order-prompt">No orders available yet </h2>
+                                            </div>
+                                            <% } %>
+                                                <!-- end card -->
 
             </div>
         </div>
@@ -553,10 +600,55 @@
                         document.body.appendChild(a);
                         a.click();
                         window.URL.revokeObjectURL(url);
-                    }).catch((err)=>{
+                    }).catch((err) => {
                         console.log(err);
                     })
 
+            }
+
+            // remove the pending orders 
+            function removeOrder(orderID) {
+                Swal.fire({
+                    icon:"question",
+                    title:"Remove the order",
+                    text:"Are you sure want to remove the order?",
+                    showCancelButton:true,
+                }).then((result)=>{
+                    if(result.isConfirmed){
+                        fetch(`/user/remove-order/${orderID}`, {
+                    method: "DELETE",
+                    headers: {
+                        'Content-Type': "application/json"
+                    }
+                }).then((res) => {
+                    return res.json()
+                }).then((data) => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon:"success",
+                            title:"Order removed",
+                            showConfirmButton:false,
+                            timer:1000,
+                        }).then(()=>{
+                            window.location.reload()
+                        })
+                    } else {
+                        const notyf = new Notyf();
+                        notyf.error({
+                            message: "Cannot remove the order at the moment please try again later",
+                            duration: 9000,
+                        })
+                    }
+                }).catch((err) => {
+                    console.log(err);
+                    const notyf = new Notyf();
+                    notyf.error({
+                        message: err.message,
+                        duration: 9000,
+                    })
+                })
+                    }
+                })
             }
 
 

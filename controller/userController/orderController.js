@@ -356,6 +356,29 @@ const downloadInvoice = async (req, res) => {
 };
 
 
+// remove the order in which order status is pending using fetch
+const removePendingOrder=async (req,res)=>{
+    try {
+        const orderID=req.params.orderID;
+
+        if(!orderID){
+            return res.status(404).json({error:"Cannot find the order ID"})
+        }
+
+        const removedOrder=await orderSchema.findByIdAndDelete(orderID)
+
+        if(!removedOrder){
+            return res.status(404).json({error:"Order remove the order please try again later"})
+        }
+
+        return res.status(200).json({success:"Order removed successfully"})
+        
+    } catch (err) {
+        console.log(`Error on removing the pending order ${err}`);
+    }
+}
+
+
 module.exports = {
     order,
     cancelledOrder,
@@ -364,4 +387,5 @@ module.exports = {
     addReview,
     walletRender,
     downloadInvoice,
+    removePendingOrder
 }

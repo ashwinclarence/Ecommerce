@@ -67,6 +67,7 @@ user.post('/cancel-order/:orderID',checkUserSession,orderController.cancelledOrd
 user.post('/return-order/:orderID',checkUserSession,orderController.returnOrderPost)
 user.post('/add-review/:productID',checkUserSession,orderController.addReview)
 user.post('/invoice/:orderID',checkUserSession,orderController.downloadInvoice)
+user.delete('/remove-order/:orderID',checkUserSession,orderController.removePendingOrder)
 
 // wallet
 user.get('/wallet',checkUserSession,orderController.walletRender)
@@ -100,6 +101,7 @@ user.delete('/delete-address/:id',checkUserSession,checkoutController.deleteAddr
 user.post('/add-address-checkout',checkUserSession,checkoutController.addAddressCheckout)
 user.post('/edit-address-checkout/:id',checkUserSession,checkoutController.editAddressCheckout)
 user.get('/confirm-order',checkUserSession,checkoutController.orderConfirmPage)
+user.get('/failed-payment',checkUserSession,checkoutController.failedPayment)
 
 
 

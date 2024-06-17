@@ -76,6 +76,7 @@ const placeOrder = async (req, res) => {
         const paymentMode = parseInt(req.params.payment)
         let paymentId = ""
 
+
         // check if selected payment method is razor pay or not
         if (paymentMode === 1) {
             // order details when razor pay is selected
@@ -314,6 +315,60 @@ const paymentRender = (req, res) => {
     }
 }
 
+const failedPayment=async(req,res)=>{
+    try {
+        
+
+        const cartItems = await cartSchema.findOne({ userID: req.session.user }).populate('items.productID')
+        const products = []
+        let totalQuantity = 0
+
+
+        cartItems.items.forEach((ele) => {
+
+            // add each products details in the cart to an array called products
+            products.push({
+                productID: ele.productID._id,
+                productName: ele.productID.productName,
+                brand: ele.productID.productBrand,
+                quantity: ele.productCount,
+                price: ele.productID.productPrice,
+                discount: ele.productID.productDiscount,
+                productImage: ele.productID.productImage[0]
+            })
+            // increment the product total quantity
+            totalQuantity += ele.productCount
+        })
+
+        // find the user details 
+        const userDetails = await userSchema.findById(req.session.user)
+
+        // add a new order 
+        const newOrder = new orderSchema({
+            userID: req.session.user,
+            products: products,
+            totalQuantity: totalQuantity,
+            totalPrice: cartItems.payableAmount,
+            paymentMethod: "Razor pay",
+            orderStatus: "Pending",
+            couponDiscount: cartItems.couponDiscount
+        })
+
+
+        // Save the new order
+        await newOrder.save();
+
+        // Clear the cart for the user
+        await cartSchema.deleteOne({ userID: req.session.user });
+
+        req.flash('errorMessage', '"Payment could not be processed. Please attempt your purchase again at a later time."');
+        res.redirect('/user/orders');
+        
+    } catch (err) {
+        console.log(`Error on handling the failed payment ${err}`);
+    }
+}
+
 module.exports = {
     orderConfirmPage,
     checkout,
@@ -322,5 +377,6 @@ module.exports = {
     addAddressCheckout,
     editAddressCheckout,
     paymentRender,
+    failedPayment
 }
 

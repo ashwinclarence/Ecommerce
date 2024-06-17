@@ -63,7 +63,7 @@ const dashboard = async (req, res) => {
         const orderDetails = await orderSchema.find().populate('products.productID') .skip(skip).limit(dataPerPage).sort({ createdAt: -1 })
 
         // orderSchema for calculations
-        const orderDetailsProfit = await orderSchema.find({isCancelled:false}).populate('products.productID').sort({ createdAt: -1 })
+        const orderDetailsProfit = await orderSchema.find({isCancelled:false,orderStatus:{$nin:'Pending'}}).populate('products.productID').sort({ createdAt: -1 })
 
         const totalCollections = await orderSchema.countDocuments();
 
