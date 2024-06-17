@@ -6,6 +6,8 @@ const userManagement=require('../controller/adminController/userManagement')
 const productController=require('../controller/adminController/productController')
 const orderController=require('../controller/adminController/orderController')
 const couponController=require('../controller/adminController/couponController')
+const trendingController=require('../controller/adminController/trendingController')
+const offerController=require('../controller/adminController/offerController')
 // checkAdminSession is a middleware that checks session of the admin
 const checkAdminSession=require('../middleware/adminSession')
 const upload=require('../middleware/multer')
@@ -22,6 +24,9 @@ admin.get('/dashboard',checkAdminSession, adminController.dashboard);
 admin.post('/custom-sales',checkAdminSession, adminController.generateCustomSales)
 admin.post('/pdf-report',checkAdminSession, adminController.downloadPdfReport)
 admin.post('/excel-report',checkAdminSession, adminController.downloadExcelReport)
+
+// trending 
+admin.get('/trending',checkAdminSession,trendingController.trendRender)
 
 
 // user management
@@ -56,7 +61,7 @@ admin.get('/orders',checkAdminSession, orderController.order);
 admin.get('/view-order/:orderID',checkAdminSession,orderController.viewOrder)
 admin.post('/edit-order-status/:orderID',checkAdminSession,orderController.editOrder)
 
-
+// coupon
 admin.get('/coupons',checkAdminSession, couponController.coupons);
 admin.post('/add-coupon',checkAdminSession, couponController.addCoupon);
 admin.post('/edit-coupon/:id',checkAdminSession, couponController.editCoupon);
@@ -64,7 +69,8 @@ admin.put('/block-coupon/:id',checkAdminSession, couponController.blockCoupon);
 admin.put('/unblock-coupon/:id',checkAdminSession, couponController.unBlockCoupon);
 admin.delete('/delete-coupon/:id',checkAdminSession, couponController.deleteCoupon);
 
-
+// offer
+admin.get('/offer',checkAdminSession,offerController.offerRender)
 
 // logout
 admin.get('/logout',checkAdminSession, adminController.logout);
