@@ -1,16 +1,35 @@
 
 <nav aria-label="Page navigation example">
     <ul class="pagination justify-content-center">
-        <!-- <li class="page-item">
-            <a class="page-link" href="?page=<%= pageNumber > 1 ? pageNumber - 1 : 1 %>" <% if (currentPage <= 1) { %>disabled<% } %>>Previous</a>
-        </li> -->
+        <li class="page-item">
+            <button class="page-link" onclick="previousPage('<%= parseInt(currentPage) %>')">Previous</button>
+        </li>
         <% for(let i = 1; i <= pageNumber; i++) { %> 
             <li class="page-item">
-                <a class="page-link" href="?page=<%= i %>" <% if (i === currentPage) { %>class="active"<% } %>><%= i %></a>
+                <a class="page-link" href="?page=<%= i %>" ><%= i %></a>
             </li>
         <% } %>
-        <!-- <li class="page-item">
-            <a class="page-link" href="?page=<%= parseInt(currentPage) + 1 %>" <% if (currentPage >= pageNumber) { %>class="disabled"<% } %>>Next</a>
-        </li> -->
+        <li class="page-item">
+            <button class="page-link" onclick="nextPage('<%= parseInt(currentPage) %>','<%= pageNumber %>')">Next</button>
+        </li>
     </ul>
 </nav>
+
+
+<script>
+
+    // next page
+    function nextPage(currentPage,totalPage){
+        if(Number(currentPage)<Number(totalPage)){
+            window.location.href=`?page=${Number(currentPage)+1}`
+        }
+    }
+
+    // previous page
+    function previousPage(currentPage){
+        if((Number(currentPage)-1)!=0){
+            window.location.href=`?page=${Number(currentPage)-1}`
+        }
+    }
+
+</script>
