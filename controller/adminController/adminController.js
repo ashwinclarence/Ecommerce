@@ -132,6 +132,26 @@ const dashboard = async (req, res) => {
             }, 0);
         }, 0);
 
+        // find the number of payment methods
+        let payByCash=0
+        let payByRazorPay=0
+        let payByWallet=0
+
+        orderDetailsProfit.forEach((order)=>{
+            if(order.paymentMethod==='Cash on delivery'){
+                payByCash++;
+            }
+            if(order.paymentMethod==='Razor pay'){
+                payByRazorPay++;
+            }
+            if(order.paymentMethod==='Wallet'){
+                payByWallet++;
+            }
+        })
+
+        const paymentMethodChart=[payByCash,payByRazorPay,payByWallet]
+
+
         res.render('admin/dashboard', {
             title: "Admin Dashboard",
             alertMessage: req.flash('errorMessage'),
@@ -146,7 +166,8 @@ const dashboard = async (req, res) => {
             dailyArray,
             monthlySalesArray,
             pageNumber,
-            currentPage
+            currentPage,
+            paymentMethodChart
         });
 
     } catch (err) {

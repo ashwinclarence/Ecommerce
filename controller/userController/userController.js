@@ -238,7 +238,7 @@ const logout = (req, res) => {
 
 
 // google auth 
-const googleAuth = (req, res) => {
+const   googleAuth = (req, res) => {
     try {
         passport.authenticate('google', {
             scope:
