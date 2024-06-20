@@ -33,7 +33,7 @@ const cart = async (req, res) => {
                     totalPriceWithoutDiscount += (ele.productID.productPrice * ele.productCount)
                 }
             })
-        
+
             // remove anything that exist in cart coupon discount
             const couponID = cart.couponID;
             if (cart.couponDiscount) {
@@ -84,70 +84,45 @@ const cart = async (req, res) => {
 // add to cart fetch 
 const addToCartPost = async (req, res) => {
     try {
+        const productID = req.params.id;
+        const userID = req.session.user;
+        const productPrice = parseInt(req.query.price);
 
-        // product id of the product to be added to the cart collection
-        const productID = req.params.id
-        const userID = req.session.user
-        const productPrice = parseInt(req.query.price)
-        const productQuantity = 1
+        // Find the product from the collection
+        const actualProductDetails = await productSchema.findById(productID);
 
-        // find the product from collection
-        const actualProductDetails = await productSchema.findById(productID)
-
-        if (actualProductDetails.productQuantity === 0) {
-            return res.status(404).json({ error: "Product is out of stock" })
+        if (!actualProductDetails || actualProductDetails.productQuantity <= 0) {
+            return res.status(404).json({ error: "Product is out of stock" });
         }
 
-        // check the user have cart already
-        const checkUserCart = await cartSchema.findOne({ userID: req.session.user }).populate('items.productID')
+        // Check if the user already has a cart
+        const userCart = await cartSchema.findOne({ userID }).populate('items.productID');
 
-        // if user has cart already
-        if (checkUserCart) {
-            let productExist = false
+        if (userCart) {
+            const productExists = userCart.items.some((item) => item.productID.id === productID);
 
-            // check the product exist in the cart 
-            checkUserCart.items.forEach((ele) => {
-                if (ele.productID.id === productID) {
-                    // ele.productCount=productQuantity
-                    // ele.productPrice=ele.productID.productPrice
-                    productExist = true
-                }
-            })
-
-            // if the product not exist in the cart
-            if (!productExist) {
-                checkUserCart.items.push({ productID: actualProductDetails._id, productCount: 1, productPrice: productPrice })
+            if (productExists) {
+                return res.status(400).json({ error: "Product already exists in the cart" });
+            } else {
+                userCart.items.push({ productID: actualProductDetails._id, productCount: 1, productPrice });
+                await userCart.save();
             }
-
-            // save the changes in the collection
-            await checkUserCart.save()
-
         } else {
-
-            // create a new cart
             const newCart = new cartSchema({
-                userID: userID,
-                items: [{ productID: actualProductDetails._id, productCount: 1, productPrice: productPrice }],
-            })
-
-
-            // save the changes in collection
-            await newCart.save()
-
+                userID,
+                items: [{ productID: actualProductDetails._id, productCount: 1, productPrice }],
+            });
+            await newCart.save();
         }
 
-        return res.status(200).json({ message: "Product added to cart" })
-        // res.redirect(`/user/product-view/${productID}`)
+        return res.status(200).json({ success: "Product added to cart" });
 
     } catch (err) {
-        console.log(`Error during adding product to cart post  ${err}`);
-        return res.status(404).json({ error: `Cannot add product to cart ${err}` })
+        console.error(`Error adding product to cart: ${err}`);
+        return res.status(500).json({ error: `Cannot add product to cart: ${err}` });
     }
+};
 
-
-
-
-}
 
 
 
@@ -492,19 +467,19 @@ const proceedCheckout = async (req, res) => {
     try {
         const cart = await cartSchema.findOne({ userID: req.session.user })
 
-        
-        
+
+
         // if the cart is empty then don't allow to checkout
-        if(cart.payableAmount<=0){
-            req.flash("errorMessage",'Add some products in cart to proceed to checkout')
+        if (cart.payableAmount <= 0) {
+            req.flash("errorMessage", 'Add some products in cart to proceed to checkout')
             return res.redirect('/user/home')
         }
         // check is there a need to add shipping charge
-        if(cart.payableAmount<500){
-            cart.payableAmount+=50;
+        if (cart.payableAmount < 500) {
+            cart.payableAmount += 50;
             await cart.save()
         }
-        
+
         // if there is coupon added in the cart then reduce the amount
         if (cart.couponDiscount) {
             cart.payableAmount -= cart.couponDiscount

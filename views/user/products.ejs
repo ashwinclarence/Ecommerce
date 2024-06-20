@@ -220,25 +220,21 @@
                 "content-Type": "application/JSON",
             },
         }).then((res) => {
-            if (res.ok) {
+            // if (!res.ok) {
+            //     throw new Error("Cannot add to cart")
+            // }
+            return res.json(); // Return JSON data
+        }).then((data) => {
+            if(data.success){
                 Swal.fire({
                     icon: "success",
                     title: "Product added to cart",
                     showConfirmButton: false,
                     timer: 700,
-                }).then(() => {
-                    // window.location.reload()
                 })
             }
-            return res.json(); // Return JSON data
-        }).then((data) => {
 
             if (data.error) {
-                // Swal.fire({
-                //     icon: "error",
-                //     title: `Cannot add product on cart`,
-                //     text: data.error
-                // })
                 const notyf = new Notyf({ duration: 9000, });
                 notyf.error(data.error)
                 console.log(data.error);
