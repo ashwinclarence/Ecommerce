@@ -74,7 +74,7 @@ user.get('/wallet',checkUserSession,orderController.walletRender)
 
 // wishlist
 user.get('/wishlist',checkUserSession,wishlistController.wishlist)
-user.get('/add-wishlist/:id',checkUserSession,wishlistController.addWishlist)
+user.post('/add-wishlist/:id',checkUserSession,wishlistController.addWishlist)
 user.get('/remove-wishlist/:id',checkUserSession,wishlistController.removeWishlist)
 
 

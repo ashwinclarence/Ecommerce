@@ -225,7 +225,7 @@
             // }
             return res.json(); // Return JSON data
         }).then((data) => {
-            if(data.success){
+            if (data.success) {
                 Swal.fire({
                     icon: "success",
                     title: "Product added to cart",
@@ -233,13 +233,14 @@
                     timer: 700,
                 })
             }
-
+            
             if (data.error) {
                 const notyf = new Notyf({ duration: 9000, });
                 notyf.error(data.error)
                 console.log(data.error);
             }
         }).catch((err) => {
+            window.location.href="/user/login"
             console.log(`Error on adding product to cart ${err}`);
         })
     }
@@ -249,23 +250,32 @@
     function addToWishlist(productID) {
         const URL = `/user/add-wishlist/${productID}`
         fetch(URL, {
-            method: 'get',
-        }).then((Response) => {
-            if (Response.ok) {
+            method: 'POST',
+            headers:{
+                'Content-Type':'application/json'
+            }
+        }).then((res) => {
+            // if (!res.ok) {
+            //     throw new Error("Cannot add product to wishlist. Please login")
+            // }
+            return res.json()
+
+        }).then((data) => {
+            if (data.success) {
                 Swal.fire({
                     icon: "success",
                     title: "Product added to wishlist",
                     showConfirmButton: false,
-                    timer: 700,
-                })
-            } else {
-                Swal.fire({
-                    icon: "success",
-                    title: "Product added to wishlist",
-                    showConfirmButton: false,
-                    timer: 700,
+                    timer: 800,
                 })
             }
+            if (data.error) {
+                const notyf = new Notyf({ duration: 9000, });
+                notyf.error(data.error)
+            }
+        }).catch((err) => {
+            window.location.href="/user/login"
+            console.log(err);
         })
     }
 
