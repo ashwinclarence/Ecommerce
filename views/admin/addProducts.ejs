@@ -136,11 +136,11 @@
                         <div class="validateLabel text-danger"></div>
                     </div>
 
-                    <div class="mb-3">
+                    <!-- <div class="mb-3">
                         <label for="productDiscount" class="form-label">Product Discount in percentage</label>
                         <input type="number" class="form-control" id="productDiscount" name="productDiscount" max="100">
                         <div class="validateLabel text-danger"></div>
-                    </div>
+                    </div> -->
 
                     <div class="mb-3">
                         <label for="productCategory" class="form-label">Product Category</label>
@@ -184,15 +184,17 @@
                 </div>
             </div>
 
-            
+
 
             <div class="text-center mt-4">
                 <a href="/admin/products" class="btn btn-secondary">Cancel</a>
                 <button class="btn btn-success" type="submit">Add Product</button>
             </div>
         </form>
-    </div>
+        
 
+    </div>
+    <!-- Your image element -->
 
     <%- include('footer') %>
 
@@ -268,10 +270,10 @@
                     isValid = false;
                 }
 
-                if (isNaN(productDiscount.value) || parseInt(productDiscount.value) < 0 || parseInt(productDiscount.value) > 100 || productDiscount.value.length === 0) {
-                    document.getElementsByClassName('validateLabel')[3].innerHTML = "Please provide a valid discount (between 0 and 100).";
-                    isValid = false;
-                }
+                // if (isNaN(productDiscount.value) || parseInt(productDiscount.value) < 0 || parseInt(productDiscount.value) > 100 || productDiscount.value.length === 0) {
+                //     document.getElementsByClassName('validateLabel')[3].innerHTML = "Please provide a valid discount (between 0 and 100).";
+                //     isValid = false;
+                // }
                 if (productCategory.value === null || productCategory.value === "") {
                     document.getElementsByClassName('validateLabel')[4].innerHTML = "Please select a category.";
                     isValid = false
@@ -312,59 +314,59 @@
                 }
 
 
-            for (const file of files) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const colDiv = document.createElement('div');
-                    colDiv.classList.add('col-md-3', 'mb-3', 'image-container');
+                for (const file of files) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const colDiv = document.createElement('div');
+                        colDiv.classList.add('col-md-3', 'mb-3', 'image-container');
 
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    img.classList.add('img-fluid', 'img-thumbnail', 'image-preview');
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.classList.add('img-fluid', 'img-thumbnail', 'image-preview');
 
-                    const openModalButton = document.createElement('button');
-                    openModalButton.classList.add('btn', 'btn-primary', 'mt-2', 'me-2');
-                    openModalButton.innerText = 'Crop';
-                    openModalButton.setAttribute('type', 'button');
-                    openModalButton.setAttribute('data-bs-toggle', 'modal');
-                    openModalButton.setAttribute('data-bs-target', '#imageModal');
-                    openModalButton.addEventListener('click', () => {
-                        document.getElementById('modalImage').src = e.target.result;
-                        cropper = new Cropper(document.getElementById('modalImage'), {
-                            aspectRatio: 1,
-                            viewMode: 0,
-                            autoCropArea: 1,
+                        const openModalButton = document.createElement('button');
+                        openModalButton.classList.add('btn', 'btn-primary', 'mt-2', 'me-2');
+                        openModalButton.innerText = 'Crop';
+                        openModalButton.setAttribute('type', 'button');
+                        openModalButton.setAttribute('data-bs-toggle', 'modal');
+                        openModalButton.setAttribute('data-bs-target', '#imageModal');
+                        openModalButton.addEventListener('click', () => {
+                            document.getElementById('modalImage').src = e.target.result;
+                            cropper = new Cropper(document.getElementById('modalImage'), {
+                                aspectRatio: 1,
+                                viewMode: 0,
+                                autoCropArea: 1,
+                            });
+
+                            document.getElementById('cropButton').onclick = () => {
+                                const canvas = cropper.getCroppedCanvas();
+                                const croppedImage = canvas.toDataURL('image/png');
+
+                                img.src = croppedImage;
+
+                                cropper.destroy();
+                                cropper = null;
+                                document.getElementById('imageModal').querySelector('.btn-close').click();
+                            };
                         });
 
-                        document.getElementById('cropButton').onclick = () => {
-                            const canvas = cropper.getCroppedCanvas();
-                            const croppedImage = canvas.toDataURL('image/png');
+                        const deleteButton = document.createElement('button');
+                        deleteButton.classList.add('btn', 'btn-danger', 'mt-2', 'ms-2');
+                        deleteButton.innerText = 'Delete';
+                        deleteButton.addEventListener('click', () => {
+                            imageContainer.removeChild(colDiv);
+                        });
 
-                            img.src = croppedImage;
-
-                            cropper.destroy();
-                            cropper = null;
-                            document.getElementById('imageModal').querySelector('.btn-close').click();
-                        };
-                    });
-
-                    const deleteButton = document.createElement('button');
-                    deleteButton.classList.add('btn', 'btn-danger', 'mt-2', 'ms-2');
-                    deleteButton.innerText = 'Delete';
-                    deleteButton.addEventListener('click', () => {
-                        imageContainer.removeChild(colDiv);
-                    });
-
-                    colDiv.appendChild(img);
-                    colDiv.appendChild(openModalButton);
-                    colDiv.appendChild(deleteButton);
-                    imageContainer.appendChild(colDiv);
+                        colDiv.appendChild(img);
+                        colDiv.appendChild(openModalButton);
+                        colDiv.appendChild(deleteButton);
+                        imageContainer.appendChild(colDiv);
+                    }
+                    reader.readAsDataURL(file);
                 }
-                reader.readAsDataURL(file);
-            }
-        
-        })
-        
+
+            })
+
 
 
 

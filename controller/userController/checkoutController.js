@@ -29,7 +29,11 @@ const checkout = async (req, res) => {
         const addressData = userAddress.address;
 
         // get the wallet balance of the user
+        let balance=0
         const wallet = await walletSchema.findOne({ userID: req.session.user })
+        if(wallet){
+            balance=wallet.balance
+        }
 
         // Get all cart items
         const cartDetails = await cartSchema.findOne({ userID: req.session.user }).populate("items.productID");
@@ -53,7 +57,7 @@ const checkout = async (req, res) => {
             cartItems,
             cartDetails,
             user: userAddress,
-            wallet: wallet.balance,
+            wallet: balance,
             alertMessage: req.flash('errorMessage')
         });
 

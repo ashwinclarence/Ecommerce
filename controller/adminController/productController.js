@@ -45,9 +45,9 @@ const products = async (req, res) => {
         const pageNumber = Math.ceil(totalProducts.length / productsPerPage);
 
         // find the blocked products count
-        let blockedProducts=0
-        totalProducts.forEach((ele)=>{
-            if(ele.isActive===false){
+        let blockedProducts = 0
+        totalProducts.forEach((ele) => {
+            if (ele.isActive === false) {
                 blockedProducts++
             }
         })
@@ -58,7 +58,7 @@ const products = async (req, res) => {
             alertMessage: req.flash('errorMessage'),
             pageNumber,
             currentPage,
-            totalProducts:totalProducts.length,
+            totalProducts: totalProducts.length,
             blockedProducts  // Send currentPage to highlight the current page in pagination
         });
     } catch (err) {
@@ -91,7 +91,7 @@ const addProduct = async (req, res) => {
 
 }
 
- 
+
 
 
 // add product to the database
@@ -106,34 +106,32 @@ const addProductPost = async (req, res) => {
         })
 
         // find the productDiscount Price
-        let discountPrice
-        if (req.body.productDiscount != 0) {
-            discountPrice = req.body.productPrice * (1 - (req.body.productDiscount) / 100)
-        } else {
-            discountPrice = req.body.productPrice
-        }
-
-
-        // product details from the form
-        const productDetails = {
-            productName: req.body.productName,
-            productBrand: req.body.productBrand,
-            productPrice: req.body.productPrice,
-            productDescription: req.body.productDescription,
-            productQuantity: req.body.productQuantity,
-            productCategory: req.body.productCategory,
-            productImage: imageArray,
-            productDiscount: req.body.productDiscount,
-            productDiscountedPrice: discountPrice,
-        };
+        // let discountPrice
+        // if (req.body.productDiscount != 0) {
+        //     discountPrice = req.body.productPrice * (1 - (req.body.productDiscount) / 100)
+        // } else {
+        //     discountPrice = req.body.productPrice
+        // }
 
 
         // check product already exist in the product collection
         const checkProduct = await productSchema.findOne({ productName: req.body.productName, productCategory: req.body.productCategory, productBrand: req.body.productBrand });
 
+
         // if product not exist then product is added to collection and display a flash message
         if (!checkProduct) {
-            await productSchema.insertMany(productDetails)
+            const newProduct = new productSchema({
+                productName: req.body.productName,
+                productBrand: req.body.productBrand,
+                productPrice: req.body.productPrice,
+                productDescription: req.body.productDescription,
+                productQuantity: req.body.productQuantity,
+                productCategory: req.body.productCategory,
+                productImage: imageArray,
+                // productDiscount: req.body.productDiscount,
+                // productDiscountedPrice: discountPrice,
+            })
+            await newProduct.save()
             req.flash('errorMessage', 'Product added successfully');
         } else {
             req.flash('errorMessage', 'Product Already exist')
@@ -173,12 +171,12 @@ const editProductPost = (req, res) => {
         const productID = req.params.id;
 
         // find the productDiscount Price if the product discount is changed
-        let discountPrice
-        if (req.body.productDiscount != 0) {
-            discountPrice = req.body.productPrice * (1 - (req.body.productDiscount) / 100)
-        } else {
-            discountPrice = req.body.productPrice
-        }
+        // let discountPrice
+        // if (req.body.productDiscount != 0) {
+        //     discountPrice = req.body.productPrice * (1 - (req.body.productDiscount) / 100)
+        // } else {
+        //     discountPrice = req.body.productPrice
+        // }
 
 
         // get the image array from the file upload
@@ -189,7 +187,7 @@ const editProductPost = (req, res) => {
         // })
 
         // update the product using the values from form
-        productSchema.findByIdAndUpdate(productID, { productPrice: req.body.productPrice, productDescription: req.body.productDescription, productQuantity: req.body.productQuantity, productDiscount: req.body.productDiscount, productDiscountedPrice: discountPrice })
+        productSchema.findByIdAndUpdate(productID, { productPrice: req.body.productPrice, productDescription: req.body.productDescription, productQuantity: req.body.productQuantity })
             .then((elem) => {
                 req.flash('errorMessage', 'Product Updated successfully');
                 res.redirect('/admin/products')
