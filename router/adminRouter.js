@@ -71,6 +71,10 @@ admin.delete('/delete-coupon/:id',checkAdminSession, couponController.deleteCoup
 
 // offer
 admin.get('/offer',checkAdminSession,offerController.offerRender)
+admin.post('/add-offer',checkAdminSession,offerController.addOfferPost)
+admin.delete('/delete-offer/:offerID',checkAdminSession,offerController.deleteOffer)
+admin.post('/check-category-offer/:categoryID',checkAdminSession,offerController.offerCheckCategory)
+admin.post('/check-product-offer/:productID',checkAdminSession,offerController.offerCheckProduct)
 
 // logout
 admin.get('/logout',checkAdminSession, adminController.logout);

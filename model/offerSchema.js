@@ -6,11 +6,6 @@ const schema = new mongoose.Schema({
         required: true,
         enum: ["PRODUCT", "CATEGORY", "REFERRAL"]
     },
-    //   offerType: {
-    //     type: String,
-    //     required: true,
-    //     enum: ['FLAT', 'PERCENTAGE']
-    //   },
     offerCategoryId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "category",

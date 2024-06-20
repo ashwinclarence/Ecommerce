@@ -7,6 +7,13 @@
         display: flex;
         justify-content: space-between;
     }
+
+    .offer-for-td {
+        max-width: 300px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
 </style>
 
 
@@ -22,16 +29,14 @@
 
         <!-- table shows the available offers -->
         <div class="mt-5 table-responsive">
-            <table class="table text-center">
+            <table class="table text-center ">
                 <thead class="table-primary">
                     <tr>
                         <th scope="col" class="text-center py-3">sl.no</th>
-                        <th scope="col" class="py-3 ">Coupon Name</th>
-                        <th scope="col" class="py-3">Coupon code</th>
-                        <th scope="col" class="py-3">Discount amount</th>
-                        <th scope="col" class="py-3">Minimum purchase</th>
-                        <th scope="col" class="py-3">Added date</th>
-                        <th scope="col" class="py-3">Expiring date</th>
+                        <th scope="col" class="py-3 text-center">Offer Target</th>
+                        <th scope="col" class="py-3 text-center">Offer For</th>
+                        <th scope="col" class="py-3 text-center">Discount Percentage</th>
+                        <th scope="col" class="py-3 text-center">Expiry</th>
                         <th scope="col" class="text-center py-3">Actions</th>
                     </tr>
                 </thead>
@@ -42,34 +47,35 @@
                                 <th scope="row" class="text-center">
                                     <%= index+1 %>
                                 </th>
-                                <td class="count-name">
-                                    <%= offer %>
+                                <td class="count-name text-center">
+                                    <%= offer.offerFor %>
                                 </td>
-                                <td>
-                                    <%= offer.offerCode %>
-                                </td>
-                                <td>&#8377;</i>
-                                    <%= offer.discount %>
-                                </td>
-                                <td>&#8377;</i>
-                                    <%= offer.minAmount %>
-                                </td>
-                                <td>
-                                    <%= offer.createdAt.toDateString() %>
-                                </td>
-                                <td>
-                                    <%= offer.expiryDate.toDateString() %>
-                                </td>
-                                <td class="text-center">
-                                    <button class="btn btn-danger">Delete</button>
+                                <% if(offer.offerFor.toLowerCase()==="category" ) { %>
+                                    <td class="offer-for-td">
+                                        <%= offer.offerCategoryId.categoryName %>
+                                    </td>
+                                    <% }else{ %>
+                                        <td class="offer-for-td">
+                                            <%= offer.offerProductId.productName %>
+                                        </td>
+                                        <% } %>
+                                            <td class="text-center">
+                                                <%= offer.offerValue %>%
+                                            </td>
+                                            <td class="text-center">
+                                                <%= offer.expiryDate.toDateString() %>%
+                                            </td>
+                                            <td class="text-center">
+                                                <button class="btn btn-danger"
+                                                    onclick="deleteOffer('<%= offer._id %>')">Delete</button>
 
-                                </td>
+                                            </td>
                             </tr>
 
                             <% }) %>
                                 <% }else{ %>
                                     <tr>
-                                        <th colspan="8" class="p-5 text-secondary">No offers added yet </th>
+                                        <th colspan="8" class="p-5 text-secondary text-center">No offers added yet </th>
                                     </tr>
                                     <% } %>
 
@@ -82,80 +88,258 @@
     <%- include('footer') %>
 
 
-<!-- Modal for adding new offer -->
-<div class="modal fade add-new-coupon-modal" tabindex="-1" role="dialog" aria-labelledby="addOfferModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content p-5">
-            <div class="form-header text-center mb-4">
-                <h2>Add Offer</h2>
+        <!-- Modal for adding new offer -->
+        <div class="modal fade add-new-coupon-modal" tabindex="-1" role="dialog" aria-labelledby="addOfferModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content p-5">
+                    <div class="form-header text-center mb-4">
+                        <h2>Add Offer</h2>
+                    </div>
+                    <form action="/admin/add-offer" method="post" id="add-offer-form">
+                        <div class="mb-3">
+                            <label for="offer-target" class="form-label">Offer Target</label>
+                            <select class="form-select" id="offer-target" name="offerTarget">
+                                <option value="" selected disabled>Select offer target</option>
+                                <option value="CATEGORY">Category</option>
+                                <option value="PRODUCT">Product</option>
+                            </select>
+                            <label for="offer-target" class="validateOffer text-danger"></label>
+                        </div>
+
+                        <div class="mb-3" id="category-offer-group" style="display: none;">
+                            <label for="category-offer" class="form-label">Category Offer</label>
+                            <select class="form-select" id="category-offer" name="categoryOffer">
+                                <option value="" selected disabled>Select category</option>
+                                <% category.forEach((category)=> { %>
+                                    <option value="<%= category._id %>">
+                                        <%= category.categoryName %>
+                                    </option>
+                                    <% }) %>
+                            </select>
+                            <label for="category-offer" class="validateOffer text-danger"></label>
+                        </div>
+
+                        <div class="mb-3" id="product-offer-group" style="display: none;">
+                            <label for="product-offer" class="form-label">Product Offer</label>
+                            <select class="form-select" id="product-offer" name="productOffer">
+                                <option value="" selected disabled>Select product</option>
+                                <% product.forEach((product)=> { %>
+                                    <option value="<%= product._id %>">
+                                        <%= product.productName %>
+                                    </option>
+                                    <% }) %>
+                            </select>
+                            <label for="product-offer" class="validateOffer text-danger"></label>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="discountAmount" class="form-label">Discount Percentage</label>
+                            <input type="number" class="form-control" id="discountAmount" name="discountAmount">
+                            <label for="discountAmount" class="validateOffer text-danger"></label>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="expiryDate" class="form-label">Expiry Date</label>
+                            <input type="date" class="form-control" id="expiryDate" name="expiryDate">
+                            <label for="expiryDate" class="validateOffer text-danger"></label>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <form action="/admin/add-coupon" method="post" id="add-coupon-form">
-                <div class="mb-3">
-                    <label for="offer-target" class="form-label">Offer Target</label>
-                    <select class="form-select" id="offer-target" name="offerTarget">
-                        <option selected disabled>Select offer target</option>
-                        <option value="category">Category</option>
-                        <option value="product">Product</option>
-                    </select>
-                    <label for="offer-target" class="validateOffer"></label>
-                </div>
-
-                <div class="mb-3" id="category-offer-group" style="display: none;">
-                    <label for="category-offer" class="form-label">Category Offer</label>
-                    <select class="form-select" id="category-offer" name="categoryOffer">
-                        <option selected disabled>Select category</option>
-                        <% category.forEach((category) => { %>
-                            <option value="<%= category.id %>"><%= category.categoryName %></option>
-                        <% }) %>
-                    </select>
-                    <label for="category-offer" class="validateOffer"></label>
-                </div>
-
-                <div class="mb-3" id="product-offer-group" style="display: none;">
-                    <label for="product-offer" class="form-label">Product Offer</label>
-                    <select class="form-select" id="product-offer" name="productOffer">
-                        <option selected disabled>Select product</option>
-                        <% product.forEach((product) => { %>
-                            <option value="<%= product.id %>"><%= product.productName %></option>
-                        <% }) %>
-                    </select>
-                    <label for="product-offer" class="validateOffer"></label>
-                </div>
-
-                <div class="mb-3">
-                    <label for="discountAmount" class="form-label">Discount Percentage</label>
-                    <input type="number" class="form-control" id="discountAmount" name="discountAmount" min="0" max="100">
-                    <label for="discountAmount" class="validateOffer"></label>
-                </div>
-
-                <div class="mb-3">
-                    <label for="expiryDate" class="form-label">Expiry Date</label>
-                    <input type="date" class="form-control" id="expiryDate" name="expiryDate">
-                    <label for="expiryDate" class="validateOffer"></label>
-                </div>
-
-                <div class="text-center">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </div>
-            </form>
         </div>
-    </div>
-</div>
 
 
-<script>
-        const offerTarget = document.getElementById('offer-target');
-        const categoryOfferGroup = document.getElementById('category-offer-group');
-        const productOfferGroup = document.getElementById('product-offer-group');
+        <script>
+            const offerTarget = document.getElementById('offer-target');
+            const categoryOfferGroup = document.getElementById('category-offer-group');
+            const productOfferGroup = document.getElementById('product-offer-group');
 
-        offerTarget.addEventListener('change', function () {
-            if (this.value === 'category') {
-                categoryOfferGroup.style.display = 'block';
-                productOfferGroup.style.display = 'none';
-            } else if (this.value === 'product') {
-                categoryOfferGroup.style.display = 'none';
-                productOfferGroup.style.display = 'block';
+            offerTarget.addEventListener('change', function () {
+                if (this.value === 'CATEGORY') {
+                    categoryOfferGroup.style.display = 'block';
+                    productOfferGroup.style.display = 'none';
+                } else if (this.value === 'PRODUCT') {
+                    categoryOfferGroup.style.display = 'none';
+                    productOfferGroup.style.display = 'block';
+                }
+            });
+
+            const discountAmount = document.getElementById('discountAmount');
+            const expiryDate = document.getElementById('expiryDate');
+            const categoryOffer = document.getElementById('category-offer')
+            const productOffer = document.getElementById('product-offer')
+
+
+            // add offer validation 
+            const offerAddForm = document.getElementById('add-offer-form')
+            offerAddForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                let validateOffer = true
+                document.getElementsByClassName('validateOffer')[0].innerHTML = ''
+                document.getElementsByClassName('validateOffer')[1].innerHTML = ''
+                document.getElementsByClassName('validateOffer')[2].innerHTML = ''
+                document.getElementsByClassName('validateOffer')[3].innerHTML = ''
+                document.getElementsByClassName('validateOffer')[4].innerHTML = ''
+
+                if (!offerTarget.value) {
+                    document.getElementsByClassName('validateOffer')[0].innerHTML = "Select a offer type"
+                    validateOffer = false
+                }
+
+                if (offerTarget.value === 'CATEGORY' && !categoryOffer.value) {
+                    document.getElementsByClassName('validateOffer')[1].innerHTML = "Select a category"
+                    validateOffer = false
+                }
+
+                if (offerTarget.value === 'PRODUCT' && !productOffer.value) {
+                    document.getElementsByClassName('validateOffer')[2].innerHTML = "Select a product"
+                    validateOffer = false
+                }
+
+                if (discountAmount.value.trim() === 0 || isNaN(discountAmount.value) || discountAmount.value > 100 || discountAmount.value < 1) {
+                    document.getElementsByClassName('validateOffer')[3].innerHTML = "Enter a valid discount between(1- 100)"
+                    validateOffer = false
+                }
+
+                if (!expiryDate.value || !isAtLeastOneDayAfterToday(expiryDate.value)) {
+                    document.getElementsByClassName('validateOffer')[4].innerHTML = "Select an expiry date"
+                    validateOffer = false
+                }
+
+                if (validateOffer) {
+                    offerAddForm.submit();
+                }
+
+
+
+            })
+
+            function isAtLeastOneDayAfterToday(inputDate) {
+                if (inputDate) {
+                    // Convert inputDate to a Date object
+                    let dateInput = new Date(inputDate);
+                    // Get today's date
+                    let today = new Date();
+
+                    // Add one day to today's date
+                    let tomorrow = new Date(today);
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    // Compare inputDate with tomorrow's date
+                    return dateInput > tomorrow;
+                }
             }
-        });
-</script>
+
+            // delete the offer
+            function deleteOffer(offerID) {
+                Swal.fire({
+                    icon: "question",
+                    title: "Delete the offer",
+                    text: "Are you sure want to delete the offer?",
+                    showCancelButton: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const URL = `/admin/delete-offer/${offerID}`
+                        fetch(URL, {
+                            method: "DELETE",
+                            headers: {
+                                "Content-Type": 'application/json'
+                            }
+                        }).then((res) => {
+                            return res.json()
+                        }).then((data) => {
+                            if (data.success) {
+                                Swal.fire({
+                                    icon: "success",
+                                    title: "Offer deleted",
+                                    showConfirmButton: false,
+                                    timer: 1000
+                                }).then(() => {
+                                    window.location.reload()
+                                })
+                            }
+                            if (data.error) {
+                                Swal.fire({
+                                    icon: "error",
+                                    text: data.error,
+                                })
+                            }
+                        }).catch((err) => {
+                            console.log(err);
+                            Swal.fire({
+                                icon: "error",
+                                text: err,
+                            })
+                        })
+                    }
+                })
+            }
+
+
+            // category offer validation and alert
+            categoryOffer.addEventListener('change', (e) => {
+                e.preventDefault();
+
+                const URL = `/admin/check-category-offer/${e.target.value}`
+                fetch(URL, {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+
+                }).then((res) => {
+                    if (res.ok) {
+                        Swal.fire({
+                            icon: "info",
+                            title: "category offer exist",
+                            text: "Offer for the category exist. if you proceed with the current offer the old one will be replaced "
+                        })
+                    }
+                }).catch((err) => {
+                    const notyf = new Notyf();
+                    notyf.error({
+                        message: err,
+                        duration: 9000,
+                    })
+                })
+            })
+
+
+
+            // product offer validation and alert
+            productOffer.addEventListener('change', (e) => {
+                e.preventDefault();
+
+                const URL = `/admin/check-product-offer/${e.target.value}`
+                fetch(URL, {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+
+                }).then((res) => {
+                    if (res.ok) {
+                        Swal.fire({
+                            icon: "info",
+                            title: "Product offer exist",
+                            text: "Offer for the Product exist. if you proceed with the current offer the old one will be replaced "
+                        })
+                    }
+                }).catch((err) => {
+                    const notyf = new Notyf();
+                    notyf.error({
+                        message: err,
+                        duration: 9000,
+                    })
+                })
+            })
+
+
+
+        </script>

@@ -53,6 +53,16 @@
         z-index: 3;
 
     }
+    .product-image-container{
+        width: 50px;
+        height: 50px;
+        overflow: hidden;
+    }
+    .product-image{
+        width: 50px;
+        height: 50px;
+        object-fit: contain;
+    }
 </style>
 
 
@@ -102,6 +112,7 @@
                 <thead class="table-primary">
                     <tr>
                         <th scope="col" class="text-center py-3">sl.no</th>
+                        <th scope="col" class="py-3">image</th>
                         <th scope="col" class="py-3">Product</th>
                         <th scope="col" class="py-3">Price</th>
                         <th scope="col" class="py-3">Stock</th>
@@ -116,6 +127,11 @@
                         <tr>
                             <th scope="row" class="text-center">
                                 <%= index+1 %>
+                            </th>
+                            <th scope="row" class="product-imag-container">
+                                <% product.productImage.forEach((image,index)=>{ %>
+                                    <img src="../../<%= image %>" class="product-image">
+                                <% }) %>
                             </th>
                             <td class="product-name-td">
                                 <%= product.productName %>
