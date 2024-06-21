@@ -39,10 +39,10 @@ const checkout = async (req, res) => {
         const addressData = userAddress.address;
 
         // get the wallet balance of the user
-        let balance=0
+        let balance = 0
         const wallet = await walletSchema.findOne({ userID: req.session.user })
-        if(wallet){
-            balance=wallet.balance
+        if (wallet) {
+            balance = wallet.balance
         }
 
         // Get all cart items
@@ -171,8 +171,8 @@ const placeOrder = async (req, res) => {
             const wallet = await walletSchema.findOne({ userID: req.session.user })
 
             // check the payable amount is in the wallet
-            if(wallet.balance<cartItems.payableAmount){
-                req.flash("errorMessage","Insufficient balance in the wallet please choose another payment option")
+            if (wallet.balance < cartItems.payableAmount) {
+                req.flash("errorMessage", "Insufficient balance in the wallet please choose another payment option")
                 return res.redirect('/user/checkout')
             }
 
@@ -329,9 +329,9 @@ const paymentRender = (req, res) => {
     }
 }
 
-const failedPayment=async(req,res)=>{
+const failedPayment = async (req, res) => {
     try {
-        
+
 
         const cartItems = await cartSchema.findOne({ userID: req.session.user }).populate('items.productID')
         const products = []
@@ -362,7 +362,7 @@ const failedPayment=async(req,res)=>{
             userID: req.session.user,
             products: products,
             totalQuantity: totalQuantity,
-            totalPrice: cartItems.payableAmount,
+            totalPrice: cartItems.payableAmount<550?cartItems.payableAmount-50:cartItems.payableAmount,
             paymentMethod: "Razor pay",
             orderStatus: "Pending",
             couponDiscount: cartItems.couponDiscount
@@ -377,9 +377,76 @@ const failedPayment=async(req,res)=>{
 
         req.flash('errorMessage', '"Payment could not be processed. Please attempt your purchase again at a later time."');
         res.redirect('/user/orders');
-        
+
     } catch (err) {
         console.log(`Error on handling the failed payment ${err}`);
+    }
+}
+
+
+// proceed with payment
+const proceedPayment = async (req, res) => {
+    try {
+
+        const { orderID } = req.params;
+
+        const order = await orderSchema.findById(orderID)
+
+        const cart = await cartSchema.findOne({ userID: req.session.user })
+        const items = [];
+        let totalPrice = 0;
+        let totalQuantity = 0
+        order.products.forEach((product) => {
+            items.push({
+                productID: product.productID,
+                productCount: product.quantity,
+                productPrice: product.price
+            })
+            totalPrice += product.price * product.quantity
+            totalQuantity += product.quantity
+        })
+
+
+        // if(order.totalPrice<500){
+        //     order.totalPrice
+
+        // }
+
+
+        if (cart) {
+            const deleteCart = await cartSchema.findByIdAndDelete(cart.id)
+
+            const newCart = new cartSchema({
+                userID: req.session.user,
+                items: items,
+                payableAmount: order.totalPrice,
+                totalPrice: totalPrice,
+                couponDiscount: 0
+            })
+
+            await newCart.save()
+
+            const deleteOrder=await orderSchema.findByIdAndDelete(orderID)
+            return res.json({ redirect: true, url: '/user/proceed-checkout' });
+            
+        } else {
+            const newCart = new cartSchema({
+                userID: req.session.user,
+                items: items,
+                payableAmount: order.totalPrice,
+                totalPrice: totalPrice,
+                couponDiscount: 0
+            })
+            await newCart.save()
+            const deleteOrder=await orderSchema.findByIdAndDelete(orderID)
+            return res.json({ redirect: true, url: '/user/proceed-checkout' });
+        }
+        
+        
+        
+        
+    } catch (err) {
+        console.log("Error on proceeding with failed payment ", err);
     }
 }
 
@@ -392,6 +459,7 @@ module.exports = {
     editAddressCheckout,
     paymentRender,
     failedPayment,
-    pendingOrderPage
+    pendingOrderPage,
+    proceedPayment
 }
 

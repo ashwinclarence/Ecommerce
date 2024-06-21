@@ -85,12 +85,12 @@ user.post('/cart-count/:id',checkUserSession,cartController.cartCountFetch)
 user.delete('/remove-cart-product/:id',checkUserSession,cartController.removeCartItem)
 user.put('/increment-product/:productID',checkUserSession,cartController.incrementProduct)
 user.put('/decrement-product/:productID',checkUserSession,cartController.decrementProduct)
+user.get('/proceed-checkout',checkUserSession,cartController.proceedCheckout)
 
 // coupon in cart
 user.get('/get-coupon/:couponID',checkUserSession,cartController.getCoupon)
 user.post('/apply-coupon/:couponID',checkUserSession,cartController.applyCoupon)
 user.delete('/remove-coupon',checkUserSession,cartController.removeCoupon)
-user.get('/proceed-checkout',checkUserSession,cartController.proceedCheckout)
 
 
 // checkout
@@ -103,6 +103,7 @@ user.post('/edit-address-checkout/:id',checkUserSession,checkoutController.editA
 user.get('/confirm-order',checkUserSession,checkoutController.orderConfirmPage)
 user.get('/pending-order',checkUserSession,checkoutController.pendingOrderPage)
 user.get('/failed-payment',checkUserSession,checkoutController.failedPayment)
+user.post('/proceed-payment/:orderID',checkUserSession,checkoutController.proceedPayment)
 
 
 
