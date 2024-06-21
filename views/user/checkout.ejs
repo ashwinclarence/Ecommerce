@@ -439,9 +439,10 @@
                             <% if(cartDetails.payableAmount<500){ %>
                                 <span>Savings</span> <span>&#8377;<%=
                                         (cartDetails.totalPrice-cartDetails.payableAmount+50).toLocaleString() %></span>
-                                        <% }else{ %>
-                                            <span>Savings</span> <span>&#8377;<%=
-                                                    (cartDetails.totalPrice-cartDetails.payableAmount).toLocaleString() %></span>
+                                <% }else{ %>
+                                    <span>Savings</span> <span>&#8377;<%=
+                                            (cartDetails.totalPrice-cartDetails.payableAmount).toLocaleString() %>
+                                    </span>
                                     <% } %>
                         </div>
                         <% if(cartDetails.payableAmount<500){ %>
@@ -601,16 +602,19 @@
                                 "theme": {
                                     "color": "#6351CE"
                                 },
-                                "modal": {
-                                    "ondismiss": function () {
-                                        console.log("failed");
-                                        window.location.href = `/user/failed-payment`
-                                    }
-                                }
+                                // "modal": {
+                                //     "ondismiss": function () {
+                                //         console.log("failed");
+                                //         window.location.href = `/user/failed-payment`
+                                //     }
+                                // }
 
                             };
 
                             const rzp1 = new Razorpay(options);
+                            rzp1.on('payment.failed', function (response) {
+                                window.location.href = `/user/pending-order`
+                            });
                             rzp1.open();
                             e.preventDefault()
 

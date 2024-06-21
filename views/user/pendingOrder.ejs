@@ -1,0 +1,27 @@
+<style>
+  .order-confirm-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+  }
+</style>
+<div class="order-confirm-container">
+  <div class="text-center">
+    <!-- <h1>Order Confirmed</h1>
+    <p>Thank you for your purchase! Your order has been successfully placed.</p> -->
+    <lottie-player src="https://lottie.host/1eea6048-d519-49e1-b5cc-8e377343b649/hYbLgkXVgG.json" background="##ffffff"
+      speed="2" autoplay direction="1" mode="normal"></lottie-player>
+  </div>
+</div>
+
+
+<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+<script>
+  const confirmOrderTimer = setTimeout(() => {
+    window.location.href = "/user/failed-payment"
+  }, 3000);
+
+
+</script>

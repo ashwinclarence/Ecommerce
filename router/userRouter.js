@@ -101,6 +101,7 @@ user.delete('/delete-address/:id',checkUserSession,checkoutController.deleteAddr
 user.post('/add-address-checkout',checkUserSession,checkoutController.addAddressCheckout)
 user.post('/edit-address-checkout/:id',checkUserSession,checkoutController.editAddressCheckout)
 user.get('/confirm-order',checkUserSession,checkoutController.orderConfirmPage)
+user.get('/pending-order',checkUserSession,checkoutController.pendingOrderPage)
 user.get('/failed-payment',checkUserSession,checkoutController.failedPayment)
 
 

@@ -19,6 +19,16 @@ const orderConfirmPage = (req, res) => {
     }
 }
 
+// pending order page animation
+const pendingOrderPage = (req, res) => {
+    try {
+        res.render('user/pendingOrder', { title: "Pending order" })
+    } catch (err) {
+        console.log(`Error on rendering the pending order page ${err}`);
+
+    }
+}
+
 // render the checkout page
 const checkout = async (req, res) => {
     try {
@@ -381,6 +391,7 @@ module.exports = {
     addAddressCheckout,
     editAddressCheckout,
     paymentRender,
-    failedPayment
+    failedPayment,
+    pendingOrderPage
 }
 
