@@ -406,11 +406,7 @@ const proceedPayment = async (req, res) => {
             totalQuantity += product.quantity
         })
 
-
-        // if(order.totalPrice<500){
-        //     order.totalPrice
-
-        // }
+        
 
 
         if (cart) {

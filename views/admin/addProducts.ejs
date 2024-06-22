@@ -66,46 +66,14 @@
         gap: 2rem;
     }
 
-    /* .image-crop-div {
-        width: 100%;
-        height: 100%;
-    }
-
-    .cropper-container{
-        width: 500px;
-        height: 500px;
-        background-color: red;
-    }
-    .cropper-crop{
-        width: 300px;
-        height: 300px;
-    } */
+    
     .modal-content {
-        /* Ensure the modal content fills the modal dialog */
-        width: 100%;
-        height: auto;
-        max-width: 100%;
-        max-height: 100%;
         margin: 0;
     }
 
-    .image-crop-div {
-        /* Ensure the image within the crop div fills its container */
-        width: 100%;
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
     #modalImage {
-        /* Make the image inside modal fill its container */
-        max-width: 100%;
-        max-height: 100%;
-        width: auto;
-        height: auto;
-        margin: auto;
-    }
+            width: 100%;
+        }
 </style>
 
 <%- include('navbar') %>
@@ -172,18 +140,19 @@
                 </div>
             </div>
 
+            <!-- File upload and image preview section -->
             <div class="text-center mt-4">
                 <input type="file" id="product-image-upload" name="productImage" accept="image/png, image/jpeg" multiple
                     class="d-none">
-                <label for="product-image-upload" class="btn btn-warning ">
+                <label for="product-image-upload" class="btn btn-warning">
                     <i class="fas fa-upload"></i> &nbsp; Choose Images
                 </label>
                 <div class="container mt-4">
-                    <div id="imageContainer">
+                    <div id="imageContainer" class="row">
+                        <!-- Image previews will be appended here -->
                     </div>
                 </div>
             </div>
-
 
 
             <div class="text-center mt-4">
@@ -191,32 +160,32 @@
                 <button class="btn btn-success" type="submit">Add Product</button>
             </div>
         </form>
-        
+
 
     </div>
-    <!-- Your image element -->
+
 
     <%- include('footer') %>
 
-        <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
+
+        <!-- Modal for cropping image -->
+        <div class="modal fade" id="imageModal" tabindex="1" aria-labelledby="imageModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="imageModalLabel">Crop Image</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="image-crop-div">
-                            <img id="modalImage" class="img-fluid" src="" alt="Image preview">
-                        </div>
+                        <img id="modalImage" src="" class="img-fluid">
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-dark text-center" id="cropButton">Save Cropped Image</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" id="cropButton" class="btn btn-primary">Crop</button>
                     </div>
                 </div>
             </div>
         </div>
-
 
 
         <script>
@@ -295,81 +264,208 @@
                 }
             })
 
-            const inputImage = document.getElementById('product-image-upload');
-            const imageContainer = document.getElementById('imageContainer');
-            let cropper;
+            // const inputImage = document.getElementById('product-image-upload');
+            // const imageContainer = document.getElementById('imageContainer');
+            // let cropper;
 
-            inputImage.addEventListener('change', (event) => {
-                const files = event.target.files;
+            // inputImage.addEventListener('change', (event) => {
+            //     const files = event.target.files;
 
-                // Check if the number of files exceeds the limit
-                if (files.length > 4 || imageContainer.children.length + files.length > 4) {
-                    Swal.fire({
-                        icon: "error",
-                        title: "File limit reached",
-                        text: "Maximum four files can be uploaded",
-                        timer: 12000,
-                    });
-                    return;
-                }
+            //     // Check if the number of files exceeds the limit
+            //     if (files.length > 4 || imageContainer.children.length + files.length > 4) {
+            //         Swal.fire({
+            //             icon: "error",
+            //             title: "File limit reached",
+            //             text: "Maximum four files can be uploaded",
+            //             timer: 12000,
+            //         });
+            //         return;
+            //     }
 
 
-                for (const file of files) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        const colDiv = document.createElement('div');
-                        colDiv.classList.add('col-md-3', 'mb-3', 'image-container');
+            //     for (const file of files) {
+            //         const reader = new FileReader();
+            //         reader.onload = (e) => {
+            //             const colDiv = document.createElement('div');
+            //             colDiv.classList.add('col-md-3', 'mb-3', 'image-container');
 
-                        const img = document.createElement('img');
-                        img.src = e.target.result;
-                        img.classList.add('img-fluid', 'img-thumbnail', 'image-preview');
+            //             const img = document.createElement('img');
+            //             img.src = e.target.result;
+            //             img.classList.add('img-fluid', 'img-thumbnail', 'image-preview');
 
-                        const openModalButton = document.createElement('button');
-                        openModalButton.classList.add('btn', 'btn-primary', 'mt-2', 'me-2');
-                        openModalButton.innerText = 'Crop';
-                        openModalButton.setAttribute('type', 'button');
-                        openModalButton.setAttribute('data-bs-toggle', 'modal');
-                        openModalButton.setAttribute('data-bs-target', '#imageModal');
-                        openModalButton.addEventListener('click', () => {
-                            document.getElementById('modalImage').src = e.target.result;
-                            cropper = new Cropper(document.getElementById('modalImage'), {
-                                aspectRatio: 1,
-                                viewMode: 0,
-                                autoCropArea: 1,
+            //             const openModalButton = document.createElement('button');
+            //             openModalButton.classList.add('btn', 'btn-primary', 'mt-2', 'me-2');
+            //             openModalButton.innerText = 'Crop';
+            //             openModalButton.setAttribute('type', 'button');
+            //             openModalButton.setAttribute('data-bs-toggle', 'modal');
+            //             openModalButton.setAttribute('data-bs-target', '#imageModal');
+            //             openModalButton.addEventListener('click', () => {
+            //                 document.getElementById('modalImage').src = e.target.result;
+            //                 cropper = new Cropper(document.getElementById('modalImage'), {
+            //                     aspectRatio: 1,
+            //                     viewMode: 2,
+            //                     autoCropArea: 1,
+            //                 });
+
+            //                 document.getElementById('cropButton').onclick = () => {
+            //                     const canvas = cropper.getCroppedCanvas();
+            //                     const croppedImage = canvas.toDataURL('image/png');
+
+            //                     img.src = croppedImage;
+
+            //                     cropper.destroy();
+            //                     cropper = null;
+            //                     document.getElementById('imageModal').querySelector('.btn-close').click();
+            //                 };
+            //             });
+
+            //             const deleteButton = document.createElement('button');
+            //             deleteButton.classList.add('btn', 'btn-danger', 'mt-2', 'ms-2');
+            //             deleteButton.innerText = 'Delete';
+            //             deleteButton.addEventListener('click', () => {
+            //                 imageContainer.removeChild(colDiv);
+            //             });
+
+            //             colDiv.appendChild(img);
+            //             colDiv.appendChild(openModalButton);
+            //             colDiv.appendChild(deleteButton);
+            //             imageContainer.appendChild(colDiv);
+            //         }
+            //         reader.readAsDataURL(file);
+            //     }
+
+            // })
+            document.addEventListener('DOMContentLoaded', (event) => {
+                const inputImage = document.getElementById('product-image-upload');
+                const imageContainer = document.getElementById('imageContainer');
+                let cropper;
+                let currentImageElement;
+
+                inputImage.addEventListener('change', (event) => {
+                    const files = event.target.files;
+
+                    // Check if the number of files exceeds the limit
+                    if (files.length > 4 || imageContainer.children.length + files.length > 4) {
+                        Swal.fire({
+                            icon: "error",
+                            title: "File limit reached",
+                            text: "Maximum four files can be uploaded",
+                            timer: 12000,
+                        });
+                        return;
+                    }
+
+                    for (const file of files) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            const colDiv = document.createElement('div');
+                            colDiv.classList.add('col-md-3', 'mb-3', 'image-container');
+
+                            const img = document.createElement('img');
+                            img.src = e.target.result;
+                            img.classList.add('img-fluid', 'img-thumbnail', 'image-preview');
+
+                            const openModalButton = document.createElement('button');
+                            openModalButton.classList.add('btn', 'btn-primary', 'mt-2', 'me-2');
+                            openModalButton.innerText = 'Crop';
+                            openModalButton.setAttribute('type', 'button');
+                            openModalButton.setAttribute('data-bs-toggle', 'modal');
+                            openModalButton.setAttribute('data-bs-target', '#imageModal');
+                            openModalButton.addEventListener('click', () => {
+                                document.getElementById('modalImage').src = e.target.result;
+                                currentImageElement = img;
+
+                                // Initialize Cropper.js with the image
+                                if (cropper) {
+                                    cropper.destroy();
+                                }
+
+                                cropper = new Cropper(document.getElementById('modalImage'), {
+                                    aspectRatio: 1,
+                                    viewMode: 0,
+                                    autoCropArea: 1,
+                                });
                             });
 
-                            document.getElementById('cropButton').onclick = () => {
-                                const canvas = cropper.getCroppedCanvas();
-                                const croppedImage = canvas.toDataURL('image/png');
+                            const deleteButton = document.createElement('button');
+                            deleteButton.classList.add('btn', 'btn-danger', 'mt-2', 'ms-2');
+                            deleteButton.innerText = 'Delete';
+                            deleteButton.addEventListener('click', () => {
+                                imageContainer.removeChild(colDiv);
+                                updateFileInput();
+                            });
 
-                                img.src = croppedImage;
-
-                                cropper.destroy();
-                                cropper = null;
-                                document.getElementById('imageModal').querySelector('.btn-close').click();
-                            };
-                        });
-
-                        const deleteButton = document.createElement('button');
-                        deleteButton.classList.add('btn', 'btn-danger', 'mt-2', 'ms-2');
-                        deleteButton.innerText = 'Delete';
-                        deleteButton.addEventListener('click', () => {
-                            imageContainer.removeChild(colDiv);
-                        });
-
-                        colDiv.appendChild(img);
-                        colDiv.appendChild(openModalButton);
-                        colDiv.appendChild(deleteButton);
-                        imageContainer.appendChild(colDiv);
+                            colDiv.appendChild(img);
+                            colDiv.appendChild(openModalButton);
+                            colDiv.appendChild(deleteButton);
+                            imageContainer.appendChild(colDiv);
+                        }
+                        reader.readAsDataURL(file);
                     }
-                    reader.readAsDataURL(file);
+
+                    updateFileInput();
+                });
+
+                // Function to crop the image and update the preview
+                function cropImage() {
+                    if (!cropper) {
+                        console.error('Cropper instance is not defined.');
+                        return;
+                    }
+
+                    const canvas = cropper.getCroppedCanvas();
+                    const croppedImage = canvas.toDataURL('image/png');
+
+                    currentImageElement.src = croppedImage;
+
+                    // Close the modal and destroy the cropper instance
+                    closeCropModal();
+                    updateFileInput();
                 }
 
-            })
+                // Function to properly close the crop modal and destroy the cropper instance
+                function closeCropModal() {
+                    const cropModal = document.getElementById('imageModal');
+                    const modalInstance = bootstrap.Modal.getInstance(cropModal);
+                    modalInstance.hide();  // Properly hide the modal
 
+                    if (cropper) {
+                        cropper.destroy();
+                        cropper = null;
+                    }
+                }
 
+                // Function to update the file input with the cropped images
+                function updateFileInput() {
+                    const images = imageContainer.getElementsByClassName('image-preview');
+                    const dataTransfer = new DataTransfer();
 
+                    for (let i = 0; i < images.length; i++) {
+                        const dataURL = images[i].src;
+                        const file = dataURLtoFile(dataURL, 'image' + i + '.png');
+                        dataTransfer.items.add(file);
+                    }
 
+                    document.getElementById('product-image-upload').files = dataTransfer.files;
+                }
+
+                // Utility function to convert data URL to a File object
+                function dataURLtoFile(dataurl, filename) {
+                    const arr = dataurl.split(',');
+                    const mime = arr[0].match(/:(.*?);/)[1];
+                    const bstr = atob(arr[1]);
+                    let n = bstr.length;
+                    const u8arr = new Uint8Array(n);
+                    while (n--) {
+                        u8arr[n] = bstr.charCodeAt(n);
+                    }
+                    return new File([u8arr], filename, { type: mime });
+                }
+
+                // Attach event listeners to the crop button and modal close event
+                document.getElementById('cropButton').onclick = cropImage;
+                document.getElementById('imageModal').addEventListener('hidden.bs.modal', closeCropModal);
+            });
 
 
         </script>
