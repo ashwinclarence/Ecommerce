@@ -66,14 +66,14 @@
         gap: 2rem;
     }
 
-    
+
     .modal-content {
         margin: 0;
     }
 
     #modalImage {
-            width: 100%;
-        }
+        width: 100%;
+    }
 </style>
 
 <%- include('navbar') %>
@@ -264,77 +264,7 @@
                 }
             })
 
-            // const inputImage = document.getElementById('product-image-upload');
-            // const imageContainer = document.getElementById('imageContainer');
-            // let cropper;
 
-            // inputImage.addEventListener('change', (event) => {
-            //     const files = event.target.files;
-
-            //     // Check if the number of files exceeds the limit
-            //     if (files.length > 4 || imageContainer.children.length + files.length > 4) {
-            //         Swal.fire({
-            //             icon: "error",
-            //             title: "File limit reached",
-            //             text: "Maximum four files can be uploaded",
-            //             timer: 12000,
-            //         });
-            //         return;
-            //     }
-
-
-            //     for (const file of files) {
-            //         const reader = new FileReader();
-            //         reader.onload = (e) => {
-            //             const colDiv = document.createElement('div');
-            //             colDiv.classList.add('col-md-3', 'mb-3', 'image-container');
-
-            //             const img = document.createElement('img');
-            //             img.src = e.target.result;
-            //             img.classList.add('img-fluid', 'img-thumbnail', 'image-preview');
-
-            //             const openModalButton = document.createElement('button');
-            //             openModalButton.classList.add('btn', 'btn-primary', 'mt-2', 'me-2');
-            //             openModalButton.innerText = 'Crop';
-            //             openModalButton.setAttribute('type', 'button');
-            //             openModalButton.setAttribute('data-bs-toggle', 'modal');
-            //             openModalButton.setAttribute('data-bs-target', '#imageModal');
-            //             openModalButton.addEventListener('click', () => {
-            //                 document.getElementById('modalImage').src = e.target.result;
-            //                 cropper = new Cropper(document.getElementById('modalImage'), {
-            //                     aspectRatio: 1,
-            //                     viewMode: 2,
-            //                     autoCropArea: 1,
-            //                 });
-
-            //                 document.getElementById('cropButton').onclick = () => {
-            //                     const canvas = cropper.getCroppedCanvas();
-            //                     const croppedImage = canvas.toDataURL('image/png');
-
-            //                     img.src = croppedImage;
-
-            //                     cropper.destroy();
-            //                     cropper = null;
-            //                     document.getElementById('imageModal').querySelector('.btn-close').click();
-            //                 };
-            //             });
-
-            //             const deleteButton = document.createElement('button');
-            //             deleteButton.classList.add('btn', 'btn-danger', 'mt-2', 'ms-2');
-            //             deleteButton.innerText = 'Delete';
-            //             deleteButton.addEventListener('click', () => {
-            //                 imageContainer.removeChild(colDiv);
-            //             });
-
-            //             colDiv.appendChild(img);
-            //             colDiv.appendChild(openModalButton);
-            //             colDiv.appendChild(deleteButton);
-            //             imageContainer.appendChild(colDiv);
-            //         }
-            //         reader.readAsDataURL(file);
-            //     }
-
-            // })
             document.addEventListener('DOMContentLoaded', (event) => {
                 const inputImage = document.getElementById('product-image-upload');
                 const imageContainer = document.getElementById('imageContainer');
@@ -384,6 +314,8 @@
                                     aspectRatio: 1,
                                     viewMode: 0,
                                     autoCropArea: 1,
+                                    minContainerWidth: 400,
+                                    minContainerHeight: 400,
                                 });
                             });
 
