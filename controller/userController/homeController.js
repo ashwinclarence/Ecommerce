@@ -1,91 +1,80 @@
 const productSchema = require('../../model/productSchema')
 const categorySchema = require('../../model/categorySchema')
 const cartSchema = require('../../model/cartSchema')
-
-
+const reviewSchema=require('../../model/reviewSchema')
+const wishlistSchema=require('../../model/wishlistSchema')
 
 
 // render the home page using with products and categories
 const home = async (req, res) => {
     try {
+        // Find all active categories
+        const categories = await categorySchema.find({ isActive: true })
 
-        // find all category which is active
-        const category = await categorySchema.find({ isActive: true })
+        // Extract category names
+        const allCategoryNames = categories.map(item => item.categoryName);
 
-        // declare an empty array for all category names that are active in collection
-        const allCategory = []
+        // Extract query parameters with default values
+        const selectedCategory = req.query.productCategory ? [req.query.productCategory] : allCategoryNames;
+        const minPrice = parseInt(req.query.minPrice) || 0;
+        const maxPrice = parseInt(req.query.maxPrice) || 100000;
+        const productRating = parseInt(req.query.productRating) || 0;
+        const productDiscount = parseInt(req.query.productDiscount) || 0;
+        const productPriceSort = parseInt(req.query.productPriceSort) || 0;
+        const userSearch = req.query.userSearch || "";
 
-        // push each category name to the array allCategory
-        category.forEach((item) => {
-            allCategory.push(item.categoryName);
-        })
-
-        // if user select a particular category then it will added to selected category else all category names from above will be added.
-        const selectedCategory = req.query.productCategory || allCategory;
-        const minPrice = parseInt(req.query.minPrice) || 0
-        const maxPrice = parseInt(req.query.maxPrice) || 100000
-        const productRating = parseInt(req.query.productRating) || 0
-        const productDiscount = parseInt(req.query.productDiscount) || 0
-        const productPriceSort = parseInt(req.query.productPriceSort) || 0
-        const userSearch = req.query.userSearch || ""
-
-        // pagination values
+        // Pagination parameters
         const productsPerPage = 8;
-        const currentPage = req.query.page || 0
+        const currentPage = parseInt(req.query.page) || 0;
 
-        // get all product from product collection and with the query strings
-        let products = await productSchema.find({
+        // Query for products with filters
+        const productQuery = {
             productName: { $regex: userSearch, $options: "i" },
             productCategory: { $in: selectedCategory },
             isActive: true,
-            productPrice: { $lte: maxPrice, $gte: minPrice }
-        }).sort({ createdAt: -1 })
-        // let products = await productSchema.find({
-        //     productName: { $regex: userSearch, $options: "i" },
-        //     productCategory: { $in: selectedCategory },
-        //     isActive: true,
-        //     productPrice: { $lte: maxPrice, $gte: minPrice }
-        // }).skip(currentPage * productsPerPage).limit(productsPerPage).sort({ addedOn: -1 })
+            productPrice: { $gte: minPrice, $lte: maxPrice },
+            // productRating: { $gte: productRating }
+        };
 
-
-        // sort by products price 
+        // Sort options
+        let sortOption = {};
         if (productPriceSort === 1) {
-            products.sort((a, b) => b.productPrice - a.productPrice)
-        }
-        // sort based the product discount
-        else if (productDiscount === -1) {
-            products.sort((a, b) => b.productDiscount - a.productDiscount)
-        }
-        else if (productDiscount === 1) {
-            products.sort((a, b) => a.productDiscount - b.productDiscount)
-        }
-        // sort based on the product added date
-        else {
-            products.sort((a, b) => b.createdAt - a.createdAt)
+            sortOption = { productPrice: -1 };
+        } else if (productDiscount !== 0) {
+            sortOption = { productDiscount: productDiscount };
+        } else {
+            sortOption = { createdAt: -1 }; // Default sort by createdAt descending
         }
 
-        // added limit products on a page 
-        const startIndex = currentPage * productsPerPage;
-        const paginatedProducts = products.slice(startIndex, startIndex + productsPerPage);
+        // Fetch products with applied filters and sorting
+        const products = await productSchema.find(productQuery)
+            .sort(sortOption)
+            .skip(currentPage * productsPerPage)
+            .limit(productsPerPage);
 
-        // count the number of document satisfied the filter
-        const productsCount = await productSchema.find({
-            productName: { $regex: userSearch, $options: "i" },
-            productCategory: { $in: selectedCategory },
-            isActive: true,
-            productPrice: { $lte: maxPrice, $gte: minPrice }
-        }).countDocuments()
+        // Count the total number of products matching the query
+        const productsCount = await productSchema.countDocuments(productQuery);
 
-
-        // render the home page
-        res.render('user/home', { title: 'User Home', products:paginatedProducts, category, alertMessage: req.flash('errorMessage'), user: req.session.user })
+        // Render the home page
+        res.render('user/home', {
+            title: 'User Home',
+            products,
+            category: categories,
+            alertMessage: req.flash('errorMessage'),
+            user: req.session.user,
+            currentPage,
+            totalPages: Math.ceil(productsCount / productsPerPage)
+        });
 
     } catch (err) {
-        console.log(`Error rendering home page ${err}`);
+        console.error(`Error rendering home page: ${err}`);
+        res.status(500).send("Internal Server Error");
     }
+};
 
 
-}
+
+
 
 
 module.exports = {

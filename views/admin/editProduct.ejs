@@ -177,7 +177,7 @@
                     <!-- input for select category this category is from backend -->
                     <label for="productCategory">Product Category </label>
                     <select name="productCategory" id="product-category" disabled required>
-                        <option value="" selected disabled>
+                        <option value="<%= product.productCategory %>" selected disabled>
                             <%= product.productCategory %>
                         </option>
                     </select>

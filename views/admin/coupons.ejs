@@ -374,7 +374,7 @@
                     formValid = false
                     document.getElementsByClassName('validateCoupon')[3].innerHTML = "Invalid Expiry Date"
                 }
-                if (discountAmount.value >= minPurchase.value) {
+                if (Number(discountAmount.value) >= Number(minPurchase.value)) {
                     formValid = false
                     document.getElementsByClassName('validateCoupon')[1].innerHTML = "Discount amount must be lower than minimum purchase"
                     document.getElementsByClassName('validateCoupon')[2].innerHTML = "Minimum purchase must be higher than discount amount"

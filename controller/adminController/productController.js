@@ -1,4 +1,5 @@
-const categorySchema = require("../../model/categorySchema")
+const categorySchema = require("../../model/categorySchema");
+const offerSchema = require("../../model/offerSchema");
 const productSchema = require('../../model/productSchema')
 const fs = require('fs')
 
@@ -113,6 +114,21 @@ const addProductPost = async (req, res) => {
         //     discountPrice = req.body.productPrice
         // }
 
+        
+        const offer = await offerSchema.find({ offerFor: "CATEGORY" }).populate('offerCategoryId')
+
+        let discountPrice=req.body.productPrice
+        let discount=0
+
+        // find if the product is under the offer
+        for(const off of offer){
+            if (off.offerCategoryId.categoryName === req.body.productCategory) {
+                discount=off.offerValue
+                discountPrice=(req.body.productPrice*(1-off.offerValue/100))
+                discountPrice = discountPrice.toFixed(2); 
+                break;
+            }
+        }
 
         // check product already exist in the product collection
         const checkProduct = await productSchema.findOne({ productName: req.body.productName, productCategory: req.body.productCategory, productBrand: req.body.productBrand });
@@ -128,8 +144,8 @@ const addProductPost = async (req, res) => {
                 productQuantity: req.body.productQuantity,
                 productCategory: req.body.productCategory,
                 productImage: imageArray,
-                // productDiscount: req.body.productDiscount,
-                // productDiscountedPrice: discountPrice,
+                productDiscount: discount,
+                productDiscountedPrice: discountPrice,
             })
             await newProduct.save()
             req.flash('errorMessage', 'Product added successfully');
@@ -165,8 +181,11 @@ const editProduct = async (req, res) => {
 
 // update the product collection based on the update in edit product form
 
-const editProductPost = (req, res) => {
+const editProductPost = async (req, res) => {
     try {
+        const {productPrice,productDescription,productQuantity,productCategory}=req.body
+
+
         // get the id of the product
         const productID = req.params.id;
 
@@ -179,6 +198,8 @@ const editProductPost = (req, res) => {
         // }
 
 
+
+
         // get the image array from the file upload
         // const imageArray = []
 
@@ -187,7 +208,7 @@ const editProductPost = (req, res) => {
         // })
 
         // update the product using the values from form
-        productSchema.findByIdAndUpdate(productID, { productPrice: req.body.productPrice, productDescription: req.body.productDescription, productQuantity: req.body.productQuantity })
+        productSchema.findByIdAndUpdate(productID, { productPrice:productPrice, productDescription: productDescription, productQuantity:productQuantity })
             .then((elem) => {
                 req.flash('errorMessage', 'Product Updated successfully');
                 res.redirect('/admin/products')
