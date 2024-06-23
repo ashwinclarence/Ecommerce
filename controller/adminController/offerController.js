@@ -347,10 +347,100 @@ const offerCheckProduct = async (req, res) => {
 // }
 
 
+
+// edit product and category offer
+const editOffer = async (req, res) => {
+    try {
+        // Extract offerID from request parameters and parse the discount percent from request body
+        const { offerID } = req.params;
+        const editDiscountPercent = Number(req.body.editDiscountPercent);
+
+        // Log the discount percent to the console for debugging
+        console.log("🚀 ~ file: offerController.js:357 ~ editOffer ~ editDiscountPercent:", editDiscountPercent);
+
+        // Check if offerID is provided; if not, redirect with an error message
+        if (!offerID) {
+            req.flash("errorMessage", "Offer ID is required. Please try again later");
+            return res.redirect('/admin/offer');
+        }
+
+        // Fetch the offer details by offerID and populate associated product and category details
+        const offerDetails = await offerSchema.findById(offerID).populate('offerProductId').populate('offerCategoryId');
+
+        // If the offer is not found, redirect with an error message
+        if (!offerDetails) {
+            req.flash("errorMessage", "Offer not found. Please try again later");
+            return res.redirect('/admin/offer');
+        }
+
+        // Handle discount update for product-specific offers
+        if (offerDetails.offerFor === 'PRODUCT') {
+            if (offerDetails.offerProductId) {
+                // Update the product's discount and discounted price
+                offerDetails.offerProductId.productDiscount = editDiscountPercent;
+                offerDetails.offerProductId.productDiscountedPrice = offerDetails.offerProductId.productPrice * (1 - editDiscountPercent / 100);
+                // Save changes to the product
+                await offerDetails.offerProductId.save();
+            } else {
+                // If the product is not found, redirect with an error message
+                req.flash("errorMessage", "Product not found. Please try again later");
+                return res.redirect('/admin/offer');
+            }
+        }
+
+        // Handle discount update for category-specific offers
+        if (offerDetails.offerFor === 'CATEGORY') {
+            // Find the category by ID
+            const category = await categorySchema.findById(offerDetails.offerCategoryId);
+
+            // If the category is not found, redirect with an error message
+            if (!category) {
+                req.flash('errorMessage', 'Category not found');
+                return res.redirect('/admin/offer');
+            }
+
+            // Find all products under the specified category
+            const productUnderCategory = await productSchema.find({ productCategory: category.categoryName });
+
+            // Create bulk update operations to apply the new discount to all products in the category
+            const bulkOperations = productUnderCategory.map(product => ({
+                updateOne: {
+                    filter: { _id: product._id },
+                    update: {
+                        productDiscount: editDiscountPercent,
+                        productDiscountedPrice: product.productPrice * (1 - (editDiscountPercent / 100))
+                    }
+                }
+            }));
+
+            // Execute the bulk update operations if there are any
+            if (bulkOperations.length > 0) {
+                await productSchema.bulkWrite(bulkOperations);
+            }
+        }
+
+        // Update the offer value in the offer collection
+        offerDetails.offerValue = editDiscountPercent;
+        await offerDetails.save();
+
+        // Redirect to the offer management page after successful update
+        res.redirect('/admin/offer');
+    } catch (err) {
+        // Log the error and redirect with a generic error message in case of an exception
+        console.log("Error on editing the offer in admin ", err);
+        req.flash("errorMessage", "An error occurred while editing the offer. Please try again later.");
+        res.redirect('/admin/offer');
+    }
+};
+
+
+
+
 module.exports = {
     offerRender,
     addOfferPost,
     offerCheckCategory,
     offerCheckProduct,
     deleteOffer,
+    editOffer,
 }

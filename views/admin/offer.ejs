@@ -62,10 +62,17 @@
                                             <td class="text-center">
                                                 <%= offer.offerValue %>%
                                             </td>
-                                            
+
                                             <td class="text-center">
-                                                <button class="btn btn-danger"
-                                                    onclick="deleteOffer('<%= offer._id %>')">Delete</button>
+                                                <button type="button" class="btn edit-offer-button"
+                                                    data-bs-toggle="modal" data-offerValue=" <%= offer.offerValue %>"
+                                                    data-offerID="<%= offer._id %>"
+                                                    data-bs-target=".edit-coupon-modal"><i
+                                                        class="fa-solid fa-pen-to-square"></i></button>
+                                              
+                                                <button class="btn text-danger"
+                                                    onclick="deleteOffer('<%= offer._id %>')"><i
+                                                        class="fa-solid fa-trash-can"></i></button>
 
                                             </td>
                             </tr>
@@ -143,6 +150,31 @@
                             <label for="expiryDate" class="validateOffer text-danger"></label>
                         </div> -->
 
+                        <div class="text-center">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- Modal for editing offer -->
+        <div class="modal fade edit-coupon-modal" tabindex="-1" role="dialog" aria-labelledby="addOfferModalLabel"
+            id="edit-coupon-modal" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content p-5">
+                    <div class="form-header text-center mb-4">
+                        <h2>Edit Offer</h2>
+                    </div>
+                    <form action="/admin/edit-offer" method="post" id="edit-offer-form">
+                        <div class="mb-3">
+                            <label for="editDiscountPercent" class="form-label">Discount Percentage</label>
+                            <input type="number" class="form-control" id="editDiscountPercent" name="editDiscountPercent">
+                            <label for="editDiscountPercent" class="validateOfferEdt text-danger"></label>
+                        </div>
                         <div class="text-center">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary">Submit</button>
@@ -339,5 +371,32 @@
             })
 
 
+
+            // edit the offer in modal
+            const editOfferForm = document.getElementById('edit-offer-form')
+            const editOfferInput=document.getElementById('editDiscountPercent')
+            const editOfferButton = document.querySelectorAll('.edit-offer-button')
+            editOfferButton.forEach((button) => {
+                button.addEventListener('click', (e) => {
+
+                    const offerValue = button.getAttribute('data-offerValue')
+                    const offerID = button.getAttribute('data-offerID')
+
+                    editOfferInput.value = Number(offerValue)
+                    editOfferForm.action = `/admin/edit-offer/${offerID}`
+                })
+            })
+
+            // validation for edit offer form
+            editOfferForm.addEventListener('submit',(e)=>{
+                e.preventDefault()
+                document.getElementsByClassName('validateOfferEdt')[0].innerHTML=""
+
+                if(editOfferInput.value.trim() === 0 || isNaN(editOfferInput.value) || editOfferInput.value > 100 || editOfferInput.value < 1){
+                    document.getElementsByClassName('validateOfferEdt')[0].innerHTML="Enter a valid discount between(1- 100)"
+                }else{
+                    editOfferForm.submit()
+                }
+            })
 
         </script>

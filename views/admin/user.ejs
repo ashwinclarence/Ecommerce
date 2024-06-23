@@ -157,7 +157,6 @@
             blockUser.forEach((button) => {
                 button.addEventListener("click", (e) => {
                     const URL = button.getAttribute("data-userID")
-                    console.log("🚀 ~ file: user.ejs:110 ~ button.addEventListener ~ URL:", URL);
                     e.preventDefault();
                     Swal.fire({
                         title: 'Block the user',
