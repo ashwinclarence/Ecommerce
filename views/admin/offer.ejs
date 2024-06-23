@@ -36,7 +36,7 @@
                         <th scope="col" class="py-3 text-center">Offer Target</th>
                         <th scope="col" class="py-3 text-center">Offer For</th>
                         <th scope="col" class="py-3 text-center">Discount Percentage</th>
-                        <th scope="col" class="py-3 text-center">Expiry</th>
+                        <!-- <th scope="col" class="py-3 text-center">Expiry</th> -->
                         <th scope="col" class="text-center py-3">Actions</th>
                     </tr>
                 </thead>
@@ -62,9 +62,7 @@
                                             <td class="text-center">
                                                 <%= offer.offerValue %>%
                                             </td>
-                                            <td class="text-center">
-                                                <%= offer.expiryDate.toDateString() %>%
-                                            </td>
+                                            
                                             <td class="text-center">
                                                 <button class="btn btn-danger"
                                                     onclick="deleteOffer('<%= offer._id %>')">Delete</button>
@@ -139,11 +137,11 @@
                             <label for="discountAmount" class="validateOffer text-danger"></label>
                         </div>
 
-                        <div class="mb-3">
+                        <!-- <div class="mb-3">
                             <label for="expiryDate" class="form-label">Expiry Date</label>
                             <input type="date" class="form-control" id="expiryDate" name="expiryDate">
                             <label for="expiryDate" class="validateOffer text-danger"></label>
-                        </div>
+                        </div> -->
 
                         <div class="text-center">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -186,7 +184,7 @@
                 document.getElementsByClassName('validateOffer')[1].innerHTML = ''
                 document.getElementsByClassName('validateOffer')[2].innerHTML = ''
                 document.getElementsByClassName('validateOffer')[3].innerHTML = ''
-                document.getElementsByClassName('validateOffer')[4].innerHTML = ''
+                // document.getElementsByClassName('validateOffer')[4].innerHTML = ''
 
                 if (!offerTarget.value) {
                     document.getElementsByClassName('validateOffer')[0].innerHTML = "Select a offer type"
@@ -208,10 +206,10 @@
                     validateOffer = false
                 }
 
-                if (!expiryDate.value || !isAtLeastOneDayAfterToday(expiryDate.value)) {
-                    document.getElementsByClassName('validateOffer')[4].innerHTML = "Select an expiry date"
-                    validateOffer = false
-                }
+                // if (!expiryDate.value || !isAtLeastOneDayAfterToday(expiryDate.value)) {
+                //     document.getElementsByClassName('validateOffer')[4].innerHTML = "Select an expiry date"
+                //     validateOffer = false
+                // }
 
                 if (validateOffer) {
                     offerAddForm.submit();
@@ -221,20 +219,20 @@
 
             })
 
-            function isAtLeastOneDayAfterToday(inputDate) {
-                if (inputDate) {
-                    // Convert inputDate to a Date object
-                    let dateInput = new Date(inputDate);
-                    // Get today's date
-                    let today = new Date();
+            // function isAtLeastOneDayAfterToday(inputDate) {
+            //     if (inputDate) {
+            //         // Convert inputDate to a Date object
+            //         let dateInput = new Date(inputDate);
+            //         // Get today's date
+            //         let today = new Date();
 
-                    // Add one day to today's date
-                    let tomorrow = new Date(today);
-                    tomorrow.setDate(tomorrow.getDate() + 1);
-                    // Compare inputDate with tomorrow's date
-                    return dateInput > tomorrow;
-                }
-            }
+            //         // Add one day to today's date
+            //         let tomorrow = new Date(today);
+            //         tomorrow.setDate(tomorrow.getDate() + 1);
+            //         // Compare inputDate with tomorrow's date
+            //         return dateInput > tomorrow;
+            //     }
+            // }
 
             // delete the offer
             function deleteOffer(offerID) {
