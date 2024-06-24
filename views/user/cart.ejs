@@ -177,16 +177,18 @@
                                                         class="text-dark">
                                                         <%= items.productID.productName %>
                                                     </a></h5>
-                                                <p class="text-muted mb-0">
+                                                <!-- <p class="text-muted mb-0">
                                                     <i class="bx bxs-star text-warning"></i>
                                                     <i class="bx bxs-star text-warning"></i>
                                                     <i class="bx bxs-star text-warning"></i>
                                                     <i class="bx bxs-star text-warning"></i>
                                                     <i class="bx bxs-star-half text-warning"></i>
-                                                </p>
-                                                <p class="mb-0 mt-1 badge badge-success">
+                                                </p> -->
+                                                <% if(items.productID.productDiscount>0){ %>
+                                                <p class="mb-0 mt-1 badge bg-danger">
                                                     <%= items.productID.productDiscount %>&percnt; OFF
                                                 </p>
+                                                <% }%>
                                                 <% if(items.productID.productQuantity<10){ %>
                                                     <b class="mb-0 mt-1 ms-3 text-danger">
                                                         Only <%= items.productID.productQuantity %> stock left
@@ -224,8 +226,7 @@
                                                                     <%= items.productID.productPrice.toLocaleString() %>
                                                                         <% }%>
 
-                                                            </del></span>&#8377;<%=
-                                                            items.productID.productDiscountedPrice %>
+                                                            </del></span>&#8377;<%= (items.productID.productPrice*(1-items.productID.productDiscount/100)).toLocaleString() %>
                                                     </h5>
                                                 </div>
                                             </div>

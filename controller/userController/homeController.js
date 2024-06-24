@@ -9,13 +9,13 @@ const wishlistSchema=require('../../model/wishlistSchema')
 const home = async (req, res) => {
     try {
         // Find all active categories
-        const categories = await categorySchema.find({ isActive: true })
+        const categories = await categorySchema.find({ isActive: true });
 
         // Extract category names
         const allCategoryNames = categories.map(item => item.categoryName);
 
         // Extract query parameters with default values
-        const selectedCategory = req.query.productCategory ? [req.query.productCategory] : allCategoryNames;
+        const selectedCategory = req.query.productCategory ? req.query.productCategory : allCategoryNames;
         const minPrice = parseInt(req.query.minPrice) || 0;
         const maxPrice = parseInt(req.query.maxPrice) || 100000;
         const productRating = parseInt(req.query.productRating) || 0;
@@ -68,14 +68,9 @@ const home = async (req, res) => {
 
     } catch (err) {
         console.error(`Error rendering home page: ${err}`);
-        res.status(500).send("Internal Server Error");
+        res.status(500).json("Internal Server Error");
     }
 };
-
-
-
-
-
 
 module.exports = {
     home,

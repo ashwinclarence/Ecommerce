@@ -205,7 +205,7 @@
                                                             <%= product.quantity %>
                                                         </b>
                                                     <p class="mb-0 mt-1">Price : <b>
-                                                            &#8377; <%= product.price * (1-product.discount/100) %>
+                                                            &#8377; <%= (product.price * (1-product.discount/100)).toLocaleString() %>
                                                         </b>
                                                     </p>
 

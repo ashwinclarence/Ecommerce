@@ -11,19 +11,18 @@
     <div class="container">
         <a class="navbar-brand" href="/user/home"><img id="MDB-logo" src="../../image/logo.png" alt="MDB Logo"
                 draggable="false" height="30" /></a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-            data-bs-target="#user-nav" aria-controls="user-nav" aria-expanded="false"
-            aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#user-nav"
+            aria-controls="user-nav" aria-expanded="false" aria-label="Toggle navigation">
             <i class="fas fa-bars"></i>
         </button>
-       
+
         <div class="collapse navbar-collapse" id="user-nav">
             <ul class="navbar-nav ms-auto align-items-center">
                 <li class="nav-item">
-                    <form class="mx-5" action="">
+                    <form class="mx-5" action="" id="search-form">
                         <div class="input-group" style="width: 350px;">
-                            <input type="search" class="form-control rounded" placeholder="Search anything..." name="userSearch"
-                                aria-label="Search" aria-describedby="search-addon" />
+                            <input type="search" class="form-control rounded" placeholder="Search anything..."
+                                name="userSearch" aria-label="Search" aria-describedby="search-addon" />
                         </div>
                     </form>
                 </li>
@@ -51,3 +50,8 @@
 
 <!-- alert bar -->
 <%- include('alert')%>
+
+
+
+    
+

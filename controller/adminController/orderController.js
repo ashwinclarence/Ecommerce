@@ -23,10 +23,18 @@ const order = async (req, res) => {
         const pageNumber = Math.ceil(totalProducts.length / productsPerPage);
 
         // find the blocked products count
-        let blockedProducts=0
+        let cancelledProducts=0
+        let deliveredProducts=0
+        let confirmedProducts=0
         totalProducts.forEach((ele)=>{
-            if(ele.isActive===false){
-                blockedProducts++
+            if(ele.orderStatus==='Delivered'){
+                deliveredProducts++;
+            }
+            if(ele.orderStatus==='Cancelled' || ele.orderStatus==='Returned'){
+                cancelledProducts++;
+            }
+            if(ele.orderStatus==='Confirmed'){
+                confirmedProducts++;
             }
         })
 
@@ -37,7 +45,9 @@ const order = async (req, res) => {
             pageNumber,
             currentPage,
             totalProducts:totalProducts.length, 
-            blockedProducts
+            deliveredProducts,
+            cancelledProducts,
+            confirmedProducts
         })
     } catch (err) {
         console.log(`Error on rendering the admin order page ${err}`);

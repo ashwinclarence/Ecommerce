@@ -90,7 +90,7 @@
             <div class="card-counter info">
                 <i class="fa-solid fa-dolly"></i>       
                 <span class="count-numbers">
-                    <%= blockedProducts %>
+                    <%= confirmedProducts %>
                 </span>
                 <span class="count-name">Confirmed  Orders</span>
             </div>
@@ -99,7 +99,7 @@
             <div class="card-counter success">
                 <i class="fa-solid fa-box-archive"></i>
                 <span class="count-numbers">
-                    <%= totalProducts-blockedProducts %>
+                    <%= deliveredProducts %>
                 </span>
                 <span class="count-name">Delivered Orders</span>
             </div>
@@ -108,7 +108,7 @@
             <div class="card-counter danger">
                 <i class="fa-solid fa-dolly"></i>       
                 <span class="count-numbers">
-                    <%= blockedProducts %>
+                    <%= cancelledProducts %>
                 </span>
                 <span class="count-name">Cancelled Orders</span>
             </div>
