@@ -160,7 +160,7 @@
                     <div class="card-counter info">
                         <i class="fa-solid fa-box-open"></i>
                         <span class="count-numbers">
-                            <%= orderDetails.length %>
+                            <%= orderCount %>
                         </span>
                         <span class="count-name">Orders</span>
                     </div>
@@ -360,6 +360,7 @@
 
             </div>
         </div>
+        <%- include('pagination') %>
         <!-- end row -->
     </div>
 

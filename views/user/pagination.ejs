@@ -1,69 +1,35 @@
-<style>
-    .pagination-container {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        gap: 2rem;
-    }
 
-    .pagination-container .btn {
-        width: 100px;
-    }
-</style>
-
-
-<div class="pagination-container">
-    <form action="" method="get" id="pagination-form">
-        <!-- total product count -->
-        <input type="text" hidden value="<%= products.length %>" id="pagination-page-number">
-        <!-- Previous button -->
-        <button class="btn btn-secondary" name="page" type="submit">Previous</button>
-        <!-- Next button -->
-        <button class="btn btn-dark" name="page" type="submit">Next</button>
-    </form>
-</div>
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+        <li class="page-item">
+            <button class="page-link" onclick="previousPage('<%= parseInt(currentPage) %>')">Previous</button>
+        </li>
+        <% for(let i = 1; i <= pageNumber; i++) { %> 
+            <li class="page-item">
+                <a class="page-link" href="?page=<%= i %>" ><%= i %></a>
+            </li>
+        <% } %>
+        <li class="page-item">
+            <button class="page-link" onclick="nextPage('<%= parseInt(currentPage) %>','<%= pageNumber %>')">Next</button>
+        </li>
+    </ul>
+</nav>
 
 
 <script>
-    // Function to get the value of a query parameter from the URL
-    function getQueryParam(param) {
-        const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get(param);
+
+    // next page
+    function nextPage(currentPage,totalPage){
+        if(Number(currentPage)<Number(totalPage)){
+            window.location.href=`?page=${Number(currentPage)+1}`
+        }
     }
 
-    // Get the current page number and convert to integer 
-    const currentPage = parseInt(getQueryParam('page')) || 0;
-
-    const paginationForm = document.getElementById('pagination-form');
-    const previousButton = document.getElementsByName('page')[0];
-    const nextButton = document.getElementsByName('page')[1];
-    const productsCount = document.getElementById('pagination-page-number').value
-
-
-
-    // if product count reaches o then the next button is set as disabled
-    if (Number(productsCount) === 0) {
-        nextButton.disabled = "true"
+    // previous page
+    function previousPage(currentPage){
+        if((Number(currentPage)-1)!=0){
+            window.location.href=`?page=${Number(currentPage)-1}`
+        }
     }
 
-    // Add action for next button for incrementing the page number
-    nextButton.addEventListener('click', (event) => {
-        event.preventDefault();
-        const nextPage = currentPage + 1;
-        updateQueryParam('page', nextPage);
-    });
-
-    // Add action for previous button for decrementing the page number
-    previousButton.addEventListener('click', (event) => {
-        event.preventDefault();
-        const previousPage = currentPage > 0 ? currentPage - 1 : 0;
-        updateQueryParam('page', previousPage);
-    });
-
-    // Function to update query parameters and submit the form
-    function updateQueryParam(key, value) {
-        const url = new URL(window.location);
-        url.searchParams.set(key, value);
-        window.location.href = url.toString();
-    }
 </script>

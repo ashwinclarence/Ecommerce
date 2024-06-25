@@ -118,7 +118,7 @@
                                         data-payment="<%= ele.paymentMethod %>" data-price="<%= ele.totalPrice %>">
                                         &#8377; <%= ele.totalPrice %>
                                     </td>
-                                  
+
                                 </tr>
                             </tbody>
 
@@ -134,6 +134,7 @@
                 </table>
             </div>
         </div>
+        <%- include('pagination') %>
     </div>
 
 
@@ -142,24 +143,26 @@
 
         <script>
 
-    const walletAmount = document.querySelectorAll('.wallet-amount');
+            const walletAmount = document.querySelectorAll('.wallet-amount');
 
-    walletAmount.forEach((order) => {
-        const orderStatus = order.getAttribute('data-purchase');
-        const paymentMethod = order.getAttribute('data-payment');
+            walletAmount.forEach((order) => {
+                const orderStatus = order.getAttribute('data-purchase');
+                const paymentMethod = order.getAttribute('data-payment');
 
-        if (orderStatus === 'Returned' || orderStatus === 'Cancelled') {
-            const incrementDiv = document.createElement('i');
-            incrementDiv.classList.add('fa-solid', 'fa-up-long', 'text-success');
-            order.appendChild(incrementDiv);
-        }
-        
-        if (paymentMethod === "Wallet") {
-            const decrementDiv = document.createElement('i');
-            decrementDiv.classList.add('fa-solid', 'fa-down-long', 'text-danger');
-            order.appendChild(decrementDiv);
-        }
-    });
+                if (orderStatus === 'Returned' || orderStatus === 'Cancelled') {
+                    const incrementDiv = document.createElement('i');
+                    incrementDiv.classList.add('fa-solid', 'fa-up-long', 'text-success');
+                    incrementDiv.setAttribute('title', "Money credited")
+                    order.appendChild(incrementDiv);
+                }
+
+                if (paymentMethod === "Wallet") {
+                    const decrementDiv = document.createElement('i');
+                    decrementDiv.classList.add('fa-solid', 'fa-down-long', 'text-danger');
+                    decrementDiv.setAttribute('title', "Money debited")
+                    order.appendChild(decrementDiv);
+                }
+            });
 
 
         </script>

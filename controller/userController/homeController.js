@@ -27,7 +27,9 @@ const home = async (req, res) => {
 
         // Pagination parameters
         const productsPerPage = 8;
-        const currentPage = parseInt(req.query.page) || 0;
+        const currentPage = parseInt(req.query.page) || 1;
+        const skip = (currentPage - 1) * productsPerPage;
+
 
         // Query for products with filters
         const productQuery = {
@@ -51,34 +53,10 @@ const home = async (req, res) => {
         // Fetch products with applied filters and sorting
         const products = await productSchema.find(productQuery)
             .sort(sortOption)
-            .skip(currentPage * productsPerPage)
+            .skip(skip)
             .limit(productsPerPage);
 
-            // const products = await productSchema.aggregate([
-            //     {
-            //         $match: productQuery
-            //     },
-            //     {
-            //         $lookup: {
-            //             from: "reviews",
-            //             localField: "_id",
-            //             foreignField: "productID",
-            //             as: "review"
-            //         }
-            //     },
-            //     {
-            //         $sort: sortOption
-            //     },
-            //     {
-            //         $skip: currentPage * productsPerPage
-            //     },
-            //     {
-            //         $limit: productsPerPage
-            //     }
-            // ]);
-
-            
-            
+                
         // Count the total number of products matching the query
         const productsCount = await productSchema.countDocuments(productQuery);
 
@@ -89,8 +67,9 @@ const home = async (req, res) => {
             category: categories,
             alertMessage: req.flash('errorMessage'),
             user: req.session.user,
+            pageNumber: Math.ceil(productsCount / productsPerPage),
             currentPage,
-            totalPages: Math.ceil(productsCount / productsPerPage)
+            totalPages:productsCount 
         });
 
     } catch (err) {

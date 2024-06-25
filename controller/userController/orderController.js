@@ -1,72 +1,79 @@
 const orderSchema = require("../../model/orderSchema");
-const userSchema = require('../../model/userSchema')
-const walletSchema = require('../../model/walletSchema')
-const reviewSchema = require('../../model/reviewSchema')
-const mongoose = require('mongoose');
+const userSchema = require("../../model/userSchema");
+const walletSchema = require("../../model/walletSchema");
+const reviewSchema = require("../../model/reviewSchema");
+const mongoose = require("mongoose");
 const productSchema = require("../../model/productSchema");
 const PDFDocument = require("pdfkit-table");
-const fs = require('fs');
-const path = require('path')
-
-
-
-
-
-
+const fs = require("fs");
+const path = require("path");
 
 // order detail page render
 const order = async (req, res) => {
     try {
+        // Pagination parameters
+        const productsPerPage = 5;
+        const currentPage = parseInt(req.query.page) || 1;
+        const skip = (currentPage - 1) * productsPerPage;
 
-        // search order
-        const orderSearch = req.query.userSearch || '';
+        let orderDetails = await orderSchema
+            .find({ userID: req.session.user, isCancelled: false })
+            .populate("products.productID")
+            .sort({ createdAt: -1 });
 
+        const orderCount = orderDetails.length;
 
-        let orderDetails = await orderSchema.find({ userID: req.session.user, isCancelled: false }).populate('products.productID').sort({ createdAt: -1 })
+        const paginatedOrderDetails = orderDetails.slice(skip, skip + productsPerPage);
 
-
-        // search for specific order
-        // if (orderSearch != '') {
-        //     orderDetails = orderDetails.filter((ele) => {
-        //         return ele.products.productName.match(new RegExp(orderSearch, 'i'));
-        //     });
-        // }
-
-
-        res.render('user/orders', { title: "Order", user: req.session.user, orderDetails, alertMessage: req.flash('errorMessage') })
+        res.render("user/orders", {
+            title: "Order",
+            alertMessage: req.flash("errorMessage"),
+            user: req.session.user,
+            orderDetails: paginatedOrderDetails,
+            pageNumber: Math.ceil(orderCount / productsPerPage),
+            currentPage,
+            totalPages: Math.ceil(orderCount / productsPerPage),
+            orderCount
+        });
     } catch (err) {
         console.log(`Error rendering the order page ${err}`);
     }
-}
-
-
+};
 
 // render the cancelled order page
 const cancelledOrder = async (req, res) => {
     try {
-        // search order
-        const orderSearch = req.query.userSearch || '';
 
+        // Pagination parameters
+        const productsPerPage = 5;
+        const currentPage = parseInt(req.query.page) || 1;
+        const skip = (currentPage - 1) * productsPerPage;
 
-        let orderDetails = await orderSchema.find({ userID: req.session.user, isCancelled: true }).populate('products.productID').sort({ createdAt: -1 })
+        let orderDetails = await orderSchema
+            .find({ userID: req.session.user, isCancelled: true })
+            .populate("products.productID")
+            .sort({ createdAt: -1 });
+        
+        
+        const orderCount = orderDetails.length;
 
-        // // search for specific order
-        // if (orderSearch != '') {
-        //     orderDetails = orderDetails.filter((ele) => {
-        //         console.log(ele);
-        //         return ele.products.productName.match(new RegExp(orderSearch, 'i'));
-        //     });
-        // }
+        const paginatedOrderDetails = orderDetails.slice(skip, skip + productsPerPage);
 
-
-
-        res.render('user/cancelledOrder', { title: "Cancelled Orders", orderDetails, user: req.session.user, alertMessage: req.flash('errorMessage') })
-
+        res.render("user/cancelledOrder", {
+            title: "Cancelled Orders",
+            alertMessage: req.flash("errorMessage"),
+            orderDetails,
+            user: req.session.user,
+            orderDetails: paginatedOrderDetails,
+            pageNumber: Math.ceil(orderCount / productsPerPage),
+            currentPage,
+            totalPages: Math.ceil(orderCount / productsPerPage),
+            orderCount
+        });
     } catch (err) {
         console.log(`Error rendering the cancelled order page ${err}`);
     }
-}
-
+};
 
 // cancel the order based on the id in POST route
 const cancelledOrderPost = async (req, res) => {
@@ -74,48 +81,54 @@ const cancelledOrderPost = async (req, res) => {
         const orderID = req.params.orderID;
 
         // update the order details as cancelled orders
-        const orderDetails = await orderSchema.findByIdAndUpdate(orderID, { orderStatus: 'Cancelled', isCancelled: true })
-
+        const orderDetails = await orderSchema.findByIdAndUpdate(orderID, {
+            orderStatus: "Cancelled",
+            isCancelled: true,
+        });
 
         // if the order is other than COD then add the payment to the wallet
-        if (orderDetails.paymentMethod != 'Cash on delivery') {
+        if (orderDetails.paymentMethod != "Cash on delivery") {
             // check if user has a wallet before
-            const wallet = await walletSchema.findOne({ userID: req.session.user })
+            const wallet = await walletSchema.findOne({ userID: req.session.user });
 
-            // if the user has a wallet then update the balance 
+            // if the user has a wallet then update the balance
             if (wallet) {
-                wallet.balance += orderDetails.totalPrice
-                wallet.orderID.push(orderDetails._id)
+                wallet.balance += orderDetails.totalPrice;
+                wallet.orderID.push(orderDetails._id);
 
-                // save the changes 
-                await wallet.save()
+                // save the changes
+                await wallet.save();
             } else {
                 // if the user didn't have a wallet then create a new one
                 const newWallet = new walletSchema({
                     userID: req.session.user,
                     balance: orderDetails.totalPrice,
                     orderID: orderDetails._id,
-                })
+                });
 
                 // save the new wallet
-                await newWallet.save()
+                await newWallet.save();
             }
             // const userDetails = await userSchema.findByIdAndUpdate(req.session.user, { $inc: { wallet: orderDetails.totalPrice } })
         }
 
         if (orderDetails) {
-            req.flash('errorMessage', 'Your order has been successfully cancelled. If you need any assistance, please contact our customer support team. Thank you.')
-            res.redirect('/user/cancelled-orders')
+            req.flash(
+                "errorMessage",
+                "Your order has been successfully cancelled. If you need any assistance, please contact our customer support team. Thank you."
+            );
+            res.redirect("/user/cancelled-orders");
         } else {
-            req.flash('errorMessage', 'We apologize, but your product is not eligible for cancel at this time. If you have any questions or need further assistance, please contact our customer support team')
-            res.redirect('/user/orders')
+            req.flash(
+                "errorMessage",
+                "We apologize, but your product is not eligible for cancel at this time. If you have any questions or need further assistance, please contact our customer support team"
+            );
+            res.redirect("/user/orders");
         }
-
     } catch (err) {
         console.log(`Error on cancelling the order POST ${err}`);
     }
-}
-
+};
 
 // return the order using POST
 const returnOrderPost = async (req, res) => {
@@ -123,55 +136,62 @@ const returnOrderPost = async (req, res) => {
         const orderID = req.params.orderID;
 
         // update the order details as cancelled orders
-        const orderDetails = await orderSchema.findByIdAndUpdate(orderID, { orderStatus: 'Returned', isCancelled: true })
-
+        const orderDetails = await orderSchema.findByIdAndUpdate(orderID, {
+            orderStatus: "Returned",
+            isCancelled: true,
+        });
 
         // if the order is other than COD then add the payment to the wallet
-        if (orderDetails.paymentMethod != 'Cash on delivery') {
+        if (orderDetails.paymentMethod != "Cash on delivery") {
             // check if user has a wallet before
-            const wallet = await walletSchema.findOne({ userID: req.session.user })
+            const wallet = await walletSchema.findOne({ userID: req.session.user });
 
-            // if the user has a wallet then update the balance 
+            // if the user has a wallet then update the balance
             if (wallet) {
-                wallet.balance += orderDetails.totalPrice
-                wallet.orderID.push(orderDetails._id)
+                wallet.balance += orderDetails.totalPrice;
+                wallet.orderID.push(orderDetails._id);
 
-                // save the changes 
-                await wallet.save()
+                // save the changes
+                await wallet.save();
             } else {
                 // if the user didn't have a wallet then create a new one
                 const newWallet = new walletSchema({
                     userID: req.session.user,
                     balance: orderDetails.totalPrice,
                     orderID: orderDetails._id,
-                })
+                });
 
                 // save the new wallet
-                await newWallet.save()
+                await newWallet.save();
             }
             // const userDetails = await userSchema.findByIdAndUpdate(req.session.user, { $inc: { wallet: orderDetails.totalPrice } })
         }
 
         if (orderDetails) {
-            req.flash('errorMessage', 'Your order has been successfully return. If you need any assistance, please contact our customer support team. Thank you.')
-            res.redirect('/user/cancelled-orders')
+            req.flash(
+                "errorMessage",
+                "Your order has been successfully return. If you need any assistance, please contact our customer support team. Thank you."
+            );
+            res.redirect("/user/cancelled-orders");
         } else {
-            req.flash('errorMessage', 'We apologize, but your product is not eligible for return at this time. If you have any questions or need further assistance, please contact our customer support team')
-            res.redirect('/user/orders')
+            req.flash(
+                "errorMessage",
+                "We apologize, but your product is not eligible for return at this time. If you have any questions or need further assistance, please contact our customer support team"
+            );
+            res.redirect("/user/orders");
         }
     } catch (err) {
         console.log(`Error on returning the order POST ${err}`);
     }
-}
+};
 
-
-// add review 
+// add review
 const addReview = async (req, res) => {
     try {
         const productID = req.params.productID;
         const rating = parseInt(req.body.rating);
         const reviewFeedback = req.body.reviewFeedback;
-        const userDetails=await userSchema.findById(req.session.user)
+        const userDetails = await userSchema.findById(req.session.user);
 
         // Check if rating is a valid number
         if (isNaN(rating)) {
@@ -206,7 +226,11 @@ const addReview = async (req, res) => {
 
             // If user hasn't reviewed, add a new review
             if (!userReviewed) {
-                review.reviews.push({ userID: userDetails._id, description: reviewFeedback, star: rating });
+                review.reviews.push({
+                    userID: userDetails._id,
+                    description: reviewFeedback,
+                    star: rating,
+                });
             }
 
             // Calculate average rating
@@ -219,19 +243,29 @@ const addReview = async (req, res) => {
             // Save the updated review
             await review.save();
 
-            return res.status(200).json({ success: "Review updated", averageRating: review.rating });
+            return res
+                .status(200)
+                .json({ success: "Review updated", averageRating: review.rating });
         } else {
             // If no review exists, create a new one
             const newReview = new reviewSchema({
                 productID: productObjectId,
-                reviews: [{ userID: userDetails._id, description: reviewFeedback, star: rating }],
-                rating: rating  // Initial rating for the new review
+                reviews: [
+                    {
+                        userID: userDetails._id,
+                        description: reviewFeedback,
+                        star: rating,
+                    },
+                ],
+                rating: rating, // Initial rating for the new review
             });
 
             // Save the new review
             await newReview.save();
 
-            return res.status(200).json({ success: "Review added", averageRating: newReview.rating });
+            return res
+                .status(200)
+                .json({ success: "Review added", averageRating: newReview.rating });
         }
     } catch (err) {
         console.error(`Error on adding review via fetch post: ${err}`);
@@ -239,47 +273,61 @@ const addReview = async (req, res) => {
     }
 };
 
-
-
 // wallet render
 const walletRender = async (req, res) => {
     try {
+        const wallet = await walletSchema.findOne({ userID: req.session.user });
+        let walletBalance = 0;
 
-        const wallet = await walletSchema.findOne({ userID: req.session.user })
-        let walletBalance = 0
+        // Pagination parameters
+        const productsPerPage = 10;
+        const currentPage = parseInt(req.query.page) || 1;
+        const skip = (currentPage - 1) * productsPerPage;
 
         // if wallet is there then show the wallet amount
         if (wallet) {
-            walletBalance = wallet.balance
+            walletBalance = wallet.balance;
         }
-        // const orderDetails = await orderSchema.find({ userID: req.session.user, paymentMethod: { $in: ["Razor pay", 'Wallet'] }, orderStatus: { $in: ["Cancelled", "Returned"] } }).sort({ createdAt: -1 })
-        const orderDetails = await orderSchema.find({ userID: req.session.user }).sort({ createdAt: -1 })
 
+        const orderDetails = await orderSchema
+            .find({ userID: req.session.user })
+            .sort({ createdAt: -1 });
 
         // get the order details of the order purchased using razor pay or wallet which is cancelled or returned
         const walletOrderDetails = orderDetails.filter((ele) => {
-            if (ele.paymentMethod === "Razor pay" || ele.paymentMethod === "Wallet") {
-                if (ele.orderStatus === "Cancelled" || ele.orderStatus === 'Returned') {
-                    return ele
-                }
-            }
-        })
+            return (
+                (ele.paymentMethod === "Razor pay" || ele.paymentMethod === "Wallet") &&
+                (ele.orderStatus === "Cancelled" || ele.orderStatus === "Returned")
+            );
+        });
+
         // get the order details which the payment method is wallet
         const walletPurchaseOrderDetails = orderDetails.filter((ele) => {
-            if (ele.paymentMethod === 'Wallet') {
-                return ele
-            }
-        })
-        const walletOrderTransactions = walletOrderDetails.concat(walletPurchaseOrderDetails)
+            return ele.paymentMethod === "Wallet";
+        });
 
-        walletOrderTransactions.sort((a, b) => b.createdAt - a.createdAt)
+        const walletOrderTransactions = walletOrderDetails.concat(walletPurchaseOrderDetails);
+        walletOrderTransactions.sort((a, b) => b.createdAt - a.createdAt);
 
-        res.render('user/wallet', { title: "wallet", alertMessage: req.flash('errorMessage'), user: req.session.user, walletBalance, orderDetails: walletOrderTransactions })
+        // Implement pagination
+        const totalTransactions = walletOrderTransactions.length;
+        const totalPages = Math.ceil(totalTransactions / productsPerPage);
+        const paginatedTransactions = walletOrderTransactions.slice(skip, skip + productsPerPage);
 
+        res.render("user/wallet", {
+            title: "wallet",
+            alertMessage: req.flash("errorMessage"),
+            user: req.session.user,
+            walletBalance,
+            orderDetails: paginatedTransactions, // Pass only the transactions for the current page
+            pageNumber: totalPages,
+            currentPage,
+            totalPages,
+        });
     } catch (err) {
         console.log(`Error on rendering the wallet page ${err}`);
     }
-}
+};
 
 
 // download the invoice of the order
@@ -288,7 +336,9 @@ const downloadInvoice = async (req, res) => {
         const orderID = req.params.orderID;
 
         // Get the order details from order collection
-        const orderDetails = await orderSchema.findById(orderID).populate('products.productID');
+        const orderDetails = await orderSchema
+            .findById(orderID)
+            .populate("products.productID");
 
         const doc = new PDFDocument();
         const filename = `Cleat Craft Invoice ${Date.now()}.pdf`;
@@ -298,9 +348,19 @@ const downloadInvoice = async (req, res) => {
 
         doc.pipe(res);
 
-        // Add header aligned to center 
-        doc.font("Helvetica-Bold").fontSize(36).text("Cleat Craft", { align: "center", margin: 10 });
-        doc.font("Helvetica-Bold").fillColor("grey").fontSize(8).text("Empowering your game with elite football footwear", { align: "center", margin: 10 });
+        // Add header aligned to center
+        doc
+            .font("Helvetica-Bold")
+            .fontSize(36)
+            .text("Cleat Craft", { align: "center", margin: 10 });
+        doc
+            .font("Helvetica-Bold")
+            .fillColor("grey")
+            .fontSize(8)
+            .text("Empowering your game with elite football footwear", {
+                align: "center",
+                margin: 10,
+            });
         doc.moveDown();
 
         doc.fontSize(10).fillColor("blue").text(`Invoice #${orderID}`);
@@ -308,18 +368,33 @@ const downloadInvoice = async (req, res) => {
         doc.moveDown();
 
         // Add total sales report
-        doc.fillColor("black").text(`Total products: ${orderDetails.products.length}`);
-        doc.fillColor("black").text(`Shipping Charge: ${orderDetails.totalPrice<500?"RS 50":"Free"}`);
-        doc.fontSize(10).fillColor("red").text(`Total Amount: Rs ${orderDetails.totalPrice.toLocaleString()}`);
+        doc
+            .fillColor("black")
+            .text(`Total products: ${orderDetails.products.length}`);
+        doc
+            .fillColor("black")
+            .text(
+                `Shipping Charge: ${orderDetails.totalPrice < 500 ? "RS 50" : "Free"}`
+            );
+        doc
+            .fontSize(10)
+            .fillColor("red")
+            .text(`Total Amount: Rs ${orderDetails.totalPrice.toLocaleString()}`);
         doc.moveDown();
 
-        doc.fontSize(10).fillColor("black").text(`Payment method: ${orderDetails.paymentMethod}`);
+        doc
+            .fontSize(10)
+            .fillColor("black")
+            .text(`Payment method: ${orderDetails.paymentMethod}`);
         doc.text(`Order Date: ${orderDetails.createdAt.toDateString()}`);
         doc.moveDown();
         doc.moveDown();
 
         // Add address details of the company
-        doc.fontSize(10).fillColor("black").text(`Address: Trivandrum, Shangumugham`);
+        doc
+            .fontSize(10)
+            .fillColor("black")
+            .text(`Address: Trivandrum, Shangumugham`);
         doc.text(`Pincode: 789589`);
         doc.text(`Phone: 987 121 120`);
         doc.moveDown();
@@ -329,21 +404,19 @@ const downloadInvoice = async (req, res) => {
         doc.moveDown();
 
         const tableData = {
-            headers: [
-                "Product Name",
-                "Quantity",
-                "Price",
-                "Discount",
-                "Total"
-            ],
+            headers: ["Product Name", "Quantity", "Price", "Discount", "Total"],
             rows: orderDetails.products.map((product) => {
                 return [
                     product?.productName,
                     product?.quantity,
                     `Rs ${product?.price}`,
                     `${product?.discount} %`,
-                    `Rs ${(product.price * (1 - product.discount / 100) * product.quantity).toFixed(2)}`
-                ]
+                    `Rs ${(
+                        product.price *
+                        (1 - product.discount / 100) *
+                        product.quantity
+                    ).toFixed(2)}`,
+                ];
             }),
         };
 
@@ -351,11 +424,10 @@ const downloadInvoice = async (req, res) => {
         await doc.table(tableData, {
             prepareHeader: () => doc.font("Helvetica-Bold").fontSize(10),
             prepareRow: (row, i) => doc.font("Helvetica").fontSize(8),
-            hLineColor: '#b2b2b2', // Horizontal line color
-            vLineColor: '#b2b2b2', // Vertical line color
+            hLineColor: "#b2b2b2", // Horizontal line color
+            vLineColor: "#b2b2b2", // Vertical line color
             textMargin: 2, // Margin between text and cell border
         });
-
 
         doc.moveDown();
         doc.moveDown();
@@ -364,39 +436,36 @@ const downloadInvoice = async (req, res) => {
         doc.fontSize(12).text(`Thank You.`, { align: "center", margin: 10 });
         doc.moveDown();
 
-
         // Finalize the PDF document
         doc.end();
-
     } catch (err) {
         console.log(`Error on downloading the invoice pdf ${err}`);
-        res.status(500).send('Error generating invoice');
+        res.status(500).send("Error generating invoice");
     }
 };
 
-
 // remove the order in which order status is pending using fetch
-const removePendingOrder=async (req,res)=>{
+const removePendingOrder = async (req, res) => {
     try {
-        const orderID=req.params.orderID;
+        const orderID = req.params.orderID;
 
-        if(!orderID){
-            return res.status(404).json({error:"Cannot find the order ID"})
+        if (!orderID) {
+            return res.status(404).json({ error: "Cannot find the order ID" });
         }
 
-        const removedOrder=await orderSchema.findByIdAndDelete(orderID)
+        const removedOrder = await orderSchema.findByIdAndDelete(orderID);
 
-        if(!removedOrder){
-            return res.status(404).json({error:"Order remove the order please try again later"})
+        if (!removedOrder) {
+            return res
+                .status(404)
+                .json({ error: "Order remove the order please try again later" });
         }
 
-        return res.status(200).json({success:"Order removed successfully"})
-        
+        return res.status(200).json({ success: "Order removed successfully" });
     } catch (err) {
         console.log(`Error on removing the pending order ${err}`);
     }
-}
-
+};
 
 module.exports = {
     order,
@@ -406,5 +475,5 @@ module.exports = {
     addReview,
     walletRender,
     downloadInvoice,
-    removePendingOrder
-}
+    removePendingOrder,
+};

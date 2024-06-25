@@ -102,7 +102,7 @@
                 <div class="col-md-12">
                     <div class="card-counter danger">
                         <i class="fa-solid fa-ban"></i>
-                        <span class="count-numbers">  <%= orderDetails.length %></span>
+                        <span class="count-numbers">  <%= orderCount %></span>
                         <span class="count-name">Cancelled Orders</span>
                     </div>
                 </div>
@@ -212,10 +212,11 @@
                                     <h2 class="no-order-prompt">No Cancelled orders available yet </h2>
                                 </div>
                                 <% } %>
-                                    <!-- end card -->
-
-            </div>
-        </div>
+                                <!-- end card -->
+                                
+                            </div>
+                        </div>
+                        <%- include('pagination') %>
         <!-- end row -->
     </div>
 
