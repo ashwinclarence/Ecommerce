@@ -149,7 +149,7 @@
 
                         <!-- if the product is added which one day then new arrival banner is shown on top of the product box -->
                         <% } %>
-                            <% if (new Date(product.createdAt).getTime()> (Date.now() - (3 * 24 * 60 * 60 * 1000))) { %>
+                            <% if (new Date(product.createdAt).getTime()> (Date.now() - (1 * 24 * 60 * 60 * 1000))) { %>
                                 <div class="product-new-arrival-box">
                                     <img src="../../image/newbanner.png" alt="">
                                 </div>

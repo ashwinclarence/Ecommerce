@@ -2,7 +2,7 @@ const categorySchema = require("../../model/categorySchema");
 const offerSchema = require("../../model/offerSchema");
 const productSchema = require('../../model/productSchema')
 const fs = require('fs')
-
+const path = require('path')
 
 
 // render the product page
@@ -114,18 +114,18 @@ const addProductPost = async (req, res) => {
         //     discountPrice = req.body.productPrice
         // }
 
-        
+
         const offer = await offerSchema.find({ offerFor: "CATEGORY" }).populate('offerCategoryId')
 
-        let discountPrice=req.body.productPrice
-        let discount=0
+        let discountPrice = req.body.productPrice
+        let discount = 0
 
         // find if the product is under the offer
-        for(const off of offer){
+        for (const off of offer) {
             if (off.offerCategoryId.categoryName === req.body.productCategory) {
-                discount=off.offerValue
-                discountPrice=(req.body.productPrice*(1-off.offerValue/100))
-                discountPrice = discountPrice.toFixed(2); 
+                discount = off.offerValue
+                discountPrice = (req.body.productPrice * (1 - off.offerValue / 100))
+                discountPrice = discountPrice.toFixed(2);
                 break;
             }
         }
@@ -183,32 +183,33 @@ const editProduct = async (req, res) => {
 
 const editProductPost = async (req, res) => {
     try {
-        const {productPrice,productDescription,productQuantity,productCategory}=req.body
+        const { productPrice, productDescription, productQuantity, productCategory } = req.body
 
 
         // get the id of the product
         const productID = req.params.id;
 
-        // find the productDiscount Price if the product discount is changed
-        // let discountPrice
-        // if (req.body.productDiscount != 0) {
-        //     discountPrice = req.body.productPrice * (1 - (req.body.productDiscount) / 100)
-        // } else {
-        //     discountPrice = req.body.productPrice
-        // }
+        // Delete images from the backend
+        const imagesToDelete = JSON.parse(req.body.deletedImages || '[]');
+        imagesToDelete.forEach(x => fs.unlinkSync(x));
 
+        // Remove deleted images from DB
+        if (imagesToDelete.length > 0) {
+            await productSchema.findByIdAndUpdate(productID, {
+                $pull: { productImage: { $in: imagesToDelete } }
+            });
+        }
 
-
-
-        // get the image array from the file upload
-        // const imageArray = []
-
-        // req.files.forEach((img) => {
-        //     imageArray.push(img.path)
-        // })
+        // Add new image paths to DB
+        if (req.files && req.files.length > 0) {
+            const imagePaths = req.files.map(file => file.path.replace(/\\/g, '/'));
+            await productSchema.findByIdAndUpdate(productID, {
+                $push: { productImage: { $each: imagePaths } }
+            });
+        }
 
         // update the product using the values from form
-        productSchema.findByIdAndUpdate(productID, { productPrice:productPrice, productDescription: productDescription, productQuantity:productQuantity })
+        productSchema.findByIdAndUpdate(productID, { productPrice: productPrice, productDescription: productDescription, productQuantity: productQuantity })
             .then((elem) => {
                 req.flash('errorMessage', 'Product Updated successfully');
                 res.redirect('/admin/products')
@@ -297,6 +298,8 @@ const productDelete = async (req, res) => {
         req.flash('errorMessage', `${err.message}`)
     }
 }
+
+
 
 
 
