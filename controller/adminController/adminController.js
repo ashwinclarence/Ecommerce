@@ -232,6 +232,7 @@ const downloadPdfReport = async (req, res) => {
 
         // Get the order details from order collection
         const orderDetails = await orderSchema.find({ createdAt: { $gte: start, $lte: end } }).populate('products.productID').sort({ createdAt: -1 });
+        const orderDetailsWithoutCancelled = await orderSchema.find({ createdAt: { $gte: start, $lte: end },isCancelled: false, orderStatus: { $nin: 'Pending' } }).populate('products.productID').sort({ createdAt: -1 });
 
         const doc = new PDFDocument();
         const filename = `Cleat Craft Sales Report ${Date.now()}.pdf`;
@@ -262,8 +263,8 @@ const downloadPdfReport = async (req, res) => {
 
         doc.moveDown();
 
-        const totalSale = orderDetails.reduce((acc, sum) => acc + sum.totalPrice, 0)
-        const totalOrders = orderDetails.length
+        const totalSale = orderDetailsWithoutCancelled.reduce((acc, sum) => acc + sum.totalPrice, 0)
+        const totalOrders = orderDetailsWithoutCancelled.length
 
         // Add total sales report
         doc.text(`Total Orders : ${totalOrders}`);
@@ -335,11 +336,12 @@ const downloadExcelReport = async (req, res) => {
 
         // Get the order details from order collection
         const orderDetails = await orderSchema.find({ createdAt: { $gte: start, $lte: end } }).populate('products.productID').sort({ createdAt: -1 });
+        const orderDetailsWithoutCancelled = await orderSchema.find({ createdAt: { $gte: start, $lte: end }, isCancelled: false, orderStatus: { $nin: 'Pending' } }).populate('products.productID').sort({ createdAt: -1 });
 
         const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet("Sheet 1");
 
-        // Add data to the worksheet
+        // Add data columns to the worksheet
         worksheet.columns = [
             { header: "Reference ID", key: "orderId", width: 15 },
             { header: "Product", key: "productName", width: 20 },
@@ -351,16 +353,21 @@ const downloadExcelReport = async (req, res) => {
             { header: "Order Date", key: "orderDate", width: 18 },
         ];
 
-        
+        let totalSale = 0;
+        let totalOrders = 0;
 
+        // Add rows for each order and accumulate totals
         for (const order of orderDetails) {
             const orderId = order._id;
             const orderDate = order.createdAt;
-            const address = order.address?.homeAddress + ', ' + order.address?.areaAddress
+            const address = order.address?.homeAddress + ', ' + order.address?.areaAddress;
             const pin = order.address.pincode;
             const status = order.orderStatus;
+            let orderTotal = 0;
 
             for (const item of order.products) {
+                const totalPrice = (item.price - item.discount) * item.quantity;
+                orderTotal += totalPrice;
                 worksheet.addRow({
                     orderId,
                     status,
@@ -368,11 +375,35 @@ const downloadExcelReport = async (req, res) => {
                     address,
                     pin,
                     productName: item.productName,
-                    price: item.price-item.discount,
+                    price: item.price - item.discount,
                     quantity: item.quantity
                 });
             }
+
+            totalSale += orderTotal;
+            totalOrders++;
         }
+
+        // Add totals row at the end of the worksheet
+        worksheet.addRow({
+            orderId: "Total",
+            productName: "",
+            price: "",
+            quantity: "",
+            status: "",
+            address: "",
+            pin: "",
+            orderDate: ""
+        });
+
+        worksheet.mergeCells(`A${worksheet.rowCount}:D${worksheet.rowCount}`);
+        worksheet.getCell(`A${worksheet.rowCount}`).alignment = { vertical: 'middle', horizontal: 'center' };
+        worksheet.getCell(`A${worksheet.rowCount}`).font = { bold: true };
+        worksheet.getCell(`A${worksheet.rowCount}`).value = `Total Orders: ${totalOrders}`;
+
+        worksheet.getCell(`E${worksheet.rowCount}`).alignment = { vertical: 'middle', horizontal: 'center' };
+        worksheet.getCell(`E${worksheet.rowCount}`).font = { bold: true };
+        worksheet.getCell(`E${worksheet.rowCount}`).value = `Total Sale: ${totalSale}`;
 
         // Generate the Excel file and send it as a response
         workbook.xlsx.writeBuffer().then((buffer) => {
@@ -389,6 +420,7 @@ const downloadExcelReport = async (req, res) => {
         console.log(`Error on downloading excel sales report fetch ${err}`);
     }
 }
+    
 
 
 
