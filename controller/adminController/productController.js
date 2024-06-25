@@ -191,7 +191,7 @@ const editProductPost = async (req, res) => {
 
         // Delete images from the backend
         const imagesToDelete = JSON.parse(req.body.deletedImages || '[]');
-        imagesToDelete.forEach(x => fs.unlinkSync(x));
+        // imagesToDelete.forEach(x => fs.unlinkSync(x));
 
         // Remove deleted images from DB
         if (imagesToDelete.length > 0) {

@@ -164,6 +164,8 @@ const returnOrderPost = async (req, res) => {
     }
 }
 
+
+// add review 
 const addReview = async (req, res) => {
     try {
         const productID = req.params.productID;
@@ -173,21 +175,28 @@ const addReview = async (req, res) => {
         // Check if rating is a valid number
         if (isNaN(rating)) {
             return res.status(400).json({ error: "Invalid rating provided" });
-
         }
-        const product = await productSchema.findById(productID)
-        const productObjectId = product._id
 
+        // Fetch the product
+        const product = await productSchema.findById(productID);
+
+        if (!product) {
+            return res.status(404).json({ error: "Product not found" });
+        }
+
+        const productObjectId = product._id;
 
         // Find existing review for the product
-        const review = await reviewSchema.findOne({ productID: productObjectId });
+        let review = await reviewSchema.findOne({ productID: productObjectId });
 
         if (review) {
             // Check if user already reviewed the product
             let userReviewed = false;
+
             for (let i = 0; i < review.reviews.length; i++) {
                 if (review.reviews[i].userID === req.session.user) {
                     userReviewed = true;
+                    // Update existing review
                     review.reviews[i].description = reviewFeedback;
                     review.reviews[i].star = rating;
                     break;
@@ -199,27 +208,36 @@ const addReview = async (req, res) => {
                 review.reviews.push({ userID: req.session.user, description: reviewFeedback, star: rating });
             }
 
+            // Calculate average rating
+            let totalRating = 0;
+            for (let i = 0; i < review.reviews.length; i++) {
+                totalRating += review.reviews[i].star;
+            }
+            review.rating = totalRating / review.reviews.length;
+
             // Save the updated review
             await review.save();
 
-            return res.status(200).json({ success: "Review updated" });
+            return res.status(200).json({ success: "Review updated", averageRating: review.rating });
         } else {
             // If no review exists, create a new one
             const newReview = new reviewSchema({
                 productID: productObjectId,
-                reviews: [{ userID: req.session.user, description: reviewFeedback, star: rating }]
+                reviews: [{ userID: req.session.user, description: reviewFeedback, star: rating }],
+                rating: rating  // Initial rating for the new review
             });
 
             // Save the new review
             await newReview.save();
 
-            return res.status(200).json({ success: "Review added" });
+            return res.status(200).json({ success: "Review added", averageRating: newReview.rating });
         }
     } catch (err) {
         console.error(`Error on adding review via fetch post: ${err}`);
         return res.status(500).json({ error: "Internal server error" });
     }
 };
+
 
 
 // wallet render

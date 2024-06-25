@@ -5,6 +5,10 @@ const schema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "product"
     },
+    rating:{
+        type:Number,
+        default:0
+    },
     reviews: [
         {
             userID: {
