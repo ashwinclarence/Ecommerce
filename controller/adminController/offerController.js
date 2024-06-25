@@ -356,8 +356,6 @@ const editOffer = async (req, res) => {
         const editDiscountPercent = Number(req.body.editDiscountPercent);
 
         // Log the discount percent to the console for debugging
-        console.log("🚀 ~ file: offerController.js:357 ~ editOffer ~ editDiscountPercent:", editDiscountPercent);
-
         // Check if offerID is provided; if not, redirect with an error message
         if (!offerID) {
             req.flash("errorMessage", "Offer ID is required. Please try again later");
@@ -434,6 +432,39 @@ const editOffer = async (req, res) => {
 };
 
 
+// get the offer details for updating the offer using fetch
+const getOfferDetails = async (req, res) => {
+    try {
+        const { offerID } = req.params;
+        
+        if (!offerID) {
+            return res.status(404).json({ error: "Invalid offer ID" })
+        }
+
+        const offerDetails = await offerSchema.findById(offerID).populate('offerCategoryId').populate('offerProductId')
+        console.log("🚀 ~ file: offerController.js:445 ~ getOfferDetails ~ offerDetails:", offerDetails);
+
+        let offerTarget = ''
+        
+        if (offerDetails.offerFor === 'CATEGORY') {
+            offerTarget = offerDetails.offerCategoryId.categoryName
+        } else if (offerDetails.offerFor === "PRODUCT") {
+            offerTarget = offerDetails.offerProductId.productName
+        }
+        console.log("🚀 ~ file: offerController.js:447 ~ getOfferDetails ~ offerTarget:", offerTarget);
+
+        if (!offerDetails) {
+            return res.status(404).json({ error: "Cannot get the offer details" })
+        }
+
+        return res.status(200).json({ offerTarget:offerTarget,offerFor:offerDetails.offerFor,offerValue:offerDetails.offerValue, Message: "Offer details fetched", status: true })
+
+    } catch (err) {
+        console.log("Error on getting the offer details for updating the offer ", err);
+    }
+}
+
+
 
 
 module.exports = {
@@ -443,4 +474,5 @@ module.exports = {
     offerCheckProduct,
     deleteOffer,
     editOffer,
+    getOfferDetails,
 }

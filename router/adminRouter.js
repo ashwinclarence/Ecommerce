@@ -76,6 +76,7 @@ admin.delete('/delete-offer/:offerID',checkAdminSession,offerController.deleteOf
 admin.post('/check-category-offer/:categoryID',checkAdminSession,offerController.offerCheckCategory)
 admin.post('/check-product-offer/:productID',checkAdminSession,offerController.offerCheckProduct)
 admin.post('/edit-offer/:offerID',checkAdminSession,offerController.editOffer)
+admin.post('/getOffer-details/:offerID',checkAdminSession,offerController.getOfferDetails)
 
 
 // logout
