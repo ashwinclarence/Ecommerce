@@ -12,7 +12,8 @@ const schema = new mongoose.Schema({
     reviews: [
         {
             userID: {
-                type: String
+                type: mongoose.Schema.Types.ObjectId,
+                ref:"user"
             },
             description: {
                 type: String

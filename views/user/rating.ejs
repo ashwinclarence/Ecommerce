@@ -1,162 +1,260 @@
-    <style>
-        .total-like-user-main a {
-            display: inline-block;
-            margin: 0 -17px 0 0;
-        }
-        .total-like {
-            border: 1px solid;
-            border-radius: 50px;
-            display: inline-block;
-            font-weight: 500;
-            height: 34px;
-            line-height: 33px;
-            padding: 0 13px;
-            vertical-align: top;
-        }
-        .progress {
-            background: #f2f4f8;
-            border-radius: 0;
-            height: 30px;
-        }
-        .rating-list {
-            display: flex;
-            margin-bottom: 15px;
-            width: 100%;
-        }
-        .rating-list-left {
-            height: 16px;
-            line-height: 29px;
-            width: 10%;
-        }
-        .rating-list-center {
-            width: 80%;
-        }
-        .rating-list-right {
-            line-height: 29px;
-            text-align: right;
-            width: 10%;
-        }
-        .star-rating i.active {
-            color: #ffc107;
-        }
-        .reviews-members .media .me-3 {
-            width: 56px;
-            height: 56px;
-            object-fit: cover;
-        }
-        .total-like-user {
-            border: 2px solid #fff;
-            height: 34px;
-            box-shadow: 0 .125rem .25rem rgba(0, 0, 0, .075)!important;
-            width: 34px;
-        }
-        .rounded-pill {
-            border-radius: 50rem!important;
-        }
-        .text-gray {
-            color: #6c757d;
-        }
-        .text-black {
-            color: #000;
-        }
-    </style>
-     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<div class="container">
-    <div class="col-md-12">
-        <div class="offer-dedicated-body-left">
-            <div class="tab-content" id="pills-tabContent">
-                <div class="tab-pane fade show active" id="pills-reviews" role="tabpanel" aria-labelledby="pills-reviews-tab">
-                    <div class="bg-white rounded shadow-sm p-4 mb-4 clearfix graph-star-rating">
-                        <h5 class="mb-0 mb-4">Ratings and Reviews</h5>
-                        <div class="graph-star-rating-header">
-                            <div class="star-rating">
-                                <i class="icofont-ui-rating active"></i>
-                                <i class="icofont-ui-rating active"></i>
-                                <i class="icofont-ui-rating active"></i>
-                                <i class="icofont-ui-rating active"></i>
-                                <i class="icofont-ui-rating"></i> 
-                                <b class="text-black ms-2">334</b>
-                            </div>
-                            <p class="text-black mb-4 mt-2">Rated 3.5 out of 5</p>
-                        </div>
-                        <div class="graph-star-rating-body">
-                            <div class="rating-list">
-                                <div class="rating-list-left text-black">5 Star</div>
-                                <div class="rating-list-center">
-                                    <div class="progress">
-                                        <div style="width: 56%" role="progressbar" class="progress-bar bg-primary"></div>
-                                    </div>
+<style>
+    .total-like-user-main a {
+        display: inline-block;
+        margin: 0 -17px 0 0;
+    }
+
+    .total-like {
+        border: 1px solid;
+        border-radius: 50px;
+        display: inline-block;
+        font-weight: 500;
+        height: 34px;
+        line-height: 33px;
+        padding: 0 13px;
+        vertical-align: top;
+    }
+
+    .progress {
+        background: #f2f4f8;
+        border-radius: 0;
+        height: 30px;
+    }
+
+    .rating-list {
+        display: flex;
+        margin-bottom: 15px;
+        width: 100%;
+    }
+
+    .rating-list-left {
+        height: 16px;
+        line-height: 29px;
+        width: 10%;
+    }
+
+    .rating-list-center {
+        width: 80%;
+    }
+
+    .rating-list-right {
+        line-height: 29px;
+        text-align: right;
+        width: 10%;
+    }
+
+    .star-rating {
+        display: flex;
+        align-items: center;
+    }
+
+    .star-rating i.active {
+        color: #ffc107;
+    }
+
+    .reviews-members .media .me-3 {
+        width: 56px;
+        height: 56px;
+        object-fit: cover;
+    }
+
+    .total-like-user {
+        border: 2px solid #fff;
+        height: 34px;
+        box-shadow: 0 .125rem .25rem rgba(0, 0, 0, .075) !important;
+        width: 34px;
+    }
+
+    .rounded-pill {
+        border-radius: 50rem !important;
+    }
+
+    .fa-star{
+        color: #ffc107;
+    }
+</style>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<% if(review){ %>
+    <div class="container mt-5">
+        <div class="col-md-12">
+            <div class="offer-dedicated-body-left">
+                <div class="tab-content" id="pills-tabContent">
+                    <div class="tab-pane fade show active" id="pills-reviews" role="tabpanel"
+                        aria-labelledby="pills-reviews-tab">
+                        <div class="bg-white rounded shadow-sm p-4 mb-4 clearfix graph-star-rating">
+                            <h5 class="mb-0 mb-4">Ratings and Reviews</h5>
+                            <div class="graph-star-rating-header">
+                                <div class="star-rating" data-overAllRating="<%= review.rating %>" id="overAll-rating-star">
+                                    <!-- <i class="material-icons active">star</i> -->
+                                    <!-- <i class="material-icons active">star</i>
+                                    <i class="material-icons active">star</i>
+                                    <i class="material-icons active">star</i>
+                                    <i class="material-icons">star_border</i> -->
+                                    number of reviews
+                                    <b class="text-success ms-2 ">
+                                        <%= review.reviews.length %>
+                                    </b>
                                 </div>
-                                <div class="rating-list-right text-black">56%</div>
+                                <p class="text-black mb-4 mt-2">Rated <%= review.rating.toFixed(1) %> <i class="fa-solid fa-star"></i> out of 5 <i class="fa-solid fa-star"></i></p>
                             </div>
-                            <div class="rating-list">
-                                <div class="rating-list-left text-black">4 Star</div>
-                                <div class="rating-list-center">
-                                    <div class="progress">
-                                        <div style="width: 23%" role="progressbar" class="progress-bar bg-primary"></div>
+                            <!-- <div class="graph-star-rating-body">
+                                <div class="rating-list">
+                                    <div class="rating-list-left text-black">5 Star</div>
+                                    <div class="rating-list-center">
+                                        <div class="progress">
+                                            <div style="width: 56%" role="progressbar" class="progress-bar bg-primary">
+                                            </div>
+                                        </div>
                                     </div>
+                                    <div class="rating-list-right text-black">56%</div>
                                 </div>
-                                <div class="rating-list-right text-black">23%</div>
-                            </div>
-                            <div class="rating-list">
-                                <div class="rating-list-left text-black">3 Star</div>
-                                <div class="rating-list-center">
-                                    <div class="progress">
-                                        <div style="width: 11%" role="progressbar" class="progress-bar bg-primary"></div>
+                                <div class="rating-list">
+                                    <div class="rating-list-left text-black">4 Star</div>
+                                    <div class="rating-list-center">
+                                        <div class="progress">
+                                            <div style="width: 23%" role="progressbar" class="progress-bar bg-primary">
+                                            </div>
+                                        </div>
                                     </div>
+                                    <div class="rating-list-right text-black">23%</div>
                                 </div>
-                                <div class="rating-list-right text-black">11%</div>
-                            </div>
-                            <div class="rating-list">
-                                <div class="rating-list-left text-black">2 Star</div>
-                                <div class="rating-list-center">
-                                    <div class="progress">
-                                        <div style="width: 2%" role="progressbar" class="progress-bar bg-primary"></div>
+                                <div class="rating-list">
+                                    <div class="rating-list-left text-black">3 Star</div>
+                                    <div class="rating-list-center">
+                                        <div class="progress">
+                                            <div style="width: 11%" role="progressbar" class="progress-bar bg-primary">
+                                            </div>
+                                        </div>
                                     </div>
+                                    <div class="rating-list-right text-black">11%</div>
                                 </div>
-                                <div class="rating-list-right text-black">2%</div>
-                            </div>
-                        </div>
-                        <!-- <div class="graph-star-rating-footer text-center mt-3 mb-3">
+                                <div class="rating-list">
+                                    <div class="rating-list-left text-black">2 Star</div>
+                                    <div class="rating-list-center">
+                                        <div class="progress">
+                                            <div style="width: 2%" role="progressbar" class="progress-bar bg-primary">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="rating-list-right text-black">2%</div>
+                                </div>
+                            </div> -->
+                            <!-- <div class="graph-star-rating-footer text-center mt-3 mb-3">
                             <button type="button" class="btn btn-outline-primary btn-sm">Rate and Review</button>
                         </div> -->
-                    </div>
-                    <div class="bg-white rounded shadow-sm p-4 mb-4 restaurant-detailed-ratings-and-reviews">
-                        <h5 class="mb-1">All Ratings and Reviews</h5>
-                        <div class="reviews-members pt-4 pb-4">
-                            <div class="d-flex">
-                                <div class="media-body">
-                                    <div class="d-flex justify-content-between">
-                                        <h6 class="mb-1"><a class="text-black" href="#">Singh Osahan</a></h6>
-                                        <span class="star-rating">
-                                            <i class="material-icons active">star</i>
-                                            <i class="material-icons active">star</i>
-                                            <i class="material-icons active">star</i>
-                                            <i class="material-icons active">star</i>
-                                            <i class="material-icons">star_border</i>
-                                        </span>
-                                    </div>
-                                    <p class="text-gray">Tue, 20 Mar 2020</p>
-                                    <div class="reviews-members-body">
-                                        <p>Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.</p>
-                                    </div>
-                                    <div class="reviews-members-footer d-flex">
-                                        <a class="total-like me-2" href="#"><i class="icofont-thumbs-up"></i> 856M</a> 
-                                        <a class="total-like" href="#"><i class="icofont-thumbs-down"></i> 158K</a>
-                                        <span class="total-like-user-main ms-2" dir="rtl">
-                                            <a data-bs-toggle="tooltip" data-bs-placement="top" title="Gurdeep Osahan" href="#"><img alt="Generic placeholder image" src="http://bootdey.com/img/Content/avatar/avatar5.png" class="total-like-user rounded-pill"></a>
-                                            <a data-bs-toggle="tooltip" data-bs-placement="top" title="Gurdeep Singh" href="#"><img alt="Generic placeholder image" src="http://bootdey.com/img/Content/avatar/avatar2.png" class="total-like-user rounded-pill"></a>
-                                            <a data-bs-toggle="tooltip" data-bs-placement="top" title="Askbootstrap" href="#"><img alt="Generic placeholder image" src="http://bootdey.com/img/Content/avatar/avatar3.png" class="total-like-user rounded-pill"></a>
-                                            <a data-bs-toggle="tooltip" data-bs-placement="top" title="Osahan" href="#"><img alt="Generic placeholder image" src="http://bootdey.com/img/Content/avatar/avatar4.png" class="total-like-user rounded-pill"></a>
-                                        </span>
+                        </div>
+
+                        <div class="bg-white rounded shadow-sm p-4 mb-4 restaurant-detailed-ratings-and-reviews">
+                            <h5 class="mb-1">All Ratings and Reviews</h5>
+                            <% if(review.reviews.length>=1){ %>
+                            <% review.reviews.forEach((review)=>{ %>
+                                <div class="reviews-members pt-4 pb-4">
+                                    <div class="d-flex">
+                                        <div class="media-body w-100">
+                                            <div class="d-flex justify-content-between w-100">
+                                                <h6 class="mb-1">
+                                                    <%= review.userID.name %>
+                                                </h6>
+                                                <span class="star-rating">
+                                                    <i><%= review.star %></i>
+                                                    <i class="material-icons active">star</i>
+                                                    <!-- <i class="material-icons active">star</i>
+                                                    <i class="material-icons active">star</i>
+                                                    <i class="material-icons active">star</i>
+                                                    <i class="material-icons">star_border</i> -->
+                                                </span>
+                                            </div>
+                                            <!-- <p class="text-gray">Tue, 20 Mar 2020</p> -->
+                                            <div class="reviews-members-body">
+                                                <p class="text-secondary"><%= review.description %></p>
+                                            </div>
+
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                                <hr>
+                                <% }) %>
+                                <% } %>
                         </div>
-                        <hr>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+    <% } else { %>
+        <div class="container">
+            <div class="col-md-12">
+                <div class="offer-dedicated-body-left">
+                    <div class="tab-content" id="pills-tabContent">
+                        <div class="tab-pane fade show active" id="pills-reviews" role="tabpanel"
+                            aria-labelledby="pills-reviews-tab">
+                            <div class="bg-white rounded shadow-sm p-4 mb-4 clearfix graph-star-rating">
+                                <h5 class="mb-0 mb-4">Ratings and Reviews</h5>
+                                <div class="graph-star-rating-header">
+                                    <div class="star-rating">
+                                        <i class="material-icons">star_border</i>
+                                        <i class="material-icons">star_border</i>
+                                        <i class="material-icons">star_border</i>
+                                        <i class="material-icons">star_border</i>
+                                        <b class="text-black ms-2">
+                                            0
+                                        </b>
+                                    </div>
+                                    <p class="text-black mb-4 mt-2">No one rated this product</p>
+                                </div>
+                                <div class="graph-star-rating-body">
+                                    <div class="rating-list">
+                                        <div class="rating-list-left text-black">5 Star</div>
+                                        <div class="rating-list-center">
+                                            <div class="progress">
+                                                <div style="width: 0%" role="progressbar"
+                                                    class="progress-bar bg-primary">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="rating-list-right text-black">0%</div>
+                                    </div>
+                                    <div class="rating-list">
+                                        <div class="rating-list-left text-black">4 Star</div>
+                                        <div class="rating-list-center">
+                                            <div class="progress">
+                                                <div style="width: 0%" role="progressbar"
+                                                    class="progress-bar bg-primary">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="rating-list-right text-black">0%</div>
+                                    </div>
+                                    <div class="rating-list">
+                                        <div class="rating-list-left text-black">3 Star</div>
+                                        <div class="rating-list-center">
+                                            <div class="progress">
+                                                <div style="width: 0%" role="progressbar"
+                                                    class="progress-bar bg-primary">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="rating-list-right text-black">0%</div>
+                                    </div>
+                                    <div class="rating-list">
+                                        <div class="rating-list-left text-black">2 Star</div>
+                                        <div class="rating-list-center">
+                                            <div class="progress">
+                                                <div style="width: 0%" role="progressbar"
+                                                    class="progress-bar bg-primary"></div>
+                                            </div>
+                                        </div>
+                                        <div class="rating-list-right text-black">0%</div>
+                                    </div>
+                                </div>
+                                <!-- <div class="graph-star-rating-footer text-center mt-3 mb-3">
+                                <button type="button" class="btn btn-outline-primary btn-sm">Rate and Review</button>
+                            </div> -->
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <% } %>

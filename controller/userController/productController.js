@@ -8,15 +8,40 @@ const reviewSchema = require('../../model/reviewSchema');
 // render product detail view page
 const productView = async (req, res) => {
 
-    
+
     // product id for product view
     const productID = req.params.id;
-    
+
     // product details of the selected product from product collection
     const product = await productSchema.findById(productID)
-    
 
-    const review=await reviewSchema.findOne({productID:product._id})
+    let oneStar = 0
+    let twoStar = 0
+    let threeStar = 0
+    let fourStar = 0
+    let fiveStar = 0
+    let review = await reviewSchema.findOne({ productID: product._id }).populate('reviews.userID')
+    if (review) {
+        review.reviews.forEach((ele) => {
+            if (ele.star === 1) {
+                oneStar++
+            }
+            if (ele.star === 2) {
+                twoStar++
+            }
+            if (ele.star === 3) {
+                threeStar++
+            }
+            if (ele.star === 4) {
+                fourStar++
+            }
+            if (ele.star === 5) {
+                fiveStar++
+            }
+        })
+    }
+
+    console.log("🚀 ~ file: productController.js:20 ~ productView ~ review:", review);
 
 
     // find the product within same category
@@ -47,7 +72,19 @@ const productView = async (req, res) => {
         return res.redirect('/user/home')
     }
 
-    res.render('user/productDetail', { title: product.productBrand, product, similarProducts, itemInCart, alertMessage: req.flash('errorMessage'), user: req.session.user })
+    res.render('user/productDetail', {
+        title: product.productBrand,
+        product,
+        similarProducts,
+        itemInCart,
+        review,
+        oneStar,
+        twoStar,
+        threeStar,
+        fourStar,
+        fiveStar,
+        alertMessage: req.flash('errorMessage'), user: req.session.user
+    })
 
 }
 

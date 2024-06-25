@@ -1,13 +1,15 @@
 const productSchema = require('../../model/productSchema')
 const categorySchema = require('../../model/categorySchema')
 const cartSchema = require('../../model/cartSchema')
-const reviewSchema=require('../../model/reviewSchema')
-const wishlistSchema=require('../../model/wishlistSchema')
+const reviewSchema = require('../../model/reviewSchema')
+const wishlistSchema = require('../../model/wishlistSchema')
 
 
 // render the home page using with products and categories
 const home = async (req, res) => {
     try {
+
+
         // Find all active categories
         const categories = await categorySchema.find({ isActive: true });
 
@@ -52,6 +54,31 @@ const home = async (req, res) => {
             .skip(currentPage * productsPerPage)
             .limit(productsPerPage);
 
+            // const products = await productSchema.aggregate([
+            //     {
+            //         $match: productQuery
+            //     },
+            //     {
+            //         $lookup: {
+            //             from: "reviews",
+            //             localField: "_id",
+            //             foreignField: "productID",
+            //             as: "review"
+            //         }
+            //     },
+            //     {
+            //         $sort: sortOption
+            //     },
+            //     {
+            //         $skip: currentPage * productsPerPage
+            //     },
+            //     {
+            //         $limit: productsPerPage
+            //     }
+            // ]);
+
+            
+            
         // Count the total number of products matching the query
         const productsCount = await productSchema.countDocuments(productQuery);
 
@@ -68,7 +95,6 @@ const home = async (req, res) => {
 
     } catch (err) {
         console.error(`Error rendering home page: ${err}`);
-        res.status(500).json("Internal Server Error");
     }
 };
 

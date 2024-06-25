@@ -171,6 +171,7 @@ const addReview = async (req, res) => {
         const productID = req.params.productID;
         const rating = parseInt(req.body.rating);
         const reviewFeedback = req.body.reviewFeedback;
+        const userDetails=await userSchema.findById(req.session.user)
 
         // Check if rating is a valid number
         if (isNaN(rating)) {
@@ -205,7 +206,7 @@ const addReview = async (req, res) => {
 
             // If user hasn't reviewed, add a new review
             if (!userReviewed) {
-                review.reviews.push({ userID: req.session.user, description: reviewFeedback, star: rating });
+                review.reviews.push({ userID: userDetails._id, description: reviewFeedback, star: rating });
             }
 
             // Calculate average rating
@@ -223,7 +224,7 @@ const addReview = async (req, res) => {
             // If no review exists, create a new one
             const newReview = new reviewSchema({
                 productID: productObjectId,
-                reviews: [{ userID: req.session.user, description: reviewFeedback, star: rating }],
+                reviews: [{ userID: userDetails._id, description: reviewFeedback, star: rating }],
                 rating: rating  // Initial rating for the new review
             });
 
