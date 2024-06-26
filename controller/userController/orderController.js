@@ -137,35 +137,35 @@ const returnOrderPost = async (req, res) => {
 
         // update the order details as cancelled orders
         const orderDetails = await orderSchema.findByIdAndUpdate(orderID, {
-            orderStatus: "Returned",
-            isCancelled: true,
+            orderStatus: "Pending-Returned",
+            reasonForCancel:req.body.returnReason
         });
 
-        // if the order is other than COD then add the payment to the wallet
-        if (orderDetails.paymentMethod != "Cash on delivery") {
-            // check if user has a wallet before
-            const wallet = await walletSchema.findOne({ userID: req.session.user });
+        // // if the order is other than COD then add the payment to the wallet
+        // if (orderDetails.paymentMethod != "Cash on delivery") {
+        //     // check if user has a wallet before
+        //     const wallet = await walletSchema.findOne({ userID: req.session.user });
 
-            // if the user has a wallet then update the balance
-            if (wallet) {
-                wallet.balance += orderDetails.totalPrice;
-                wallet.orderID.push(orderDetails._id);
+        //     // if the user has a wallet then update the balance
+        //     if (wallet) {
+        //         wallet.balance += orderDetails.totalPrice;
+        //         wallet.orderID.push(orderDetails._id);
 
-                // save the changes
-                await wallet.save();
-            } else {
-                // if the user didn't have a wallet then create a new one
-                const newWallet = new walletSchema({
-                    userID: req.session.user,
-                    balance: orderDetails.totalPrice,
-                    orderID: orderDetails._id,
-                });
+        //         // save the changes
+        //         await wallet.save();
+        //     } else {
+        //         // if the user didn't have a wallet then create a new one
+        //         const newWallet = new walletSchema({
+        //             userID: req.session.user,
+        //             balance: orderDetails.totalPrice,
+        //             orderID: orderDetails._id,
+        //         });
 
-                // save the new wallet
-                await newWallet.save();
-            }
-            // const userDetails = await userSchema.findByIdAndUpdate(req.session.user, { $inc: { wallet: orderDetails.totalPrice } })
-        }
+        //         // save the new wallet
+        //         await newWallet.save();
+        //     }
+        //     // const userDetails = await userSchema.findByIdAndUpdate(req.session.user, { $inc: { wallet: orderDetails.totalPrice } })
+        // }
 
         if (orderDetails) {
             req.flash(

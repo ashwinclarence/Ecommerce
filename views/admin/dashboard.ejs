@@ -262,7 +262,7 @@
             });
 
           // change the badge color of order status
-          const orderStatusBadge = document.querySelectorAll('.badge')
+         const orderStatusBadge = document.querySelectorAll('.badge')
             orderStatusBadge.forEach((badge) => {
                 if (badge.innerHTML.trim().toLocaleLowerCase() === "cancelled") {
                     badge.classList.add('bg-danger')
@@ -283,8 +283,10 @@
                 if (badge.innerHTML.trim().toLocaleLowerCase() === "shipping") {
                     badge.classList.add('bg-info')
                 }
+                if (badge.innerHTML.trim().toLocaleLowerCase() === "pending-returned") {
+                    badge.classList.add('bg-secondary')
+                }
             })
-
             // select the predefined dates
             document.addEventListener("DOMContentLoaded", function () {
                 const reportSelect = document.getElementById('report-select');

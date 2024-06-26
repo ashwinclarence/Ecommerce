@@ -59,7 +59,9 @@ admin.delete('/delete-product/:id',checkAdminSession,productController.productDe
 // order management 
 admin.get('/orders',checkAdminSession, orderController.order);
 admin.get('/view-order/:orderID',checkAdminSession,orderController.viewOrder)
-admin.post('/edit-order-status/:orderID',checkAdminSession,orderController.editOrder)
+admin.post('/edit-order-status/:orderID', checkAdminSession, orderController.editOrder)
+admin.put('/allow-return/:orderID',checkAdminSession,orderController.allowReturnOrder)
+admin.put('/reject-return/:orderID',checkAdminSession,orderController.rejectReturnOrder)
 
 // coupon
 admin.get('/coupons',checkAdminSession, couponController.coupons);
