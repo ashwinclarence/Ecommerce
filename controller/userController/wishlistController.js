@@ -4,25 +4,21 @@ const wishlistSchema = require('../../model/wishlistSchema')
 
 
 
-const wishlist =async  (req, res) => {
+const wishlist = async (req, res) => {
 
     try {
 
         // find the wishlist items
-        const wishlist=await wishlistSchema.findOne({userID:req.session.user}).populate('products.productID')
+        const wishlist = await wishlistSchema.findOne({ userID: req.session.user }).populate('products.productID')
 
-        if(wishlist){
+        if (wishlist) {
             // sort the wishlist based on date of added
-        wishlist.products.sort((a,b)=>b.createdAt-a.createdAt)
-        res.render('user/wishlist', { title: "Wishlist",products:wishlist.products, alertMessage: req.flash('errorMessage'), user: req.session.user })
-    }else{
-            res.render('user/wishlist', { title: "Wishlist",products:[], alertMessage: req.flash('errorMessage'), user: req.session.user })
+            wishlist.products.sort((a, b) => b.createdAt - a.createdAt)
+            res.render('user/wishlist', { title: "Wishlist", products: wishlist.products, alertMessage: req.flash('errorMessage'), user: req.session.user })
+        } else {
+            res.render('user/wishlist', { title: "Wishlist", products: [], alertMessage: req.flash('errorMessage'), user: req.session.user })
 
         }
-
-        
-
-
     } catch (err) {
         console.log(`Error on rendering the wishlist ${err}`)
     }
@@ -75,32 +71,32 @@ const addWishlist = async (req, res) => {
 
 
 
-const removeWishlist=async (req,res)=>{
+const removeWishlist = async (req, res) => {
     try {
 
-        const productID=req.params.id;
+        const productID = req.params.id;
 
-        const wishlist=await wishlistSchema.findOne({userID:req.session.user}).populate('products.productID')
+        const wishlist = await wishlistSchema.findOne({ userID: req.session.user }).populate('products.productID')
 
-        if(wishlist===null){
-            return res.status(404).json({error:"Product not found in wishlist"})
+        if (wishlist === null) {
+            return res.status(404).json({ error: "Product not found in wishlist" })
         }
 
-        const newWishList=wishlist.products.filter((ele)=>{
-            if(ele.productID.id!=productID){
+        const newWishList = wishlist.products.filter((ele) => {
+            if (ele.productID.id != productID) {
                 return ele
             }
         })
 
-        wishlist.products=newWishList
+        wishlist.products = newWishList
 
         await wishlist.save()
 
-        return res.status(200).json({message:"Product removed from wishlist"})
-        
+        return res.status(200).json({ message: "Product removed from wishlist" })
+
     } catch (err) {
         console.log(`Error on removing the products from wishlist ${err}`)
-        return res.status(404).json({error:"Error on removing the products from wishlist"})
+        return res.status(404).json({ error: "Error on removing the products from wishlist" })
     }
 }
 

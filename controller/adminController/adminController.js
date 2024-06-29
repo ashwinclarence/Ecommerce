@@ -173,7 +173,7 @@ const dashboard = async (req, res) => {
     } catch (err) {
         console.log(`Error during admin dashboard render ${err}`);
         // Handle error response
-        res.status(500).send('Internal Server Error');
+        res.status(500).json('Internal Server Error');
     }
 }
 

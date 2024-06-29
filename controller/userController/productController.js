@@ -41,9 +41,6 @@ const productView = async (req, res) => {
         })
     }
 
-    console.log("🚀 ~ file: productController.js:20 ~ productView ~ review:", review);
-
-
     // find the product within same category
     const similarProducts = await productSchema.find({ productCategory: product.productCategory, _id: { $ne: productID } })
 
