@@ -13,11 +13,11 @@ async function checkUserSession(req, res, next) {
                 next();
             } else {
                 req.session.user = ""
-                res.redirect('/user/login')
+                res.redirect('/login')
             }
         } else {
             // if user does not exist then redirect to login
-            res.redirect('/user/login')
+            res.redirect('/login')
         }
 
 

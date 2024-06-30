@@ -11,7 +11,7 @@ require('../../services/auth')
 // user router if session 
 const user = (req, res) => {
     try {
-        res.redirect('/user/home')
+        res.redirect('/home')
     } catch (err) {
         console.log(`Error during user page routing ${err}`);
     }
@@ -21,7 +21,7 @@ const user = (req, res) => {
 const signup = (req, res) => {
     try {
         if (req.session.user) {
-            res.redirect('/user/home')
+            res.redirect('/home')
         } else {
             res.render('user/register', { title: "Signup", alertMessage: req.flash('errorMessage'), user: req.session.user })
         }
@@ -50,7 +50,7 @@ const signupPost = async (req, res) => {
         // if user with same email id exist then render the register page with error message
         if (userExist) {
             req.flash('errorMessage', 'An account with this email address already exists. Please try using a different email address.')
-            res.redirect('/user/signup')
+            res.redirect('/signup')
         } else {
 
             // generate otp from services/generateOTP.js file
@@ -72,7 +72,7 @@ const signupPost = async (req, res) => {
             req.session.phone = registerDetails.phone
 
             // redirect to the otp page for validation
-            res.redirect('/user/otp')
+            res.redirect('/otp')
 
         }
     } catch (err) {
@@ -87,7 +87,7 @@ const signupPost = async (req, res) => {
 
 const login = (req, res) => {
     if (req.session.user) {
-        res.redirect('/user/home')
+        res.redirect('/home')
     } else {
         res.render('user/login', { title: 'Login', alertMessage: req.flash('errorMessage'), user: req.session.user })
     }
@@ -105,7 +105,7 @@ const loginPost = async (req, res) => {
         if (checkUser != null) {
             if (checkUser.isBlocked) {
                 req.flash('errorMessage', 'Access to this account has been restricted. Please reach out to the administrator for further assistance and guidance on the next steps.')
-                res.redirect('/user/login')
+                res.redirect('/login')
             } else {
                 // check the entered password in login form and data stored in user collection is same
                 const mongoPassword = await bcrypt.compare(req.body.password, checkUser.password)
@@ -113,17 +113,17 @@ const loginPost = async (req, res) => {
                 // if the user entered password and password in the collection is same then redirect to home page with session
                 if (checkUser && mongoPassword) {
                     req.session.user = checkUser.id //user section is created
-                    res.redirect('/user/home')
+                    res.redirect('/home')
                 } else {
                     req.flash("errorMessage", "Invalid username or password")
-                    res.redirect('/user/login')
+                    res.redirect('/login')
                 }
             }
 
 
         } else {
             req.flash("errorMessage", `We couldn't find your user details. Please proceed with registration to access our services.`)
-            res.redirect('/user/login')
+            res.redirect('/login')
         }
 
 
@@ -142,7 +142,7 @@ const otp = (req, res) => {
 
     } catch (err) {
         console.log(`Error occurred during otp verification ${err}`)
-        // res.redirect('/user/signup')
+        // res.redirect('/signup')
     }
 }
 
@@ -165,19 +165,19 @@ const otpPost = async (req, res) => {
                 await userSchema.insertMany(registerDetails).then(() => {
                     console.log('New user registration successful')
                     req.flash('errorMessage', 'user registration successful');
-                    res.redirect('/user/login')
+                    res.redirect('/login')
                 }).catch((err) => {
                     console.log(`Error occurred while user registration ${err}`);
                 })
             } else {
                 req.flash('errorMessage', 'It appears the OTP you entered is invalid. Please ensure you enter the OTP correctly.')
-                res.redirect('/user/OTP')
+                res.redirect('/OTP')
             }
 
             // if otp is not in the session an alert message is displayed
         } else {
             req.flash('errorMessage', 'An error occurred during OTP generation, please kindly retry.')
-            res.redirect('/user/register')
+            res.redirect('/register')
         }
 
 
@@ -207,7 +207,7 @@ const otpResend = (req, res) => {
 
         // redirect to the otp page for validation
         req.flash('errorMessage', "OTP re-sended successfully")
-        res.redirect('/user/otp')
+        res.redirect('/otp')
 
 
     } catch (err) {
@@ -228,7 +228,7 @@ const logout = (req, res) => {
             if (err) {
                 console.log(err);
             } else {
-                res.redirect('/user/login')
+                res.redirect('/login')
             }
         })
     } catch (err) {
@@ -259,7 +259,7 @@ const googleAuthCallback = (req, res, next) => {
                 return next(err);
             }
             if (!user) {
-                return res.redirect('/user/login');
+                return res.redirect('/login');
             }
             req.logIn(user, (err) => {
                 if (err) {
@@ -267,7 +267,7 @@ const googleAuthCallback = (req, res, next) => {
                 }
                 // Store the user ID in the session
                 req.session.user = user.id;
-                return res.redirect('/user/home');
+                return res.redirect('/home');
             });
         })(req, res, next);
     } catch (err) {

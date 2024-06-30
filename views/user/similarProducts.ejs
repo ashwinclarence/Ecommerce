@@ -74,7 +74,7 @@
     <!-- this will render each product on the product collection which is not blocked -->
     <% similarProducts.forEach((product)=>{ %>
         <!-- this is the product container and when it is clicked it redirect to product detail page -->
-        <a href="/user/product-view/<%= product.id %>" class="product-box">
+        <a href="/product-view/<%= product.id %>" class="product-box">
 
             <!-- if product discount is available then it is shown as a banner in product top  -->
             <% if(product.productDiscount!=0){ %>

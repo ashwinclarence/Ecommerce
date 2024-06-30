@@ -171,7 +171,7 @@
                                     </h6>
                                 </div>
                                 <!-- product description with text overflow as ... -->
-                                <a href="/user/product-view/<%= product.productID.id %>" class="product-description-box">
+                                <a href="/product-view/<%= product.productID.id %>" class="product-description-box">
                                     <h6 class="product-text-row">
                                         <%= product.productID.productBrand %>
                                     </h6>
@@ -212,7 +212,7 @@
     // fetch to add products to cart from wish list 
     function addToCart(productsId,price){
         
-        const URL=`/user/add-to-cart/${productsId}/?price=${price}`
+        const URL=`/add-to-cart/${productsId}/?price=${price}`
 
         fetch(URL,{
             method:"POST"
@@ -251,7 +251,7 @@
 
     // fetch to remove elements from wishlist 
     function removeWishlist(productID){
-        const URL=`/user/remove-wishlist/${productID}`
+        const URL=`/remove-wishlist/${productID}`
         fetch(URL,{
             method:'get',
         }).then((Response)=>{

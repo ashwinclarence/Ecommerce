@@ -117,13 +117,13 @@ const cancelledOrderPost = async (req, res) => {
                 "errorMessage",
                 "Your order has been successfully cancelled. If you need any assistance, please contact our customer support team. Thank you."
             );
-            res.redirect("/user/cancelled-orders");
+            res.redirect("/cancelled-orders");
         } else {
             req.flash(
                 "errorMessage",
                 "We apologize, but your product is not eligible for cancel at this time. If you have any questions or need further assistance, please contact our customer support team"
             );
-            res.redirect("/user/orders");
+            res.redirect("/orders");
         }
     } catch (err) {
         console.log(`Error on cancelling the order POST ${err}`);
@@ -172,13 +172,13 @@ const returnOrderPost = async (req, res) => {
                 "errorMessage",
                 "Your order has been successfully return. If you need any assistance, please contact our customer support team. Thank you."
             );
-            res.redirect("/user/cancelled-orders");
+            res.redirect("/cancelled-orders");
         } else {
             req.flash(
                 "errorMessage",
                 "We apologize, but your product is not eligible for return at this time. If you have any questions or need further assistance, please contact our customer support team"
             );
-            res.redirect("/user/orders");
+            res.redirect("/orders");
         }
     } catch (err) {
         console.log(`Error on returning the order POST ${err}`);

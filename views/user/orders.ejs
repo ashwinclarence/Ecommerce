@@ -129,13 +129,13 @@
     <div class="container mt-5">
         <nav class="nav nav-borders mb-5">
 
-            <a href="/user/home" class="nav-link  ms-0 "><i class="fa-solid fa-house"></i>
+            <a href="/home" class="nav-link  ms-0 "><i class="fa-solid fa-house"></i>
                 Home</a>
-            <a href="/user/profile" class="nav-link  ms-4 "><i class="fa-solid fa-user"></i>
+            <a href="/profile" class="nav-link  ms-4 "><i class="fa-solid fa-user"></i>
                 Profile</a>
-            <a href="/user/orders" class="nav-link ms-4 active"><i class="fa-solid fa-truck-moving"></i> Orders</a>
-            <a href="/user/cancelled-orders" class="nav-link ms-4"><i class="fa-solid fa-ban"></i> Cancelled Orders</a>
-            <a href="/user/wallet" class="nav-link ms-4"><i class="fa-solid fa-wallet"></i> Wallet</a>
+            <a href="/orders" class="nav-link ms-4 active"><i class="fa-solid fa-truck-moving"></i> Orders</a>
+            <a href="/cancelled-orders" class="nav-link ms-4"><i class="fa-solid fa-ban"></i> Cancelled Orders</a>
+            <a href="/wallet" class="nav-link ms-4"><i class="fa-solid fa-wallet"></i> Wallet</a>
 
         </nav>
         <div class="row">
@@ -195,7 +195,7 @@
                                                         <%= product.brand %>
                                                     </h5>
                                                     <h5 class="text-truncate font-size-18"><a
-                                                            href="/user/product-view/<%= product.productID.id %>"
+                                                            href="/product-view/<%= product.productID.id %>"
                                                             class="text-dark" title="<%= product.productName %>">
                                                             <%= product.productName %>
                                                         </a></h5>
@@ -322,7 +322,7 @@
                                                             <%= product.brand %>
                                                         </h5>
                                                         <h5 class="text-truncate font-size-18"><a
-                                                                href="/user/product-view/<%= product.productID.id %>"
+                                                                href="/product-view/<%= product.productID.id %>"
                                                                 class="text-dark" title="<%= product.productName %>">
                                                                 <%= product.productName %>
                                                             </a></h5>
@@ -370,7 +370,7 @@
             <div class="modal-content">
                 <div class="modal-body p-5">
                     <h2 class="text-center mb-5">Reason for cancelling</h2>
-                    <form action="/user/cancel-order/" method="post" id="cancel-order-form">
+                    <form action="/cancel-order/" method="post" id="cancel-order-form">
                         <div class="form-group">
                             <textarea class="form-control" id="reason-for-cancel" rows="5" name="cancelReason"
                                 placeholder="please provide the reason for cancelling the order"></textarea>
@@ -393,7 +393,7 @@
             <div class="modal-content">
                 <div class="modal-body p-5">
                     <h2 class="text-center mb-5">Reason for Returning the Order</h2>
-                    <form action="/user/return-order/" method="post" id="return-order-form">
+                    <form action="/return-order/" method="post" id="return-order-form">
                         <div class="form-group">
                             <textarea class="form-control" id="reason-for-cancel" rows="5" name="returnReason"
                                 placeholder="please provide the reason for returning the order"></textarea>
@@ -465,7 +465,7 @@
                         const myModal = new bootstrap.Modal(document.getElementById('cancelOrderModal'));
                         myModal.show();
 
-                        cancelOrderForm.action = `/user/cancel-order/${orderID}`
+                        cancelOrderForm.action = `/cancel-order/${orderID}`
 
 
                     }
@@ -491,7 +491,7 @@
                         const myModal = new bootstrap.Modal(document.getElementById('returnOrderModal'));
                         myModal.show();
 
-                        returnOrderForm.action = `/user/return-order/${orderID}`
+                        returnOrderForm.action = `/return-order/${orderID}`
 
 
                     }
@@ -518,7 +518,7 @@
                 // Open the modal for adding a review
                 const myModal = new bootstrap.Modal(document.getElementById('add-review-modal'));
                 document.getElementById('review-product-name').innerHTML = productName;
-                document.getElementById('add-review-form').action = `/user/add-review/${productID}`;
+                document.getElementById('add-review-form').action = `/add-review/${productID}`;
                 myModal.show();
             }
 
@@ -591,7 +591,7 @@
 
             // download the invoice
             function downloadInvoice(orderID) {
-                const URL = `/user/invoice/${orderID}`
+                const URL = `/invoice/${orderID}`
                 fetch(URL, {
                     method: "POST",
                     headers: {
@@ -627,7 +627,7 @@
                     showCancelButton: true,
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        fetch(`/user/remove-order/${orderID}`, {
+                        fetch(`/remove-order/${orderID}`, {
                             method: "DELETE",
                             headers: {
                                 'Content-Type': "application/json"
@@ -673,7 +673,7 @@
                     showCancelButton: true,
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        const URL = `/user/proceed-payment/${orderID}`;
+                        const URL = `/proceed-payment/${orderID}`;
 
                         fetch(URL, {
                             method: "POST",

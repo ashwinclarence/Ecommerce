@@ -10,7 +10,7 @@ const profileView = async (req, res) => {
         // if user data is not available by any chance then redirect to home page with an alert message
         if (!userDetail) {
             req.flash('errorMessage', 'Apologies, we encountered an issue while loading the user data. Please try again later.')
-            return res.redirect('/user/home')
+            return res.redirect('/home')
         }
         res.render('user/profile', { title: "Profile", alertMessage: req.flash('errorMessage'), user: req.session.user, userDetail })
 
@@ -36,7 +36,7 @@ const updateProfile = async (req, res) => {
         } else {
             req.flash("errorMessage", 'Error during updating the user profile please try again')
         }
-        res.redirect("/user/profile")
+        res.redirect("/profile")
 
     } catch (err) {
         console.log(`Error during updating the user profile ${err}`);
@@ -64,7 +64,7 @@ const addAddress = async (req, res) => {
         // if maximum address size reached then redirect to login page
         if (user.address.length > 3) {
             req.flash("errorMessage", "Maximum Address limit Reached")
-            return res.redirect('/user/profile')
+            return res.redirect('/profile')
         }
 
 
@@ -74,7 +74,7 @@ const addAddress = async (req, res) => {
         await user.save();
 
         req.flash('errorMessage', "Address added")
-        res.redirect('/user/profile')
+        res.redirect('/profile')
 
     } catch (err) {
         console.log(`Error adding new address in collection ${err}`);
@@ -102,7 +102,7 @@ const editAddressPost = async (req, res) => {
         await user.save();
 
         req.flash('errorMessage', 'user address edited')
-        res.redirect('/user/profile')
+        res.redirect('/profile')
 
     } catch (err) {
         console.log(`Error during editing address in collection in post request ${err}`);

@@ -84,10 +84,10 @@
         aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content p-5">
-                <form id="update-profile-form" action="/user/update-profile" method="post">
+                <form id="update-profile-form" action="/update-profile" method="post">
                     <h2 class="text-center">Update Profile</h2>
                     <!-- <div class="profile-image-box">
-                            <img src="../../image/user.png" alt="Profile Image" id="profile-image-preview-img">
+                            <img src="../../image.png" alt="Profile Image" id="profile-image-preview-img">
                         </div> -->
                     <div>
                         <label for="profileName" class="form-label">Name</label>
@@ -121,13 +121,13 @@
     <div class="container-xl px-4 mt-5">
         <nav class="nav nav-borders mb-5">
 
-            <a href="/user/home" class="nav-link  ms-0 "><i class="fa-solid fa-house"></i>
+            <a href="/home" class="nav-link  ms-0 "><i class="fa-solid fa-house"></i>
                 Home</a>
             <a href="#" class="nav-link active ms-4 "><i class="fa-solid fa-user"></i>
                 Profile</a>
-            <a href="/user/orders" class="nav-link ms-4"><i class="fa-solid fa-truck-moving"></i> Orders</a>
-            <a href="/user/cancelled-orders" class="nav-link ms-4"><i class="fa-solid fa-ban"></i> Cancelled Orders</a>
-            <a href="/user/wallet" class="nav-link ms-4"><i class="fa-solid fa-wallet"></i> Wallet</a>
+            <a href="/orders" class="nav-link ms-4"><i class="fa-solid fa-truck-moving"></i> Orders</a>
+            <a href="/cancelled-orders" class="nav-link ms-4"><i class="fa-solid fa-ban"></i> Cancelled Orders</a>
+            <a href="/wallet" class="nav-link ms-4"><i class="fa-solid fa-wallet"></i> Wallet</a>
 
         </nav>
         <div class="row">
@@ -153,10 +153,10 @@
                             </h6>
                             <button type="button" class="btn btn-warning" data-bs-toggle="modal"
                                 data-bs-target=".bd-example-modal-lg">Update Profile</button>
-                            <a href="/user/forget-password" class="btn btn-secondary" id="reset-password"><i
+                            <a href="/forget-password" class="btn btn-secondary" id="reset-password"><i
                                     class="fa-solid fa-shield-halved"></i> Forget
                                 Password</a>
-                            <a href="/user/logout" class="btn btn-danger"><i class="fa-solid fa-power-off"></i>
+                            <a href="/logout" class="btn btn-danger"><i class="fa-solid fa-power-off"></i>
                                 Logout</a>
                         </div>
 
@@ -246,7 +246,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content ">
                 <div class="modal-body p-5">
-                    <form action="/user/add-address" method="post" id="add-address-form">
+                    <form action="/add-address" method="post" id="add-address-form">
                         <h2 class="text-center">Add Address</h2>
                         <div>
                             <label for="contact-name" class="form-label">Contact user name</label>
@@ -299,7 +299,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content ">
                 <div class="modal-body">
-                    <form action="/user/edit-address-checkout" method="post" id="edit-address-form">
+                    <form action="/edit-address-checkout" method="post" id="edit-address-form">
                         <h2 class="text-center">Edit Address</h2>
                         <div>
                             <label for="contact-name" class="form-label">Contact user name</label>
@@ -455,7 +455,7 @@
                     showCancelButton: true,
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        const URL = `/user/delete-address/${index}`
+                        const URL = `/delete-address/${index}`
                         fetch(URL, {
                             method: "DELETE",
                             headers: {
@@ -559,7 +559,7 @@
                     addressIndexEdit.value = parseInt(addressIndex)
 
                     // change the edit address form action
-                    editAddressForm.setAttribute('action', `/user/edit-address-profile/${parseInt(addressIndex)}`)
+                    editAddressForm.setAttribute('action', `/edit-address-profile/${parseInt(addressIndex)}`)
                 });
             });
 

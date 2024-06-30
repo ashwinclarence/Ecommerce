@@ -193,7 +193,7 @@
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content ">
                             <div class="modal-body">
-                                <form action="/user/add-address-checkout" method="post" id="add-address-form">
+                                <form action="/add-address-checkout" method="post" id="add-address-form">
                                     <h2 class="text-center">Add Address</h2>
                                     <div class="add-address-box">
                                         <label for="contact-name">Contact user name</label>
@@ -244,7 +244,7 @@
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content ">
                             <div class="modal-body">
-                                <form action="/user/edit-address-checkout" method="post" id="edit-address-form">
+                                <form action="/edit-address-checkout" method="post" id="edit-address-form">
                                     <h2 class="text-center">Edit Address</h2>
                                     <div class="add-address-box">
                                         <label for="contact-name">Contact user name</label>
@@ -483,7 +483,7 @@
                                             data-phone="<%= user.phone %>" id="place-order-btn">Place
                                             order</button>
                                     </form>
-                                    <a href="/user/cart" class="btn btn-secondary w-100 mt-2">Go
+                                    <a href="/cart" class="btn btn-secondary w-100 mt-2">Go
                                         Back</a>
                     </div>
                 </div>
@@ -569,7 +569,7 @@
 
                 // if the user select the payment as razor pay and a valid address
                 if (validated && paymentMode === 1) {
-                    const URL = `/user/payment-render/${totalAmount}`;
+                    const URL = `/payment-render/${totalAmount}`;
 
                     // fetch for order placement 
                     fetch(URL, {
@@ -590,7 +590,7 @@
                                 "currency": "INR",
                                 "name": "CLEAT CRAFT",
                                 "order_id": data.orderID,
-                                "callback_url": `http://localhost:4000/user/place-order/${addressIndex}/${paymentMode}`,
+                                "callback_url": `http://localhost:4000/place-order/${addressIndex}/${paymentMode}`,
                                 "prefill": {
                                     "name": username,
                                     "email": email,
@@ -605,7 +605,7 @@
                                 // "modal": {
                                 //     "ondismiss": function () {
                                 //         console.log("failed");
-                                //         window.location.href = `/user/failed-payment`
+                                //         window.location.href = `/failed-payment`
                                 //     }
                                 // }
 
@@ -613,7 +613,7 @@
 
                             const rzp1 = new Razorpay(options);
                             rzp1.on('payment.failed', function (response) {
-                                window.location.href = `/user/pending-order`
+                                window.location.href = `/pending-order`
                             });
                             rzp1.open();
                             e.preventDefault()
@@ -637,7 +637,7 @@
                 const orderPlacementForm = document.getElementById('place-order-form')
                 // if the user select the payment as cash on delivery
                 if (validated && paymentMode === 0) {
-                    const URL = `/user/place-order/${addressIndex}/${paymentMode}`
+                    const URL = `/place-order/${addressIndex}/${paymentMode}`
                     orderPlacementForm.action = URL
                     orderPlacementForm.submit()
                 }
@@ -647,7 +647,7 @@
                 // end of fetch for order placing using cash on delivery
                 // if the user select the payment as cash on delivery
                 if (validated && paymentMode === 2) {
-                    const URL = `/user/place-order/${addressIndex}/${paymentMode}`
+                    const URL = `/place-order/${addressIndex}/${paymentMode}`
                     orderPlacementForm.action = URL
                     orderPlacementForm.submit()
                 }
@@ -658,7 +658,7 @@
 
             // delete address
             function deleteAddress(index) {
-                const URL = `/user/delete-address/${index}`
+                const URL = `/delete-address/${index}`
 
                 Swal.fire({
                     icon: "question",
@@ -790,7 +790,7 @@
                     addressIndexEdit.value = parseInt(addressIndex)
 
                     // change the edit address form action
-                    editAddressForm.setAttribute('action', `/user/edit-address-checkout/${parseInt(addressIndex)}`)
+                    editAddressForm.setAttribute('action', `/edit-address-checkout/${parseInt(addressIndex)}`)
                 });
             });
 

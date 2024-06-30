@@ -161,7 +161,7 @@
                 // fetch to add products to cart from wish list 
                 function addToCart(productsId, price) {
 
-                    const URL = `/user/add-to-cart/${productsId}/?price=${price}`
+                    const URL = `/add-to-cart/${productsId}/?price=${price}`
 
                     fetch(URL, {
                         method: "POST"
@@ -183,7 +183,7 @@
                             console.log(data.error);
                         }
                     }).catch((err) => {
-                        window.location.href = "/user/login"
+                        window.location.href = "/login"
                         console.log(`Error on adding product to cart ${err}`);
                     })
                 }

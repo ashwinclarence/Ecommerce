@@ -80,22 +80,12 @@ app.set('views', path.join(__dirname, 'views'));
 
 // First Route
 app.get('/', (req, res) => {
-
-    // if(req.session && req.session.admin){
-    //     res.redirect('/admin/dashboard')
-    // }else{
-    //     if(req.session.user){
-    //         res.redirect('/user/home')
-    //     }else{
-    //         res.redirect('/user/login');
-    //     }
-    // }
-    res.redirect('/user/home')
+    res.redirect('/home')
 });
 
 
 // Routes
-app.use('/user', userRoutes);
+app.use('/', userRoutes);
 app.use('/admin', adminRoutes);
 
 // page to render for those un-described routes

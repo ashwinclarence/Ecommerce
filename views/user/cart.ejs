@@ -173,7 +173,7 @@
                                                     <%= items.productID.productBrand %>
                                                 </h5>
                                                 <h5 class="text-truncate font-size-18"><a
-                                                        href="/user/product-view/<%= items.productID.id %>"
+                                                        href="/product-view/<%= items.productID.id %>"
                                                         class="text-dark">
                                                         <%= items.productID.productName %>
                                                     </a></h5>
@@ -397,12 +397,12 @@
                         </div>
                         <div class="row my-4">
                             <div class="col-sm-6">
-                                <a href="/user/home" class="btn btn-link text-muted">
+                                <a href="/home" class="btn btn-link text-muted">
                                     <i class="mdi mdi-arrow-left me-1"></i> Continue Shopping </a>
                             </div> <!-- end col -->
                             <div class="col-sm-6">
                                 <div class="text-sm-end mt-2 mt-sm-0">
-                                    <a href="/user/proceed-checkout" class="btn btn-success">
+                                    <a href="/proceed-checkout" class="btn btn-success">
                                         <i class="mdi mdi-cart-outline me-1"></i> Checkout </a>
                                 </div>
                             </div> <!-- end col -->
@@ -418,7 +418,7 @@
 
         <% }else{ %>
             <div class="empty-cart-container">
-                <a href="/user/home" class="btn btn-primary">
+                <a href="/home" class="btn btn-primary">
                     <i class="mdi mdi-arrow-left me-1"></i> Continue Shopping </a>
             </div>
             <% } %>
@@ -451,7 +451,7 @@
 
 
                             if (productQualityInput[index].value >= 1 && productQualityInput[index].value < 10) {
-                                const URL = `/user/increment-product/${productID}`;
+                                const URL = `/increment-product/${productID}`;
                                 fetch(URL, {
                                     method: "PUT", headers:
                                         { "Content-Type": "application/json" }, body: JSON.stringify({
@@ -501,7 +501,7 @@
 
 
                             if (productQualityInput[index].value > 1) {
-                                const URL = `/user/decrement-product/${productID}`;
+                                const URL = `/decrement-product/${productID}`;
 
                                 fetch(URL, {
                                     method: "PUT",
@@ -540,7 +540,7 @@
                         function updateProductCount(productID, value) {
 
                             // url for the fetch request
-                            const URL = `/user/cart-count/${productID}/?productCount=${value}`;
+                            const URL = `/cart-count/${productID}/?productCount=${value}`;
 
                             // fetch request for updating product count in cart
                             fetch(URL, {
@@ -599,7 +599,7 @@
 
                                 // if confirmed then fire a fetch request
                                 if (result.isConfirmed) {
-                                    URL = `/user/remove-cart-product/${productID}`
+                                    URL = `/remove-cart-product/${productID}`
                                     fetch(URL, {
                                         method: 'DELETE',
                                         headers: {
@@ -638,7 +638,7 @@
                             e.preventDefault()
 
                             if (couponSelect.value) {
-                                const URL = `/user/get-coupon/${couponSelect.value}`
+                                const URL = `/get-coupon/${couponSelect.value}`
                                 fetch(URL, {
                                     method: "GET",
                                     headers: {
@@ -669,7 +669,7 @@
                         // remove coupon from cart
                         function removeCoupon() {
 
-                            const URL = "/user/remove-coupon"
+                            const URL = "/remove-coupon"
                             fetch(URL, {
                                 method: "DELETE",
                                 headers: {
@@ -705,7 +705,7 @@
                                 })
                             }
 
-                            const URL = `/user/apply-coupon/${couponSelect.value}`
+                            const URL = `/apply-coupon/${couponSelect.value}`
                             fetch(URL, {
                                 method: "POST",
                                 headers: {

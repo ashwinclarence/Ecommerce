@@ -23,7 +23,7 @@ const forgetPasswordPost = async (req, res) => {
 
         if(checkEmail.isBlocked){
             req.flash('errorMessage', 'Access to this account has been restricted. Please reach out to the administrator for further assistance and guidance on the next steps."')
-            return res.redirect('/user/login')
+            return res.redirect('/login')
         }
 
         // generate otp from services/generateOTP.js file
@@ -39,10 +39,10 @@ const forgetPasswordPost = async (req, res) => {
 
 
         if (checkEmail != "") {
-            res.redirect('/user/forget-password-otp')
+            res.redirect('/forget-password-otp')
         } else {
             req.flash('errorMessage', `We couldn't find your user details. Please proceed with registration to access our services.`);
-            res.redirect('/user/signup')
+            res.redirect('/signup')
         }
 
     } catch (err) {
@@ -54,7 +54,7 @@ const forgetPasswordPost = async (req, res) => {
 const forgetPasswordOtp = (req, res) => {
     try {
         if (req.session.user) {
-            res.redirect('/user/home')
+            res.redirect('/home')
         } else {
             res.render('user/forgetPasswordOTP', { title: "OTP", alertMessage: req.flash('errorMessage'), emailAddress: req.session.email, otpExpireTime: req.session.otpExpireTime,user:req.session.user })
         }
@@ -68,18 +68,18 @@ const forgetPasswordOtp = (req, res) => {
 const forgetPasswordOtpPost = async (req, res) => {
     try {
         if (req.session.user) {
-            res.redirect('/user/home')
+            res.redirect('/home')
         } else {
             if (req.session.otp !== undefined) {
                 if (req.body.otp === req.session.otp) {
                     res.render('user/newPassword', { title: "New Password", alertMessage: req.flash('errorMessage') ,user:req.session.user})
                 } else {
                     req.flash('errorMessage', 'Invalid OTP');
-                    res.redirect('/user/login')
+                    res.redirect('/login')
                 }
             } else {
                 req.flash('errorMessage', 'An error occurred during OTP validation, please kindly retry.')
-                res.redirect('/user/forget-password')
+                res.redirect('/forget-password')
             }
         }
 
@@ -102,19 +102,19 @@ const updatePassword = async (req, res) => {
 
                 if (confirmUpdate!='') {
                     req.flash('errorMessage', 'Password Updated Successfully')
-                    res.redirect('/user/login')
+                    res.redirect('/login')
                 } else {
                     req.flash('errorMessage', 'An error occurred during updating password, please kindly retry.')
-                    res.redirect('/user/login')
+                    res.redirect('/login')
                 }
             } else {
                 req.flash('errorMessage', 'Password do not match')
-                res.redirect('/user/login')
+                res.redirect('/login')
 
             }
         } else {
             req.flash('errorMessage', 'An error occurred during updating password, please kindly retry.')
-            res.redirect('/user/forget-password')
+            res.redirect('/forget-password')
         }
 
     } catch (err) {

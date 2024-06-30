@@ -166,7 +166,7 @@
                                         </h6> -->
                                     </div>
                                     <!-- product description with text overflow as ... -->
-                                    <a href="/user/product-view/<%= product._id %>" class="product-description-box">
+                                    <a href="/product-view/<%= product._id %>" class="product-description-box">
                                         <h6 class="product-text-row">
                                             <%= product.productBrand %>
                                         </h6>
@@ -217,7 +217,7 @@
     // fetch to add products to cart from wish list 
     function addToCart(productsId, price) {
 
-        const URL = `/user/add-to-cart/${productsId}/?price=${price}`
+        const URL = `/add-to-cart/${productsId}/?price=${price}`
 
         fetch(URL, {
             method: "POST",
@@ -245,7 +245,7 @@
                 console.log(data.error);
             }
         }).catch((err) => {
-            window.location.href="/user/login"
+            window.location.href="/login"
             console.log(`Error on adding product to cart ${err}`);
         })
     }
@@ -253,7 +253,7 @@
 
     // function to add product to wishlist
     function addToWishlist(productID) {
-        const URL = `/user/add-wishlist/${productID}`
+        const URL = `/add-wishlist/${productID}`
         fetch(URL, {
             method: 'POST',
             headers:{
@@ -279,7 +279,7 @@
                 notyf.error(data.error)
             }
         }).catch((err) => {
-            window.location.href="/user/login"
+            window.location.href="/login"
             console.log(err);
         })
     }

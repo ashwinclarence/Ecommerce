@@ -472,7 +472,7 @@ const proceedCheckout = async (req, res) => {
         // if the cart is empty then don't allow to checkout
         if (cart.payableAmount <= 0) {
             req.flash("errorMessage", 'Add some products in cart to proceed to checkout')
-            return res.redirect('/user/home')
+            return res.redirect('/home')
         }
         // check is there a need to add shipping charge
         if (cart.payableAmount < 500) {
@@ -486,7 +486,7 @@ const proceedCheckout = async (req, res) => {
             await cart.save()
         }
 
-        res.redirect('/user/checkout')
+        res.redirect('/checkout')
 
 
     } catch (err) {

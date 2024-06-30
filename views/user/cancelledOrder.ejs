@@ -64,14 +64,14 @@
     <div class="container mt-5">
         <nav class="nav nav-borders mb-5">
 
-            <a href="/user/home" class="nav-link  ms-0 "><i class="fa-solid fa-house"></i>
+            <a href="/home" class="nav-link  ms-0 "><i class="fa-solid fa-house"></i>
                 Home</a>
-            <a href="/user/profile" class="nav-link  ms-4 "><i class="fa-solid fa-user"></i>
+            <a href="/profile" class="nav-link  ms-4 "><i class="fa-solid fa-user"></i>
                 Profile</a>
-            <a href="/user/orders" class="nav-link ms-4 "><i class="fa-solid fa-truck-moving"></i> Orders</a>
-            <a href="/user/cancelled-orders" class="nav-link ms-4 active"><i class="fa-solid fa-ban"></i> Cancelled
+            <a href="/orders" class="nav-link ms-4 "><i class="fa-solid fa-truck-moving"></i> Orders</a>
+            <a href="/cancelled-orders" class="nav-link ms-4 active"><i class="fa-solid fa-ban"></i> Cancelled
                 Orders</a>
-                <a href="/user/wallet" class="nav-link ms-4"><i class="fa-solid fa-wallet"></i> Wallet</a>
+                <a href="/wallet" class="nav-link ms-4"><i class="fa-solid fa-wallet"></i> Wallet</a>
 
         </nav>
         <div class="row">
@@ -127,7 +127,7 @@
                                                     <%= product.brand %>
                                                 </h5>
                                                 <h5 class="text-truncate font-size-18">
-                                                    <a href="/user/product-view/<%= product.productID.id %>"
+                                                    <a href="/product-view/<%= product.productID.id %>"
                                                         class="text-dark">
                                                         <%= product.productName %>
                                                     </a></h5>
@@ -225,7 +225,7 @@
             <div class="modal-content">
                 <div class="modal-body p-5">
                     <h2 class="text-center mb-5">Reason for cancelling</h2>
-                    <form action="/user/cancel-order/" method="post" id="cancel-order-form">
+                    <form action="/cancel-order/" method="post" id="cancel-order-form">
                         <div class="form-group">
                             <textarea class="form-control" id="reason-for-cancel" rows="5" name="cancelReason"
                                 placeholder="please provide the reason for cancelling the order"></textarea>
@@ -264,7 +264,7 @@
                         const myModal = new bootstrap.Modal(document.getElementById('cancelOrderModal'));
                         myModal.show();
 
-                        cancelOrderForm.action = `/user/cancel-order/${orderID}`
+                        cancelOrderForm.action = `/cancel-order/${orderID}`
 
 
                     }
@@ -286,7 +286,7 @@
 
              // download the invoice
              function downloadInvoice(orderID) {
-                const URL = `/user/invoice/${orderID}`
+                const URL = `/invoice/${orderID}`
                 fetch(URL, {
                     method: "POST",
                     headers: {

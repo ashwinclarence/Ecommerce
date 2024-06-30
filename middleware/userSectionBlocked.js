@@ -14,7 +14,7 @@ async function checkUserBlocked(req, res, next) {
                 next()
             }else{
                 req.session.user=""
-                res.redirect('/user/login')
+                res.redirect('/login')
                 // if not blocked then moved to next route
             }
         }else{

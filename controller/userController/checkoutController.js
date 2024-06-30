@@ -55,7 +55,7 @@ const checkout = async (req, res) => {
         for (const item of cartDetails.items) {
             if (item.productID.productQuantity === 0 || item.productID.productQuantity < item.productCount) {
                 req.flash('errorMessage', 'The selected quantity for one or more items is not available. Please adjust your order and try again.');
-                return res.redirect('/user/cart');
+                return res.redirect('/cart');
             }
         }
 
@@ -173,7 +173,7 @@ const placeOrder = async (req, res) => {
             // check the payable amount is in the wallet
             if (wallet.balance < cartItems.payableAmount) {
                 req.flash("errorMessage", "Insufficient balance in the wallet please choose another payment option")
-                return res.redirect('/user/checkout')
+                return res.redirect('/checkout')
             }
 
             // if there is enough balance in the cart the continue
@@ -197,14 +197,14 @@ const placeOrder = async (req, res) => {
         await cartSchema.deleteOne({ userID: req.session.user });
 
         // req.flash('errorMessage', 'Thank you for your purchase! Your order has been successfully placed.');
-        // res.redirect('/user/orders');
-        res.redirect('/user/confirm-order')
+        // res.redirect('/orders');
+        res.redirect('/confirm-order')
 
 
     } catch (err) {
         console.log(`Error on placing order in POST method ${err}`);
         req.flash('errorMessage', `Error on placing order ${err}`);
-        return res.redirect('/user/cart');
+        return res.redirect('/cart');
     }
 }
 
@@ -254,7 +254,7 @@ const addAddressCheckout = async (req, res) => {
         // if maximum address size reached then redirect to login page
         if (user.address.length > 3) {
             req.flash("errorMessage", "Maximum Address limit Reached")
-            return res.redirect('/user/profile')
+            return res.redirect('/profile')
         }
 
 
@@ -264,7 +264,7 @@ const addAddressCheckout = async (req, res) => {
         await user.save();
 
         req.flash('errorMessage', 'New address added')
-        res.redirect('/user/checkout')
+        res.redirect('/checkout')
     } catch (err) {
         console.log(`Error on adding new address from checkout ${err}`);
     }
@@ -288,7 +288,7 @@ const editAddressCheckout = async (req, res) => {
         await user.save();
 
         req.flash('errorMessage', 'Address edited')
-        res.redirect('/user/checkout')
+        res.redirect('/checkout')
 
     } catch (err) {
         console.log(`Error on editing the user address on checkout ${err}`)
@@ -376,7 +376,7 @@ const failedPayment = async (req, res) => {
         await cartSchema.deleteOne({ userID: req.session.user });
 
         req.flash('errorMessage', '"Payment could not be processed. Please attempt your purchase again at a later time."');
-        res.redirect('/user/orders');
+        res.redirect('/orders');
 
     } catch (err) {
         console.log(`Error on handling the failed payment ${err}`);
@@ -423,7 +423,7 @@ const proceedPayment = async (req, res) => {
             await newCart.save()
 
             const deleteOrder=await orderSchema.findByIdAndDelete(orderID)
-            return res.json({ redirect: true, url: '/user/proceed-checkout' });
+            return res.json({ redirect: true, url: '/proceed-checkout' });
             
         } else {
             const newCart = new cartSchema({
@@ -435,7 +435,7 @@ const proceedPayment = async (req, res) => {
             })
             await newCart.save()
             const deleteOrder=await orderSchema.findByIdAndDelete(orderID)
-            return res.json({ redirect: true, url: '/user/proceed-checkout' });
+            return res.json({ redirect: true, url: '/proceed-checkout' });
         }
         
         

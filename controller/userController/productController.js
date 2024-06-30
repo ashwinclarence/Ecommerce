@@ -66,7 +66,7 @@ const productView = async (req, res) => {
 
     if (product.length === 0) {
         req.flash("errorMessage", 'Product is currently unavailable')
-        return res.redirect('/user/home')
+        return res.redirect('/home')
     }
 
     res.render('user/productDetail', {
