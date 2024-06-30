@@ -55,7 +55,7 @@ const addCoupon = async (req, res) => {
         "errorMessage",
         "Error on creating a coupon code please try again"
       );
-      return res.redirect("/user/coupons");
+      return res.redirect("/admin/coupons");
     }
 
     // check if the same coupon exist or not

@@ -78,11 +78,6 @@ app.set('views', path.join(__dirname, 'views'));
 
 
 
-// First Route
-app.get('/', (req, res) => {
-    res.redirect('/home')
-});
-
 
 // Routes
 app.use('/', userRoutes);

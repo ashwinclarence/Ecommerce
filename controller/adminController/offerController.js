@@ -442,8 +442,6 @@ const getOfferDetails = async (req, res) => {
         }
 
         const offerDetails = await offerSchema.findById(offerID).populate('offerCategoryId').populate('offerProductId')
-        console.log("🚀 ~ file: offerController.js:445 ~ getOfferDetails ~ offerDetails:", offerDetails);
-
         let offerTarget = ''
         
         if (offerDetails.offerFor === 'CATEGORY') {
@@ -451,8 +449,6 @@ const getOfferDetails = async (req, res) => {
         } else if (offerDetails.offerFor === "PRODUCT") {
             offerTarget = offerDetails.offerProductId.productName
         }
-        console.log("🚀 ~ file: offerController.js:447 ~ getOfferDetails ~ offerTarget:", offerTarget);
-
         if (!offerDetails) {
             return res.status(404).json({ error: "Cannot get the offer details" })
         }
