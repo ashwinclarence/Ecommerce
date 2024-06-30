@@ -151,13 +151,13 @@
                         <% } %>
                             <% if (new Date(product.createdAt).getTime()> (Date.now() - (1 * 24 * 60 * 60 * 1000))) { %>
                                 <div class="product-new-arrival-box">
-                                    <img src="../../image/newbanner.png" alt="">
+                                    <img src="../../image/newbanner.png" alt="" loading="lazy">
                                 </div>
                                 <% } %>
 
                                     <!-- image of product which is stored in uploads folder -->
                                     <div class="product-image-box">
-                                        <img src="/<%= product.productImage[0] %>" loading="lazy" />
+                                        <img src="/<%= product.productImage[0] %>" loading="lazy" loading="lazy" />
 
 
                                         <!-- product review -->
