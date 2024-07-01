@@ -320,8 +320,8 @@
                                             <%= index+1 %>
                                         </th>
                                         <td class="image-container-checkout"><img
-                                                src="../../<%= product.productID.productImage[0] %>" alt="" loading="lazy"
-                                                class="image-fluid"></td>
+                                                src="../../<%= product.productID.productImage[0] %>" alt=""
+                                                loading="lazy" class="image-fluid"></td>
                                         <td class="product-name-checkout">
                                             <%= product.productID.productName %>
                                         </td>
@@ -590,7 +590,9 @@
                                 "currency": "INR",
                                 "name": "CLEAT CRAFT",
                                 "order_id": data.orderID,
-                                "callback_url": `http://localhost:4000/place-order/${addressIndex}/${paymentMode}`,
+                                "handler": function (response) {
+                                  window.location.href=`/place-order/${addressIndex}/${paymentMode}`
+                                },
                                 "prefill": {
                                     "name": username,
                                     "email": email,

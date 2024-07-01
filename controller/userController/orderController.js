@@ -170,7 +170,7 @@ const returnOrderPost = async (req, res) => {
         if (orderDetails) {
             req.flash(
                 "errorMessage",
-                "Your order has been successfully return. If you need any assistance, please contact our customer support team. Thank you."
+                "Your order has been under the review for returning. Thank you."
             );
             res.redirect("/cancelled-orders");
         } else {

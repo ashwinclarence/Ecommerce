@@ -56,7 +56,7 @@ const forgetPasswordOtp = (req, res) => {
         if (req.session.user) {
             res.redirect('/home')
         } else {
-            res.render('user/forgetPasswordOTP', { title: "OTP", alertMessage: req.flash('errorMessage'), emailAddress: req.session.email, otpExpireTime: req.session.otpExpireTime,user:req.session.user })
+            res.render('user/forgetPasswordOtp', { title: "OTP", alertMessage: req.flash('errorMessage'), emailAddress: req.session.email, otpExpireTime: req.session.otpExpireTime,user:req.session.user })
         }
     } catch (err) {
         console.log(`Error during OTP page for forget password page render ${err}`);

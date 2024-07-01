@@ -1,6 +1,6 @@
 const userSchema = require('../../model/userSchema')
 const bcrypt = require('bcrypt')
-const sendOtpMail = require('../../services/emailSender')
+const mailSender = require('../../services/emailSender')
 const generateOTP = require('../../services/generateOTP');
 const productSchema = require('../../model/productSchema');
 const categorySchema = require('../../model/categorySchema');
@@ -57,7 +57,7 @@ const signupPost = async (req, res) => {
             const otp = generateOTP();
 
             // send the mail to the registered user with the OTP
-            sendOtpMail(req.body.email, otp)
+            mailSender.sendOtpMail(req.body.email, otp)
             req.flash('errorMessage', `OTP was sended to the ${req.body.email} `)
 
 
@@ -164,6 +164,9 @@ const otpPost = async (req, res) => {
                 // adding the user data to mongodb with collection name user
                 await userSchema.insertMany(registerDetails).then(() => {
                     console.log('New user registration successful')
+
+                    // send a welcome mail to new user
+                    mailSender.sendWelcomeMail(req.session.email,req.session.name)
                     req.flash('errorMessage', 'user registration successful');
                     res.redirect('/login')
                 }).catch((err) => {
@@ -173,6 +176,7 @@ const otpPost = async (req, res) => {
                 req.flash('errorMessage', 'It appears the OTP you entered is invalid. Please ensure you enter the OTP correctly.')
                 res.redirect('/OTP')
             }
+
 
             // if otp is not in the session an alert message is displayed
         } else {
@@ -197,7 +201,7 @@ const otpResend = (req, res) => {
         const otp = generateOTP();
 
         // send the mail to the registered user with the OTP
-        sendOtpMail(emailAddress, otp)
+        mailSender.sendOtpMail(emailAddress, otp)
 
         // storing the otp and otp generated time in the session
         req.session.otp = otp;
