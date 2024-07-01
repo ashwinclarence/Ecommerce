@@ -24,7 +24,8 @@ user.get('/auth/google/callback',userController.googleAuthCallback)
 
 // signup routes
 user.get('/signup',userController.signup)
-user.post('/signup',userController.signupPost)
+user.post('/signup', userController.signupPost)
+user.post('/check-email-exist',userController.checkEmail)
 
 
 // otp routes

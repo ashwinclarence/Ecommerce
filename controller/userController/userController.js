@@ -82,9 +82,21 @@ const signupPost = async (req, res) => {
 
 
 
+// check email already exist 
+const checkEmail = async (req, res) => {
+    try {
+        const user = await userSchema.findOne({ email: req.body.email })
+
+        if (user) {
+            return res.status(200).json({ exist: "User already exist with current email address" })
+        }
+    } catch (err) {
+        console.log("Error on checking signup email exist ", err);
+    }
+}
+
 
 // render the login page 
-
 const login = (req, res) => {
     if (req.session.user) {
         res.redirect('/home')
@@ -166,7 +178,7 @@ const otpPost = async (req, res) => {
                     console.log('New user registration successful')
 
                     // send a welcome mail to new user
-                    mailSender.sendWelcomeMail(req.session.email,req.session.name)
+                    mailSender.sendWelcomeMail(req.session.email, req.session.name)
                     req.flash('errorMessage', 'user registration successful');
                     res.redirect('/login')
                 }).catch((err) => {
@@ -242,7 +254,7 @@ const logout = (req, res) => {
 
 
 // google auth 
-const   googleAuth = (req, res) => {
+const googleAuth = (req, res) => {
     try {
         passport.authenticate('google', {
             scope:
@@ -289,6 +301,7 @@ module.exports = {
     loginPost,
     signup,
     signupPost,
+    checkEmail,
     otp,
     otpPost,
     otpResend,

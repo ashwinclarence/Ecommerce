@@ -1,250 +1,316 @@
 <style>
-    .admin-register-container {
-        min-height: 120vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: url('../../image/userRegister.png');
-        background-position: center;
-        background-size: cover;
-        background-repeat: no-repeat;
-    }
+  .admin-register-container {
+    min-height: 120vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: url("../../image/userRegister.png");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
 
-    .register-form {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 3rem;
-        border: 1px solid #c8c8c8;
-        border-radius: 10px;
-        padding: 3rem 2rem;
-        background-color: rgba(255, 255, 255, 0.4);
-        -webkit-backdrop-filter: blur(5px);
-        backdrop-filter: blur(5px);
-        width: 35vw;
-    }
+  .register-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3rem;
+    border: 1px solid #c8c8c8;
+    border-radius: 10px;
+    padding: 3rem 2rem;
+    background-color: rgba(255, 255, 255, 0.4);
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+    width: 35vw;
+  }
 
-    .register-form form {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 2rem;
-        width: 90%;
-    }
+  .register-form form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    width: 90%;
+  }
 
-    .register-form input {
-        width: 90%;
-        height: 2.5rem;
-        border-radius: 10px;
-        outline: none;
-        border: none;
-        background-color: #e7e7e7;
-        color: #000000;
-        padding: 10px;
-    }
+  .register-form input {
+    width: 90%;
+    height: 2.5rem;
+    border-radius: 10px;
+    outline: none;
+    border: none;
+    background-color: #e7e7e7;
+    color: #000000;
+    padding: 10px;
+  }
 
-    .register-form button {
-        width: 10rem;
-    }
+  .register-form button {
+    width: 10rem;
+  }
 </style>
-
-
 
 <%- include('navbar') %>
 
-
-        <section>
-          <div>
-            <div class="row g-0">
-              <div class="col-12 col-md-6">
-                <div class="d-flex align-items-center justify-content-center h-100">
-                  <div class="col-10 col-xl-8 py-3">
-                    <h2 class="h1 mb-4">Empowering your game </h2>
-                    <p class="lead m-0">with elite football footwear that champions performance, style, and excellence on the field.</p>
+  <section>
+    <div>
+      <div class="row g-0">
+        <div class="col-12 col-md-6">
+          <div class="d-flex align-items-center justify-content-center h-100">
+            <div class="col-10 col-xl-8 py-3">
+              <h2 class="h1 mb-4">Empowering your game</h2>
+              <p class="lead m-0">
+                with elite football footwear that champions performance, style,
+                and excellence on the field.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 pe-5">
+          <div class="card-body p-3 p-md-4 p-xl-5">
+            <div class="row">
+              <div class="col-12 text-center">
+                <h2 class="h3">Registration</h2>
+              </div>
+            </div>
+            <form action="/signup" method="post" id="registration-form">
+              <div class="row overflow-hidden">
+                <div class="col-12 mb-2">
+                  <label for="firstName" class="form-label">
+                    First Name <span class="text-danger">*</span>
+                  </label>
+                  <input type="text" class="form-control" name="name" id="firstName" placeholder="First Name"
+                    autocomplete="off" />
+                  <label for="" class="validate-register text-danger"></label>
+                </div>
+                <div class="col-12 mb-2">
+                  <label for="lastName" class="form-label">
+                    Phone Number <span class="text-danger">*</span>
+                  </label>
+                  <input type="text" class="form-control" name="phone" id="lastName" placeholder="Phone Number"
+                    autocomplete="off" />
+                  <label for="" class="validate-register text-danger"></label>
+                </div>
+                <div class="col-12 mb-2">
+                  <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                  <input type="email" class="form-control" name="email" id="email" placeholder="name@example.com"
+                    autocomplete="off" />
+                  <label for="" class="validate-register text-danger"></label>
+                </div>
+                <div class="col-12 mb-2">
+                  <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
+                  <input type="password" class="form-control" name="password" id="user-password" autocomplete="off" />
+                  <label for="" class="validate-register text-danger"></label>
+                  <ul style="list-style: none;">
+                    <li class=""><i class="fa-solid password-validation-criteria fa-circle-xmark text-danger"></i> Minimum of 8
+                      characters, maximum of 128 characters </li>
+                    <li class=""><i class="fa-solid password-validation-criteria fa-circle-xmark  text-danger"></i> Include at least
+                      one uppercase letter</li>
+                    <li class=""><i class="fa-solid password-validation-criteria fa-circle-xmark text-danger"></i> Include at least
+                      one lowercase letter</li>
+                    <li class=""><i class="fa-solid password-validation-criteria fa-circle-xmark text-danger"></i> Include at least
+                      one numeric digit</li>
+                    <li class=""><i class="fa-solid password-validation-criteria fa-circle-xmark text-danger"></i> Include at least
+                      and one special character</li>
+                  </ul>
+                </div>
+                <div class="col-12 mb-2">
+                  <label for="password" class="form-label">Confirm Password <span class="text-danger">*</span></label>
+                  <input type="password" class="form-control" name="confirmPassword" id="user-confirm-password"
+                    autocomplete="off" />
+                  <label for="" class="validate-register text-danger"></label>
+                </div>
+                <div class="col-12 mb-2">
+                  <div class="d-grid">
+                    <button class="btn bsb-btn-xl btn-primary" type="submit" id="register-button">
+                      Sign up
+                    </button>
                   </div>
                 </div>
               </div>
-              <div class="col-12 col-md-6 pe-5">
-                <div class="card-body p-3 p-md-4 p-xl-5">
-                  <div class="row">
-                    <div class="col-12 text-center">
-                        <h2 class="h3">Registration</h2>
-                    </div>
-                  </div>
-                  <form action="/signup" method="post" id="registration-form">
-                    <div class="row gy-3 gy-md-4 overflow-hidden">
-                      <div class="col-12">
-                        <label for="firstName" class="form-label">First Name <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" name="name" id="firstName" placeholder="First Name" required>
-                      </div>
-                      <div class="col-12">
-                        <label for="lastName" class="form-label">Phone Number <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" name="phone" id="lastName" placeholder="Phone Number" required>
-                      </div>
-                      <div class="col-12">
-                        <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
-                        <input type="email" class="form-control" name="email" id="email" placeholder="name@example.com" required>
-                      </div>
-                      <div class="col-12">
-                        <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
-                        <input type="password" class="form-control" name="password" id="user-password" required>
-                      </div>
-                      <div class="col-12">
-                        <label for="password" class="form-label">Confirm Password <span class="text-danger">*</span></label>
-                        <input type="password" class="form-control" name="confirmPassword" id="user-confirm-password" required>
-                      </div>
-                      <!-- <div class="col-12">
-                        <div class="form-check">
-                          <input class="form-check-input" type="checkbox" name="iAgree" id="iAgree" required>
-                          <label class="form-check-label text-secondary" for="iAgree">
-                            I agree to the <a href="#!" class="link-primary text-decoration-none">terms and conditions</a>
-                          </label>
-                        </div>
-                      </div> -->
-                      <div class="col-12">
-                        <div class="d-grid">
-                          <button class="btn bsb-btn-xl btn-primary" type="submit" id="register-button">Sign up</button>
-                        </div>
-                      </div>
-                    </div>
-                  </form>
-                  <div class="row">
-                    <div class="col-12">
-                      <hr class="mt-5 mb-4 border-secondary-subtle">
-                      <p class="m-0 text-secondary text-center">Already have an account? <a href="/login" class="link-primary text-decoration-none">Sign in</a></p>
-                    </div>
-                  </div>
-                  <!-- <div class="row">
-                    <div class="col-12">
-                      <p class="mt-5 mb-4">Or sign in with</p>
-                      <div class="d-flex gap-3 flex-column flex-xl-row">
-                        <a href="#!" class="btn bsb-btn-xl btn-outline-primary">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-google" viewBox="0 0 16 16">
-                            <path d="M15.545 6.558a9.42 9.42 0 0 1 .139 1.626c0 2.434-.87 4.492-2.384 5.885h.002C11.978 15.292 10.158 16 8 16A8 8 0 1 1 8 0a7.689 7.689 0 0 1 5.352 2.082l-2.284 2.284A4.347 4.347 0 0 0 8 3.166c-2.087 0-3.86 1.408-4.492 3.304a4.792 4.792 0 0 0 0 3.063h.003c.635 1.893 2.405 3.301 4.492 3.301 1.078 0 2.004-.276 2.722-.764h-.003a3.702 3.702 0 0 0 1.599-2.431H8v-3.08h7.545z" />
-                          </svg>
-                          <span class="ms-2 fs-6">Google</span>
-                        </a>
-                        <a href="#!" class="btn bsb-btn-xl btn-outline-primary">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-facebook" viewBox="0 0 16 16">
-                            <path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951z" />
-                          </svg>
-                          <span class="ms-2 fs-6">Facebook</span>
-                        </a>
-                        <a href="#!" class="btn bsb-btn-xl btn-outline-primary">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-twitter" viewBox="0 0 16 16">
-                            <path d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334 0-.14 0-.282-.006-.422A6.685 6.685 0 0 0 16 3.542a6.658 6.658 0 0 1-1.889.518 3.301 3.301 0 0 0 1.447-1.817 6.533 6.533 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.325 9.325 0 0 1-6.767-3.429 3.289 3.289 0 0 0 1.018 4.382A3.323 3.323 0 0 1 .64 6.575v.045a3.288 3.288 0 0 0 2.632 3.218 3.203 3.203 0 0 1-.865.115 3.23 3.23 0 0 1-.614-.057 3.283 3.283 0 0 0 3.067 2.277A6.588 6.588 0 0 1 .78 13.58a6.32 6.32 0 0 1-.78-.045A9.344 9.344 0 0 0 5.026 15z" />
-                          </svg>
-                          <span class="ms-2 fs-6">Twitter</span>
-                        </a>
-                      </div>
-                    </div>
-                  </div> -->
-                </div>
+            </form>
+            <div class="row">
+              <div class="col-12">
+                <hr class="mt-5 mb-4 border-secondary-subtle" />
+                <p class="m-0 text-secondary text-center">
+                  Already have an account?
+                  <a href="/login" class="link-primary text-decoration-none">Sign in</a>
+                </p>
               </div>
             </div>
           </div>
-        </section>
+        </div>
+      </div>
+    </div>
+  </section>
 
+  <%- include('footer') %>
 
-    <%- include('footer') %>
+    <script>
+      // password validation function
+      function validatePassword(password) {
+        // Check if the password length is at least 8 characters
+        if (password.length < 8) {
+          return true;
+        }
 
-        <script>
-            // password validation function
-            function validatePassword(password) {
-                // Check if the password length is at least 8 characters
-                if (password.length < 8) {
-                    return true;
-                }
+        // Check if the password contains at least one uppercase letter
+        if (!/[A-Z]/.test(password)) {
+          return true;
+        }
 
-                // Check if the password contains at least one uppercase letter
-                if (!/[A-Z]/.test(password)) {
-                    return true;
-                }
+        // Check if the password contains at least one lowercase letter
+        if (!/[a-z]/.test(password)) {
+          return true;
+        }
 
-                // Check if the password contains at least one lowercase letter
-                if (!/[a-z]/.test(password)) {
-                    return true;
-                }
+        // Check if the password contains at least one digit
+        if (!/\d/.test(password)) {
+          return true;
+        }
 
-                // Check if the password contains at least one digit
-                if (!/\d/.test(password)) {
-                    return true;
-                }
+        // Check if the password contains at least one special character
+        if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)) {
+          console.log("issue");
+          return true;
+        }
 
-                // Check if the password contains at least one special character
-                if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)) {
-                    console.log("issue");
-                    return true;
-                }
+        return false;
+      }
 
-                return false;
+      // function to validate the password
+      function validateEmail(email) {
+        const re = /\S+@\S+\.\S+/;
+        return re.test(email);
+      }
+
+      const registerForm = document.getElementById("registration-form");
+      const password = document.getElementById("user-password");
+      const confirmPassword = document.getElementById("user-confirm-password");
+      const registerBtn = document.getElementById("register-button");
+      const email = document.getElementsByName("email")[0];
+      const phoneNumber = document.getElementsByName("phone")[0];
+      const name = document.getElementsByName("name")[0];
+      const validateRegister = document.querySelectorAll(".validate-register");
+
+      // event listener for registration form
+      registerForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        let isValid = true;
+
+        validateRegister.forEach((field) => {
+          field.innerHTML = "";
+        });
+
+        if (name.value.trim() === "" || !isNaN(name) || name.value.length > 40) {
+          isValid = false;
+          validateRegister[0].innerHTML = "username should be between (1=40)";
+        }
+
+        if (!validateEmail(email.value)) {
+          isValid = false;
+          validateRegister[2].innerHTML = "Invalid email address";
+        }
+
+        if (isNaN(phoneNumber.value) || phoneNumber.value.length != 10) {
+          isValid = false;
+          validateRegister[1].innerHTML = "Phone number should be a valid one";
+        }
+
+        if (validatePassword(password.value)) {
+          isValid = false;
+        }
+
+        if (password.value != confirmPassword.value) {
+          isValid = false;
+          validateRegister[4].innerHTML =
+            "Password and confirm password must be same";
+        }
+
+        if (isValid) {
+          registerForm.submit();
+        }
+      });
+
+      // validation for already exist email
+      email.addEventListener("change", (e) => {
+        validateRegister[2].innerHTML = "";
+        fetch("/check-email-exist", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email: e.target.value }),
+        })
+          .then((res) => {
+            return res.json();
+          })
+          .then((data) => {
+            if (data.exist) {
+              validateRegister[2].innerHTML = data.exist;
             }
+          })
+          .catch((err) => {
+            console.log("Error on checking user email exist ", err);
+          });
+      });
+
+
+      const passwordCriteria = document.querySelectorAll('.password-validation-criteria');
+
+      // validation for password criteria
+      password.addEventListener('input', (e) => {
+        let password = e.target.value;
+
+        // Check if the password is at least 8 characters long
+        if (password.length >= 8) {
+          passwordCriteria[0].classList.replace('fa-circle-xmark', 'fa-circle-check');
+          passwordCriteria[0].classList.replace('text-danger', 'text-success');
+        } else {
+          passwordCriteria[0].classList.replace('fa-circle-check', 'fa-circle-xmark');
+          passwordCriteria[0].classList.replace('text-success','text-danger');
+        }
+
+        // Check if the password contains at least one uppercase letter
+        if (/[A-Z]/.test(password)) {
+          passwordCriteria[1].classList.replace('fa-circle-xmark', 'fa-circle-check');
+          passwordCriteria[1].classList.replace('text-danger', 'text-success');
+
+        } else {
+          passwordCriteria[1].classList.replace('fa-circle-check', 'fa-circle-xmark');
+          passwordCriteria[1].classList.replace('text-success','text-danger');
+        }
+
+        // Check if the password contains at least one lowercase letter
+        if (/[a-z]/.test(password)) {
+          passwordCriteria[2].classList.replace('fa-circle-xmark', 'fa-circle-check');
+          passwordCriteria[2].classList.replace('text-danger', 'text-success');
+        } else {
+          passwordCriteria[2].classList.replace('fa-circle-check', 'fa-circle-xmark');
+          passwordCriteria[2].classList.replace('text-success','text-danger');
+        }
+
+        // Check if the password contains at least one digit
+        if (/\d/.test(password)) {
+          passwordCriteria[3].classList.replace('fa-circle-xmark', 'fa-circle-check');
+          passwordCriteria[3].classList.replace('text-danger', 'text-success');
+        } else {
+          passwordCriteria[3].classList.replace('fa-circle-check', 'fa-circle-xmark');
+          passwordCriteria[3].classList.replace('text-success','text-danger');
+        }
+
+        // Check if the password contains at least one special character
+        if (/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)) {
+          passwordCriteria[4].classList.replace('fa-circle-xmark', 'fa-circle-check');
+          passwordCriteria[4].classList.replace('text-danger', 'text-success');
+        } else {
+          passwordCriteria[4].classList.replace('fa-circle-check', 'fa-circle-xmark');
+          passwordCriteria[4].classList.replace('text-success','text-danger');
+        }
+      });
 
 
 
 
-            // function to validate the password
-            function validateEmail(email) {
-                const re = /\S+@\S+\.\S+/;
-                return re.test(email);
-            }
-
-            const registerForm = document.getElementById('registration-form')
-            const password = document.getElementById("user-password")
-            const confirmPassword = document.getElementById("user-confirm-password")
-            const registerBtn = document.getElementById('register-button')
-            const email = document.getElementsByName('email')[0]
-            const phoneNumber = document.getElementsByName('phone')[0]
-            const name = document.getElementsByName('name')[0]
 
 
-
-            // event listener for registration form
-            registerForm.addEventListener('submit', (e) => {
-                e.preventDefault()
-
-                let isValid = true
-                let errorMessage = ""
-
-
-                if (name.value.trim() === '' || !isNaN(name) || name.value.length > 40) {
-                    isValid = false
-                    errorMessage = "Username should not contain number and maximum size limit is 40 charters"
-                }
-
-                else if (!validateEmail(email.value)) {
-                    isValid = false;
-                    errorMessage = "Check Your email address and enter correct address"
-                }
-
-                else if (isNaN(phoneNumber.value) || phoneNumber.value.length != 10) {
-                    isValid = false;
-                    errorMessage = "Phone number should be a valid one"
-                }
-                else if (validatePassword(password.value)) {
-                    isValid = false;
-                    errorMessage = "Invalid Password. It must be strong"
-                }
-                else if (password.value != confirmPassword.value) {
-                    isValid = false;
-                    errorMessage = "Password and confirm password must be same"
-                }
-
-                if (isValid === false) {
-                    Swal.fire({
-                        title: "Invalid Inputs",
-                        text: errorMessage,
-                        icon: "error"
-                    })
-                } else {
-                    registerForm.submit()
-                }
-
-
-
-            })
-
-
-
-
-        </script>
+    </script>

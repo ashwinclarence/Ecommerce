@@ -1,142 +1,73 @@
 <style>
-  .order-confirm-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-  }
-
-  .animation-ctn {
-    text-align: center;
-    margin-top: 5em;
-  }
-
-  @-webkit-keyframes checkmark {
-    0% {
-      stroke-dashoffset: 100px
-    }
-
-    100% {
-      stroke-dashoffset: 200px
-    }
-  }
-
-  @-ms-keyframes checkmark {
-    0% {
-      stroke-dashoffset: 100px
-    }
-
-    100% {
-      stroke-dashoffset: 200px
-    }
-  }
-
-  @keyframes checkmark {
-    0% {
-      stroke-dashoffset: 100px
-    }
-
-    100% {
-      stroke-dashoffset: 0px
-    }
-  }
-
-  @-webkit-keyframes checkmark-circle {
-    0% {
-      stroke-dashoffset: 480px
-    }
-
-    100% {
-      stroke-dashoffset: 960px;
-    }
-  }
-
-  @-ms-keyframes checkmark-circle {
-    0% {
-      stroke-dashoffset: 240px
-    }
-
-    100% {
-      stroke-dashoffset: 480px
-    }
-  }
-
-  @keyframes checkmark-circle {
-    0% {
-      stroke-dashoffset: 480px
-    }
-
-    100% {
-      stroke-dashoffset: 960px
-    }
-  }
-
-  @keyframes colored-circle {
-    0% {
-      opacity: 0
-    }
-
-    100% {
-      opacity: 100
-    }
-  }
-
-  /* .svg svg {
-    display: none
+.order-confirm-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
 }
- */
-  .inlinesvg .svg svg {
-    display: inline
-  }
 
-  /* .svg img {
-    display: none
-} */
-  .icon--order-success svg polyline {
-    -webkit-animation: checkmark 0.25s ease-in-out 0.7s backwards;
-    animation: checkmark 0.25s ease-in-out 0.7s backwards
-  }
+.animation-ctn {
+  text-align: center;
+  margin-top: 5em;
+}
 
-  .icon--order-success svg circle {
-    -webkit-animation: checkmark-circle 0.6s ease-in-out backwards;
-    animation: checkmark-circle 0.6s ease-in-out backwards;
+@keyframes checkmark {
+  0% {
+    stroke-dashoffset: 100px;
   }
+  100% {
+    stroke-dashoffset: 0px;
+  }
+}
 
-  .icon--order-success svg circle#colored {
-    -webkit-animation: colored-circle 0.6s ease-in-out 0.7s backwards;
-    animation: colored-circle 0.6s ease-in-out 0.7s backwards;
+@keyframes checkmark-circle {
+  0% {
+    stroke-dashoffset: 480px;
   }
+  100% {
+    stroke-dashoffset: 960px;
+  }
+}
 
-  h1 {
-    margin-top: 25px;
-    /* font-size: 18px; */
-    font-family: sans-serif;
+@keyframes colored-circle {
+  0% {
+    opacity: 0;
   }
+  100% {
+    opacity: 100;
+  }
+}
 
-  p {
-    margin-top: 15px;
-    font-size: 14px;
-    font-family: sans-serif;
-  }
+.icon--order-success svg polyline {
+  animation: checkmark 0.25s ease-in-out 0.7s backwards;
+}
+
+.icon--order-success svg circle {
+  animation: checkmark-circle 0.6s ease-in-out backwards;
+}
+
+.icon--order-success svg circle#colored {
+  animation: colored-circle 0.6s ease-in-out 0.7s backwards;
+}
+
+h1 {
+  margin-top: 25px;
+  font-family: sans-serif;
+}
+
+p {
+  margin-top: 15px;
+  font-size: 14px;
+  font-family: sans-serif;
+}
+
 </style>
 <div class="order-confirm-container">
   <lottie-player
     src="https://lottie.host/9cf30b98-f897-4a40-9d6f-5f35fbb23eb1/ddixBHkjv7.json" background="##FFFFFF" speed="1"
     style="width: 300px; height: 300px" autoplay direction="1" mode="normal"></lottie-player>
-  <!-- <div class="animation-ctn">
-      <div class="icon icon--order-success svg">
-        <svg xmlns="http://www.w3.org/2000/svg" width="154px" height="154px">
-          <g fill="none" stroke="#22AE73" stroke-width="2">
-            <circle cx="77" cy="77" r="72" style="stroke-dasharray:480px, 480px; stroke-dashoffset: 960px;"></circle>
-            <circle id="colored" fill="#22AE73" cx="77" cy="77" r="72"
-            style="stroke-dasharray:480px, 480px; stroke-dashoffset: 960px;"></circle>
-            <polyline class="st0" stroke="#fff" stroke-width="10" points="43.5,77.8 63.7,97.9 112.2,49.4 "
-            style="stroke-dasharray:100px, 100px; stroke-dashoffset: 200px;" />
-            </g>
-            </svg>
-            </div>
-            </div> -->
+
 
   <div class="text-center">
     <h1>Order Confirmed</h1>

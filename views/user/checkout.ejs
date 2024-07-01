@@ -591,7 +591,10 @@
                                 "name": "CLEAT CRAFT",
                                 "order_id": data.orderID,
                                 "handler": function (response) {
-                                  window.location.href=`/place-order/${addressIndex}/${paymentMode}`
+
+                                    console.log("🚀 ~ file: checkout.ejs:616 ~ orderPlacementBtn.addEventListener ~ response:", response);
+                                    window.location.href = `/place-order/${addressIndex}/${paymentMode}`
+
                                 },
                                 "prefill": {
                                     "name": username,
