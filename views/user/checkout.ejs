@@ -551,9 +551,7 @@
                                 "name": "CLEAT CRAFT",
                                 "order_id": data.orderID,
                                 "handler": function (response) {
-
-                                    console.log("🚀 ~ file: checkout.ejs:616 ~ orderPlacementBtn.addEventListener ~ response:", response);
-                                    const URL=" /place-order/"
+                                    const URL="/place-order"
                                     fetch(URL,{
                                         method:"POST",
                                         headers:{
@@ -566,6 +564,8 @@
                                         if(data.success){
                                             window.location.href="/confirm-order"
                                         }
+                                    }).catch((err)=>{
+                                        console.error("Error on razor pay payment callback",err);
                                     })
 
                                    
