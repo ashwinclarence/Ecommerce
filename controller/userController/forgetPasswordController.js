@@ -1,6 +1,6 @@
 const userSchema = require("../../model/userSchema");
 const generateOTP = require('../../services/generateOTP')
-const sendOtpMail = require('../../services/emailSender')
+const mailSender = require('../../services/emailSender')
 const bcrypt = require('bcrypt')
 
 
@@ -30,7 +30,7 @@ const forgetPasswordPost = async (req, res) => {
         const otp = generateOTP();
 
         // send the mail to the registered user with the OTP
-        sendOtpMail(req.body.email, otp)
+        mailSender.sendOtpMail(req.body.email, otp)
 
         // storing the otp and otp generated time in the session
         req.session.email = req.body.email

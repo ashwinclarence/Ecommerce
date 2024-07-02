@@ -176,21 +176,30 @@
                                         <h5 class="product-price">
                                             <% if(product.productDiscount!=0){ %>
                                                 <s class="text-danger">&#8377;</i>
-                                                  <%= product.productPrice.toLocaleString() %></s>
-                                              <% } %>
-                                            &#8377;</i>
-                                            <%= (product.productPrice*(1-product.productDiscount/100)).toLocaleString() %>
-                                           
+                                                    <%= product.productPrice.toLocaleString() %>
+                                                </s>
+                                                <% } %>
+                                                    &#8377;</i>
+                                                    <%= (product.productPrice*(1-product.productDiscount/100)).toLocaleString()
+                                                        %>
+
                                         </h5>
                                     </a>
                                     <div>
                                         <!-- <hr> -->
                                         <div class="d-flex flex-row-reverse gap-3">
-                                            <button onclick="addToWishlist('<%= product._id %>')" class="btn btn-sm"><i
-                                                    class="fa-solid fa-heart"></i></button>
-                                            <button
-                                                onclick="addToCart('<%= product._id %>','<%= product.productPrice %>')"
-                                                class="btn btn-sm "><i class="fa-solid fa-cart-shopping"></i></button>
+
+                                            <% if(product.wishlist){ %>
+                                                <i class="fa-solid fa-heart text-danger" style="cursor: pointer;"
+                                                    onclick="wishlist(this,'<%= product._id %>')"></i>
+                                                <% }else{%>
+                                                    <i class="fa-solid fa-heart" style="cursor: pointer;"
+                                                        onclick="wishlist(this,'<%= product._id %>')"></i>
+                                                    <% }%>
+
+                                                        <i onclick="addToCart('<%= product._id %>','<%= product.productPrice %>')"
+                                                            style="cursor: pointer;"
+                                                            class="fa-solid fa-cart-shopping"></i>
                                         </div>
 
                                         <!-- product availability -->
@@ -238,53 +247,44 @@
                     timer: 700,
                 })
             }
-            
+
             if (data.error) {
                 const notyf = new Notyf({ duration: 1500, });
                 notyf.error(data.error)
                 console.log(data.error);
             }
         }).catch((err) => {
-            window.location.href="/login"
+            window.location.href = "/login"
             console.log(`Error on adding product to cart ${err}`);
         })
     }
 
 
     // function to add product to wishlist
-    function addToWishlist(productID) {
+    function wishlist(button, productID) {
+
+
         const URL = `/add-wishlist/${productID}`
         fetch(URL, {
             method: 'POST',
-            headers:{
-                'Content-Type':'application/json'
+            headers: {
+                'Content-Type': 'application/json'
             }
         }).then((res) => {
-            // if (!res.ok) {
-            //     throw new Error("Cannot add product to wishlist. Please login")
-            // }
             return res.json()
-
         }).then((data) => {
             if (data.success) {
-                Swal.fire({
-                    icon: "success",
-                    title: "Product added to wishlist",
-                    showConfirmButton: false,
-                    timer: 800,
-                })
+                button.classList.add('text-danger')
             }
-            if (data.error) {
-                const notyf = new Notyf({ duration: 1500, });
-                notyf.error(data.error)
+            if (data.exist) {
+                button.classList.remove('text-danger')
             }
         }).catch((err) => {
-            window.location.href="/login"
+            window.location.href = "/login"
             console.log(err);
         })
+
     }
-
-
 
 
 </script>

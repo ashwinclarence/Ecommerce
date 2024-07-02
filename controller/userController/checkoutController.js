@@ -86,8 +86,8 @@ const placeOrder = async (req, res) => {
 
 
         // address index and payment mode
-        const addressIndex = req.params.address
-        const paymentMode = parseInt(req.params.payment)
+        const addressIndex = req.body.addressIndex
+        const paymentMode = parseInt(req.body.paymentMode)
         let paymentId = ""
 
 
@@ -153,14 +153,9 @@ const placeOrder = async (req, res) => {
             paymentMethod: paymentDetails[paymentMode],
             orderStatus: "Confirmed",
             paymentId: paymentId,
-            couponDiscount: cartItems.couponDiscount
+            couponDiscount: cartItems.couponDiscount,
+            couponID:cartItems.couponID
         })
-
-
-        // Start a session for transaction
-        const session = await mongoose.startSession();
-        session.startTransaction();
-
         // Save the new order
         await newOrder.save();
 
@@ -196,9 +191,8 @@ const placeOrder = async (req, res) => {
         // Clear the cart for the user
         await cartSchema.deleteOne({ userID: req.session.user });
 
-        // req.flash('errorMessage', 'Thank you for your purchase! Your order has been successfully placed.');
-        // res.redirect('/orders');
-        res.redirect('/confirm-order')
+       return res.status(200).json({success:"order placed successfully"})
+
 
 
     } catch (err) {
@@ -362,7 +356,7 @@ const failedPayment = async (req, res) => {
             userID: req.session.user,
             products: products,
             totalQuantity: totalQuantity,
-            totalPrice: cartItems.payableAmount<550?cartItems.payableAmount-50:cartItems.payableAmount,
+            totalPrice: cartItems.payableAmount < 550 ? cartItems.payableAmount - 50 : cartItems.payableAmount,
             paymentMethod: "Razor pay",
             orderStatus: "Pending",
             couponDiscount: cartItems.couponDiscount
@@ -406,7 +400,7 @@ const proceedPayment = async (req, res) => {
             totalQuantity += product.quantity
         })
 
-        
+
 
 
         if (cart) {
@@ -422,9 +416,9 @@ const proceedPayment = async (req, res) => {
 
             await newCart.save()
 
-            const deleteOrder=await orderSchema.findByIdAndDelete(orderID)
+            const deleteOrder = await orderSchema.findByIdAndDelete(orderID)
             return res.json({ redirect: true, url: '/proceed-checkout' });
-            
+
         } else {
             const newCart = new cartSchema({
                 userID: req.session.user,
@@ -434,13 +428,13 @@ const proceedPayment = async (req, res) => {
                 couponDiscount: 0
             })
             await newCart.save()
-            const deleteOrder=await orderSchema.findByIdAndDelete(orderID)
+            const deleteOrder = await orderSchema.findByIdAndDelete(orderID)
             return res.json({ redirect: true, url: '/proceed-checkout' });
         }
-        
-        
-        
-        
+
+
+
+
     } catch (err) {
         console.log("Error on proceeding with failed payment ", err);
     }

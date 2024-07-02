@@ -1,21 +1,21 @@
-const productSchema = require('../../model/productSchema')
-const categorySchema = require('../../model/categorySchema')
-const cartSchema = require('../../model/cartSchema')
-const reviewSchema = require('../../model/reviewSchema')
-const wishlistSchema = require('../../model/wishlistSchema')
+const productSchema = require('../../model/productSchema');
+const categorySchema = require('../../model/categorySchema');
+const cartSchema = require('../../model/cartSchema');
+const reviewSchema = require('../../model/reviewSchema');
+const wishlistSchema = require('../../model/wishlistSchema');
 
-
-// render the home page using with products and categories
+// Render the home page using products and categories
 const home = async (req, res) => {
     try {
-
-
         // Find all active categories
         const categories = await categorySchema.find({ isActive: true });
 
         // Extract category names
         const allCategoryNames = categories.map(item => item.categoryName);
 
+        // Get the wishlist products
+        const wishlist = await wishlistSchema.findOne({ userID: req.session.user });
+        const wishlistProductIDs = wishlist ? wishlist.products.map(item => item.productID.toString()) : [];
         // Extract query parameters with default values
         const selectedCategory = req.query.productCategory ? req.query.productCategory : allCategoryNames;
         const minPrice = parseInt(req.query.minPrice) || 0;
@@ -29,7 +29,6 @@ const home = async (req, res) => {
         const productsPerPage = 8;
         const currentPage = parseInt(req.query.page) || 1;
         const skip = (currentPage - 1) * productsPerPage;
-
 
         // Query for products with filters
         const productQuery = {
@@ -56,28 +55,36 @@ const home = async (req, res) => {
             .skip(skip)
             .limit(productsPerPage);
 
-                
+        // Add wishlist field to products
+        const productsWithWishlist = products.map(product => {
+            return {
+                ...product.toObject(),
+                wishlist: wishlistProductIDs.includes(product._id.toString())
+            };
+        });
         // Count the total number of products matching the query
         const productsCount = await productSchema.countDocuments(productQuery);
 
         // Render the home page
         res.render('user/home', {
             title: 'User Home',
-            products,
+            products: productsWithWishlist,
             category: categories,
             alertMessage: req.flash('errorMessage'),
             user: req.session.user,
             pageNumber: Math.ceil(productsCount / productsPerPage),
             currentPage,
-            totalPages:productsCount 
+            totalPages: productsCount
         });
 
     } catch (err) {
         console.error(`Error rendering home page: ${err}`);
+
+        req.flash("errorMessage", "An error occurred while rendering the home page");
+        
     }
 };
 
 module.exports = {
     home,
-
-}
+};

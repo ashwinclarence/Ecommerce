@@ -98,10 +98,14 @@ const checkEmail = async (req, res) => {
 
 // render the login page 
 const login = (req, res) => {
-    if (req.session.user) {
-        res.redirect('/home')
-    } else {
-        res.render('user/login', { title: 'Login', alertMessage: req.flash('errorMessage'), user: req.session.user })
+    try {
+        if (req.session.user) {
+            res.redirect('/home')
+        } else {
+            res.render('user/login', { title: 'Login', alertMessage: req.flash('errorMessage'), user: req.session.user })
+        }
+    } catch (err) {
+        console.log("Error on login page render ", err);
     }
 }
 

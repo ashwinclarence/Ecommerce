@@ -96,7 +96,7 @@ user.delete('/remove-coupon',checkUserSession,cartController.removeCoupon)
 
 // checkout
 user.get('/checkout',checkUserSession,checkoutController.checkout)
-user.get('/place-order/:address/:payment',checkUserSession,checkoutController.placeOrder)
+user.post('/place-order',checkUserSession,checkoutController.placeOrder)
 user.post('/payment-render/:amount',checkUserSession,checkoutController.paymentRender)
 user.delete('/delete-address/:id',checkUserSession,checkoutController.deleteAddressFetch)
 user.post('/add-address-checkout',checkUserSession,checkoutController.addAddressCheckout)

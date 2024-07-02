@@ -44,10 +44,13 @@ const addWishlist = async (req, res) => {
         const wishlist = await wishlistSchema.findOne({ userID }).populate('products.productID');
 
         if (wishlist) {
-            const productExists = wishlist.products.some((item) => item.productID.id === productID);
-
-            if (productExists) {
-                return res.status(400).json({ error: "Product already in wishlist" });
+            const productIndex = wishlist.products.findIndex((item) => item.productID.id === productID);
+    
+            if (productIndex > -1) {
+                // Remove the product from the wishlist
+                wishlist.products.splice(productIndex, 1);
+                await wishlist.save();
+                return res.status(200).json({ exist: "Product removed from wishlist" });
             } else {
                 wishlist.products.push({ productID: actualProductDetails._id });
                 await wishlist.save();
@@ -59,7 +62,7 @@ const addWishlist = async (req, res) => {
                 userID,
                 products: [{ productID: actualProductDetails._id }]
             });
-
+    
             await newWishlist.save();
             return res.status(200).json({ success: "Product added to wishlist" });
         }

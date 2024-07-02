@@ -2,6 +2,7 @@ const cartSchema = require("../../model/cartSchema");
 const productSchema = require("../../model/productSchema");
 const couponSchema = require("../../model/couponSchema");
 const userSchema = require("../../model/userSchema");
+const orderSchema = require("../../model/orderSchema");
 
 // render the cart with items in the cart
 const cart = async (req, res) => {
@@ -408,19 +409,17 @@ const applyCoupon = async (req, res) => {
             return res.status(404).json({ error: "cannot find the coupon id" });
         }
 
-        // get the user details
-        const userDetails = await userSchema.findById(req.session.user);
+        const coupon = await couponSchema.findById(couponID)
 
-        const coupon = await couponSchema
-            .findById(couponID)
-            .populate("appliedUsers");
-
+        const orders = await orderSchema.find({ userID: req.session.user })
+        
         // check the user already purchase the coupon
-        for (const user of coupon.appliedUsers) {
-            if (user.id === req.session.user) {
+        for (const order of orders) {
+            if (order.couponID === coupon.id) {
                 return res.status(404).json({ error: "Coupon already Applied" });
             }
         }
+
 
         // check coupon is still active
         if (!coupon.isActive || coupon.expiryDate < new Date()) {
@@ -446,10 +445,6 @@ const applyCoupon = async (req, res) => {
         cart.couponDiscount = coupon.discount;
         cart.couponID = couponID;
         await cart.save();
-
-        // update the coupon with purchased user details
-        coupon.appliedUsers.push(userDetails._id);
-        await coupon.save();
 
         return res.status(200).json({
             message: "Coupon Applied",

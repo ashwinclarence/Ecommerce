@@ -20,11 +20,6 @@ const schema = new mongoose.Schema({
         type:Boolean,
         default:true
     },
-    appliedUsers:{
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: 'user', 
-        default: [], 
-    }
 }, { timestamps: true });
 
 module.exports = mongoose.model("coupon", schema);
