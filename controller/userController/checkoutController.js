@@ -83,44 +83,17 @@ const checkout = async (req, res) => {
 // place order post method
 const placeOrder = async (req, res) => {
     try {
+        const addressIndex = req.body.addressIndex;
+        const paymentMode = parseInt(req.body.paymentMode);
+        let paymentId = "";
 
 
-        // address index and payment mode
-        const addressIndex = req.body.addressIndex
-        const paymentMode = parseInt(req.body.paymentMode)
-        let paymentId = ""
-
-
-        // check if selected payment method is razor pay or not
-        if (paymentMode === 1) {
-            // order details when razor pay is selected
-            const razorpay_payment_id = req.body.razorpay_payment_id
-            const razorpay_order_id = req.body.razorpay_order_id
-            const razorpay_signature = req.body.razorpay_signature
-            paymentId = req.body.razorpay_payment_id
-
-            // verify the payment
-            // const instance = new Razorpay({ key_id: process.env.RAZORPAY_KEY_ID, key_secret: process.env.RAZORPAY_KEY_SECRET })
-
-            // let { validatePaymentVerification, validateWebhookSignature } = require('./dist/utils/razorpay-utils');
-            // validatePaymentVerification({ "order_id": razorpayOrderId, "payment_id": razorpayPaymentId }, signature, secret);
-        }
-
-
-        const cartItems = await cartSchema.findOne({ userID: req.session.user }).populate('items.productID')
-        const paymentDetails = [
-            "Cash on delivery",
-            "Razor pay",
-            "Wallet"
-        ]
-
-        const products = []
-        let totalQuantity = 0
-
+        const cartItems = await cartSchema.findOne({ userID: req.session.user }).populate('items.productID');
+        const paymentDetails = ["Cash on delivery", "Razorpay", "Wallet"];
+        const products = [];
+        let totalQuantity = 0;
 
         cartItems.items.forEach((ele) => {
-
-            // add each products details in the cart to an array called products
             products.push({
                 productID: ele.productID._id,
                 productName: ele.productID.productName,
@@ -129,19 +102,15 @@ const placeOrder = async (req, res) => {
                 price: ele.productID.productPrice,
                 discount: ele.productID.productDiscount,
                 productImage: ele.productID.productImage[0]
-            })
-            // increment the product total quantity
-            totalQuantity += ele.productCount
-        })
+            });
+            totalQuantity += ele.productCount;
+        });
 
-        // find the user details 
-        const userDetails = await userSchema.findById(req.session.user)
-
-        // add a new order 
+        const userDetails = await userSchema.findById(req.session.user);
         const newOrder = new orderSchema({
             userID: req.session.user,
-            products: products,
-            totalQuantity: totalQuantity,
+            products,
+            totalQuantity,
             totalPrice: cartItems.payableAmount,
             address: {
                 contactName: userDetails.address[addressIndex].contactName,
@@ -152,55 +121,37 @@ const placeOrder = async (req, res) => {
             },
             paymentMethod: paymentDetails[paymentMode],
             orderStatus: "Confirmed",
-            paymentId: paymentId,
             couponDiscount: cartItems.couponDiscount,
-            couponID:cartItems.couponID
-        })
-        // Save the new order
+            couponID: cartItems.couponID
+        });
         await newOrder.save();
 
-
-        // if payment mode is wallet then reduce the amount from wallet
         if (paymentMode === 2) {
-            // reduce the wallet amount if payment mode is wallet
-            const wallet = await walletSchema.findOne({ userID: req.session.user })
-
-            // check the payable amount is in the wallet
+            const wallet = await walletSchema.findOne({ userID: req.session.user });
             if (wallet.balance < cartItems.payableAmount) {
-                req.flash("errorMessage", "Insufficient balance in the wallet please choose another payment option")
-                return res.redirect('/checkout')
+                return res.status(400).json({ error: "Insufficient balance in the wallet. Please choose another payment option" });
             }
-
-            // if there is enough balance in the cart the continue
-            wallet.balance -= cartItems.payableAmount
-            await wallet.save()
+            wallet.balance -= cartItems.payableAmount;
+            await wallet.save();
         }
 
-        // Reduce the number of products purchased from the product stock
         for (const ele of cartItems.items) {
             const product = await productSchema.findById(ele.productID._id);
             if (product) {
                 product.productQuantity -= ele.productCount;
-                if (product.productQuantity < 0) {
-                    product.productQuantity = 0; // Ensure product quantity doesn't go below zero
-                }
+                product.productQuantity = Math.max(product.productQuantity, 0);
                 await product.save();
             }
         }
 
-        // Clear the cart for the user
         await cartSchema.deleteOne({ userID: req.session.user });
-
-       return res.status(200).json({success:"order placed successfully"})
-
-
+        return res.status(200).json({ success: "Order placed successfully" });
 
     } catch (err) {
         console.log(`Error on placing order in POST method ${err}`);
-        req.flash('errorMessage', `Error on placing order ${err}`);
-        return res.redirect('/cart');
+        return res.status(500).json({ error: `Error on placing order: ${err.message}` });
     }
-}
+};
 
 
 
