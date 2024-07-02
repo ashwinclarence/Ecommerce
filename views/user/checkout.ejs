@@ -551,24 +551,30 @@
                                 "name": "CLEAT CRAFT",
                                 "order_id": data.orderID,
                                 "handler": function (response) {
-                                    const URL="/place-order"
-                                    fetch(URL,{
-                                        method:"POST",
-                                        headers:{
-                                            'Content-Type':"application/json"
+                                    const URL = "/place-order"
+                                    fetch(URL, {
+                                        method: "POST",
+                                        headers: {
+                                            'Content-Type': "application/json"
                                         },
-                                        body:JSON.stringify({addressIndex,paymentMode})
-                                    }).then((res)=>{
+                                        body: JSON.stringify({
+                                            addressIndex,
+                                            paymentMode,
+                                            razorpay_payment_id: response.razorpay_payment_id,
+                                            razorpay_order_id: response.razorpay_order_id,
+                                            razorpay_signature: response.razorpay_signature
+                                        })
+                                    }).then((res) => {
                                         return res.json()
-                                    }).then((data)=>{
-                                        if(data.success){
-                                            window.location.href="/confirm-order"
+                                    }).then((data) => {
+                                        if (data.success) {
+                                            window.location.href = "/confirm-order"
                                         }
-                                    }).catch((err)=>{
-                                        console.error("Error on razor pay payment callback",err);
+                                    }).catch((err) => {
+                                        console.error("Error on razor pay payment callback", err);
                                     })
 
-                                   
+
 
                                 },
                                 "prefill": {
@@ -596,7 +602,7 @@
                                 window.location.href = `/pending-order`
                             });
                             rzp1.open();
-                            e.preventDefault()
+                            // e.preventDefault()
 
 
                         } else {
