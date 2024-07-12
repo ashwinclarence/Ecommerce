@@ -167,27 +167,24 @@ const otpPost = async (req, res) => {
 
         // if otp is in the session then continue with checking
         if (req.session.otp !== undefined) {
-            // user data from session during the registration time
-            const registerDetails = {
-                name: req.session.name,
-                phone: req.session.phone,
-                password: req.session.password,
-                email: req.session.email,
-            }
 
             // if the user entered otp and otp in session is equal then only the user's data is stored in users collection
             if (req.session.otp === req.body.otp) {
                 // adding the user data to mongodb with collection name user
-                await userSchema.insertMany(registerDetails).then(() => {
-                    console.log('New user registration successful')
-
-                    // send a welcome mail to new user
-                    mailSender.sendWelcomeMail(req.session.email, req.session.name)
-                    req.flash('errorMessage', 'user registration successful');
-                    res.redirect('/login')
-                }).catch((err) => {
-                    console.log(`Error occurred while user registration ${err}`);
+                const newUser = new userSchema({
+                    name: req.session.name,
+                    phone: req.session.phone,
+                    password: req.session.password,
+                    email: req.session.email
                 })
+
+                await newUser.save()
+                console.log('New user registration successful')
+                mailSender.sendWelcomeMail(req.session.email, req.session.name)
+                req.flash('errorMessage', 'user registration successful');
+                req.session.user = newUser.id
+                res.redirect('/home')
+               
             } else {
                 req.flash('errorMessage', 'It appears the OTP you entered is invalid. Please ensure you enter the OTP correctly.')
                 res.redirect('/OTP')

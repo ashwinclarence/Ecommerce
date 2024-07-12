@@ -81,7 +81,7 @@ const home = async (req, res) => {
         console.error(`Error rendering home page: ${err}`);
 
         req.flash("errorMessage", "An error occurred while rendering the home page");
-        
+
     }
 };
 

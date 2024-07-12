@@ -220,6 +220,30 @@
     </div>
     <%- include('footer') %>
 
+
+        <!-- modal for rejecting return request -->
+        <div class="modal fade" id="reject-reason-modal" tabindex="-1" aria-labelledby="reject-reason-modal"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+
+                    <form class="modal-body rate  w-100 p-5" id="reject-reason-form" method="post">
+                        <h5 class="mb-0 text-center">Reason for rejecting the return request</h5>
+                        <div class=" my-4">
+                            <textarea class="form-control" placeholder="Add reason for rejecting the return request"
+                                rows="6" id="reject-feedback" name="rejectReason"></textarea>
+                            <label for="review-feedback" class="text-danger" id="rejection-validate-label"></label>
+                        </div>
+                        <div class="buttons text-center">
+                            <button type="button" class="btn btn-dark w-25" data-bs-dismiss="modal">Close</button>
+                            <button class="btn btn-warning w-25" type="submit">Confirm Reject</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
         <script>
             const orderStat = ['Confirmed', 'Pending', 'Delivered', 'Returned', 'Cancelled']
             // order status updating validation
@@ -314,6 +338,10 @@
             }
 
 
+
+
+
+
             // allow the return order
             function allowReturnOrder(orderID) {
                 Swal.fire({
@@ -338,7 +366,7 @@
                                     text: data.success,
                                     showConfirmButton: false,
                                     timer: 1000
-                                }).then(()=>{
+                                }).then(() => {
                                     window.location.reload()
                                 })
                             }
@@ -349,6 +377,7 @@
                     }
                 })
             }
+
 
 
             // reject the return order
@@ -360,32 +389,29 @@
                     showCancelButton: true,
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        fetch(`/admin/reject-return/${orderID}`, {
-                            method: "PUT",
-                            headers: {
-                                "Content-Type": "application/json"
-                            }
-
-                        }).then((res) => {
-                            return res.json()
-                        }).then((data) => {
-                            if (data.success) {
-                                Swal.fire({
-                                    icon: "success",
-                                    text: data.success,
-                                    showConfirmButton: false,
-                                    timer: 1000
-                                }).then(()=>{
-                                    window.location.reload()
-                                })
-                            }
-
-                        }).catch((err) => {
-                            console.log("Error on allowing product return ", err)
-                        })
+                        // Open the modal for adding a review
+                        const myModal = new bootstrap.Modal(document.getElementById('reject-reason-modal'));
+                        document.getElementById('reject-reason-form').action = `/admin/reject-return/${orderID}`;
+                        myModal.show();
                     }
                 })
             }
+
+
+            const rejectReturnForm = document.getElementById('reject-reason-form');
+            const rejectReasonInput = document.getElementById('reject-feedback')
+            rejectReturnForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                document.getElementById('rejection-validate-label').innerHTML = ""
+
+                if (rejectReasonInput.value.trim() === "" || rejectReasonInput.value.length > 200 || rejectReasonInput.value.length < 10) {
+                    document.getElementById('rejection-validate-label').innerHTML = "add a valid reason between 10 and 200 character"
+                } else {
+                    rejectReturnForm.submit()
+                }
+
+
+            })
 
 
 

@@ -1,6 +1,6 @@
 
 const orderSchema = require("../../model/orderSchema");
-const walletSchema=require('../../model/walletSchema')
+const walletSchema = require('../../model/walletSchema')
 
 
 // render the order page 
@@ -152,20 +152,25 @@ const allowReturnOrder = async (req, res) => {
 // reject the return order 
 const rejectReturnOrder = async (req, res) => {
     try {
-        const { orderID } = req.params
+        const rejectReason=req.body.rejectReason
 
-         // update the order details as cancelled orders
-         const orderDetails = await orderSchema.findByIdAndUpdate(orderID, {
+        const { orderID } = req.params;
+
+        // update the order details as cancelled orders
+        const orderDetails = await orderSchema.findByIdAndUpdate(orderID, {
             orderStatus: "Delivered",
-         });
-        
-         if (orderDetails) {
-            return res.status(200).json({ success: "Order return rejected" })
+            reasonForRejection:rejectReason
+        });
+
+        if (orderDetails) {
+            req.flash("errorMessage","order reject with reason sended to user")
+            return res.redirect(`/admin/view-order/${orderID}`)
         } else {
-            return res.status(404).json({ error: "order return cannot reject" })
+            req.flash("errorMessage","unable to reject the order return please try again later")
+            return res.redirect(`/admin/view-order/${orderID}`)
 
         }
-        
+
 
     } catch (err) {
         console.log("Error on reject the return order", err);

@@ -69,6 +69,9 @@ const schema = new mongoose.Schema({
     },
     reasonForCancel: {
         type:String
+    },
+    reasonForRejection: {
+        type:String
     }
 },{timestamps:true})
 

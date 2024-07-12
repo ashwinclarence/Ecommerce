@@ -377,6 +377,11 @@ const downloadInvoice = async (req, res) => {
                 `Shipping Charge: ${orderDetails.totalPrice < 500 ? "RS 50" : "Free"}`
             );
         doc
+            .fillColor("black")
+            .text(
+                `Coupon Discount: ${orderDetails.couponDiscount}`
+            );
+        doc
             .fontSize(10)
             .fillColor("red")
             .text(`Total Amount: Rs ${orderDetails.totalPrice.toLocaleString()}`);
