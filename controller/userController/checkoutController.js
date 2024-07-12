@@ -9,7 +9,7 @@ const dotenv = require('dotenv').config()
 
 
 
-// confirm order page
+// confirm order page   
 const orderConfirmPage = (req, res) => {
     try {
         res.render('user/confirmOrder', { title: "Order confirmed" })
@@ -96,7 +96,7 @@ const placeOrder = async (req, res) => {
             // const instance = new Razorpay({ key_id: process.env.RAZORPAY_KEY_ID, key_secret: process.env.RAZORPAY_KEY_SECRET });
             // const isValidPayment = instance.utils.validatePaymentVerification(
             //     { order_id: razorpay_order_id, payment_id: razorpay_payment_id },
-            //     razorpay_signature,
+            //     razorpay_signature, n
             //     process.env.RAZORPAY_KEY_SECRET
             // );
 

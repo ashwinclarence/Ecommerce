@@ -38,7 +38,7 @@ admin.get('/unblock-user/:id',checkAdminSession, userManagement.unBlockUser)
 admin.get('/category',checkAdminSession, adminCategoryController.category);
 admin.post('/category',checkAdminSession, adminCategoryController.newCategoryPost)
 admin.get('/edit-category/:id', checkAdminSession, adminCategoryController.editCategory)
-admin.post('/edit-category/:id', adminCategoryController.editCategoryPost)
+admin.post('/edit-category/:id',checkAdminSession, adminCategoryController.editCategoryPost)
 admin.get('/hide-category/:id', checkAdminSession, adminCategoryController.hideCategory)
 admin.get('/unhide-category/:id', checkAdminSession, adminCategoryController.unHideCategory)
 admin.get('/delete-category/:id',checkAdminSession, adminCategoryController.deleteCategory)
@@ -48,9 +48,9 @@ admin.get('/delete-category/:id',checkAdminSession, adminCategoryController.dele
 // product management
 admin.get('/products',checkAdminSession, productController.products);
 admin.get('/add-product',checkAdminSession,productController.addProduct)
-admin.post('/add-product',upload.array('productImage',4),productController.addProductPost)
+admin.post('/add-product',checkAdminSession,upload.array('productImage',4),productController.addProductPost)
 admin.get('/edit-product/:id',checkAdminSession,productController.editProduct)
-admin.post('/edit-product/:id',upload.array("productImage", 4),productController.editProductPost)
+admin.post('/edit-product/:id',checkAdminSession,upload.array("productImage", 4),productController.editProductPost)
 admin.get('/product-inactive/:id',checkAdminSession,productController.productInactive)
 admin.get('/product-active/:id',checkAdminSession,productController.productActive)
 admin.delete('/delete-product/:id',checkAdminSession,productController.productDelete)
@@ -61,7 +61,7 @@ admin.get('/orders',checkAdminSession, orderController.order);
 admin.get('/view-order/:orderID',checkAdminSession,orderController.viewOrder)
 admin.post('/edit-order-status/:orderID', checkAdminSession, orderController.editOrder)
 admin.put('/allow-return/:orderID',checkAdminSession,orderController.allowReturnOrder)
-admin.put('/reject-return/:orderID',checkAdminSession,orderController.rejectReturnOrder)
+admin.post('/reject-return/:orderID',checkAdminSession,orderController.rejectReturnOrder)
 
 // coupon
 admin.get('/coupons',checkAdminSession, couponController.coupons);
